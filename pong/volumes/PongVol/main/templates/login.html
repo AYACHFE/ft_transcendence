@@ -1,0 +1,116 @@
+{%load static%}
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/css/login.css">
+</head>
+<body>
+<p>mehdi</p>
+<div class="container" id="container">
+    <div class="left-side form-container sign-in-container ">
+        <form action="/api/login/" method="POST" id="loginForm">
+
+            {% csrf_token %}
+                
+            <input type="email" placeholder="email" name="email" required />
+            
+            <input type="password" placeholder="Password" name="password" required />
+            <div class="centerfor">
+                <div class="remember">
+
+                    <input type="checkbox" id="checkbox" name="remember">
+                    <label for="checkbox">Remember Me</label><br>
+                </div>
+                <a href="">Forgot Password ?</a><br>
+            </div>
+            
+            <button type="submit"  href="/Dashboard" class="nav__link" data-link class="login-btn"> Login</button>
+            <div class="orline">
+                <div class="line"></div>
+                <div class="or" id="or">or</div>
+                <div class="line"></div>
+            </div>
+            <div class="loginwith">
+
+                    <a href="https://www.google.com/" >
+                        <img src="{%static 'images/login/google.svg'%}" >
+                    </a>
+                    <a href="https://profile.intra.42.fr/">
+                        <img src="{%static 'images/login/42.svg'%}" >
+                    </a>
+            </div>
+        </form>
+        <div class="overlay-panel overlay-right">
+            <button class="ghost" id="signUp">Create Account</button>
+        </div>
+    </div>
+    <div class="form-container sign-up-container">
+        <div class="left-side">
+            <form action="/api/login/" >
+                
+                
+                <input type="text" placeholder="Username" name="username" required />
+                <input type="email" placeholder="Email" name="email" required />
+                
+                <input type="password" placeholder="Password" name="password" required />
+                <input type="password" placeholder="Confirme Password" name="password" required />
+                
+                <button type="submit" class="login-btn">Sign Up</button>
+                <div class="orline">
+                    <div class="line"></div>
+                    <div class="or">or</div>
+                    <div class="line"></div>
+                </div>
+                <div class="loginwith">
+
+                        <a href="https://www.google.com/" >
+                            <img src="{%static '/images/login/google.svg'%}" >
+                        </a>
+                        <a href="https://profile.intra.42.fr/">
+                            <img src="{%static '/images/login/42.svg'%}" >
+                        </a>
+                </div>
+            </form>
+            
+            <div class="overlay-panel overlay-left">
+                <button class="ghost" id="signIn">Login</button>
+            </div>
+        </div>
+    </div>
+    <div class="overlay-container">
+        <div class="overlay">
+        </div>
+    </div>
+</div>
+<script src="/static/js/login.js"></script>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        // Prevent the default form submission
+        event.preventDefault();
+    
+        // Get the form data
+        var formData = new FormData(event.target);
+    
+        // Get the CSRF token
+        const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
+    
+        // Submit the form using fetch
+        fetch('/api/login/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                // Include the CSRF token in the request headers
+                'X-CSRFToken': csrftoken
+            },
+            credentials: 'include'  // Include cookies in the request
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Detail:', data.detail);
+            if(!data.detail)
+                window.location.href = '/';
+
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>
+</body>
