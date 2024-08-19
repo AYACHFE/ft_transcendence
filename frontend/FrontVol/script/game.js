@@ -1,4 +1,3 @@
-
 var startGameElements = document.querySelectorAll('.start-game h2');
 var gameover = document.querySelectorAll('.game-over h2');
 var ball_ = document.querySelectorAll('.ball');
@@ -176,6 +175,7 @@ async function moveBall() {
 			middle_line.style.display = 'none';
 			ball.style.display = 'none';
 			gameOverMessage.style.display = 'block';
+			gameEnded(scoreP1 == 3 ? 1 : 2, scoreP1 == 3 ? 2 : 1, 0, scoreP1 == 3 ? 'win' : 'lose');
 			return;
 		}
 		await sleep(700);
@@ -241,3 +241,46 @@ moveBall();
     .then(data => {
             document.getElementById('user_name').innerHTML = data.user_name;
     })
+
+
+////////////////////////// Save game result to the server //////////////////////////
+
+// Function to get the value of a cookie
+function getCookie(cname) {
+	var name = cname + "=";
+	var ca = document.cookie.split(';');
+	for(var i=0; i<ca.length; i++) {
+	   var c = ca[i];
+	   while (c.charAt(0)==' ') c = c.substring(1);
+	   if(c.indexOf(name) == 0)
+		  return c.substring(name.length,c.length);
+	}
+	return "";
+}
+
+	function gameEnded(winnerId, loserId, duration, result) {
+
+
+	
+		fetch('http://localhost:8080/save_game_result/', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				// 'X-CSRFToken': getCookie('csrftoken')  // function to get CSRF token from cookies
+			},
+			body: new URLSearchParams({
+				'winner_id': winnerId,
+				'loser_id': loserId,
+				'duration': duration,
+				'result': result
+			})
+		})
+		.then(response => response.json())
+		.then(data => {
+			if (data.status === 'success') {
+				console.log('Game result saved successfully');
+			} else {
+				console.log('Failed to save game result:', data.error);
+			}
+		});
+	}

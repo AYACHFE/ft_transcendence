@@ -69,6 +69,9 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'googleauth',
 
+	# aymane
+	'game',
+	
 
 ]
 
