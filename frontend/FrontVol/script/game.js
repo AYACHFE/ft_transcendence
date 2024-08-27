@@ -233,54 +233,43 @@ moveBall();
 
 
 
-    fetch('http://localhost:8000/main/data/',{
-        method:"get",
-        credentials:"include"
-    })
-    .then(response => response.json())
-    .then(data => {
-            document.getElementById('user_name').innerHTML = data.user_name;
-    })
+    // fetch('http://localhost:8000/main/data/',{
+    //     method:"get",
+    //     credentials:"include"
+    // })
+    // .then(response => response.json())
+    // .then(data => {
+    //         document.getElementById('user_name').innerHTML = data.user_name;
+    // })
 
 
 ////////////////////////// Save game result to the server //////////////////////////
 
 // Function to get the value of a cookie
-function getCookie(cname) {
-	var name = cname + "=";
-	var ca = document.cookie.split(';');
-	for(var i=0; i<ca.length; i++) {
-	   var c = ca[i];
-	   while (c.charAt(0)==' ') c = c.substring(1);
-	   if(c.indexOf(name) == 0)
-		  return c.substring(name.length,c.length);
-	}
-	return "";
-}
-
-	function gameEnded(winnerId, loserId, duration, result) {
 
 
-	
-		fetch('http://localhost:8080/save_game_result/', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded',
-				// 'X-CSRFToken': getCookie('csrftoken')  // function to get CSRF token from cookies
-			},
-			body: new URLSearchParams({
-				'winner_id': winnerId,
-				'loser_id': loserId,
-				'duration': duration,
-				'result': result
-			})
+function gameEnded(winnerId, loserId, duration, result) {
+	console.log('Game ended with result:', result);
+	const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
+	fetch('http://localhost:8000/game/save_game_result/', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			'X-CSRFToken': csrftoken
+		},
+		body: new URLSearchParams({
+			'winner_id': winnerId,
+			'loser_id': loserId,
+			'duration': duration,
+			'result': result
 		})
-		.then(response => response.json())
-		.then(data => {
-			if (data.status === 'success') {
-				console.log('Game result saved successfully');
-			} else {
-				console.log('Failed to save game result:', data.error);
-			}
-		});
-	}
+	})
+	.then(response => response.json())
+	.then(data => {
+		if (data.status === 'success') {
+			console.log('Game result saved successfully');
+		} else {
+			console.log('Failed to save game result:', data.message);
+		}
+	});
+}

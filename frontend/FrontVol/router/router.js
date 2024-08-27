@@ -134,11 +134,11 @@ class Router {
 
         const route = this.matchRoute(path);
         
-        if (route && route.path === '/login' && route.path === '/' && await this.isAuthenticated())
-            path = '/dashboard';
-        if (route && route.auth && !(await this.isAuthenticated())) {
-            path = '/login';
-        }
+        // if (route && route.path === '/login' && route.path === '/' && await this.isAuthenticated())
+        //     path = '/dashboard';
+        // if (route && route.auth && !(await this.isAuthenticated())) {
+        //     path = '/login';
+        // }
 
     
         this.active_path = path;
