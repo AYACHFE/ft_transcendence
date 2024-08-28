@@ -7,11 +7,11 @@ from .models import User
 import jwt, datetime
 from django.middleware.csrf import get_token
 from django.http import JsonResponse
+from .functions import gen_token
 
 class RegisterView(APIView):
     def post(self, request):
         try:
-            print(request.data)
             serializer = UserSerializer(data = request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
@@ -20,13 +20,13 @@ class RegisterView(APIView):
         except Exception as e:
             return Response({"detail": "Error at sign up!"}, 401)
         return Response({"detail": "Sucessfully signed up"})
-from .functions import gen_token
+
 class LoginView(APIView):
     def post(self, request):
         email = request.data['email']
         password =request.data['password']
         user = User.objects.filter(email=email).first()
-        if user.is_anonymous:
+        if user is None:
             raise AuthenticationFailed('user not found')
         if not user.check_password(password):
             raise AuthenticationFailed('incorrect password')
@@ -67,7 +67,9 @@ class LogoutView(APIView):
 
 def csrf_token_view(request):
     token = get_token(request)
-    return JsonResponse({'csrfToken': token})
+    response = JsonResponse({})
+    response.set_cookie("csrf-token", token)
+    return response
 
 
 

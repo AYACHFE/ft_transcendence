@@ -15,26 +15,36 @@ buttons.forEach(function(btn){
 
 
 
-function logoutRequest()
+function getCookie(name) {
+    var cookieArr = document.cookie.split(";");
+
+    for(var i = 0; i < cookieArr.length; i++) {
+        var cookiePair = cookieArr[i].split("=");
+
+        if(name == cookiePair[0].trim()) {
+            return decodeURIComponent(cookiePair[1]);
+        }
+    }
+
+    return null;
+}
+
+function logout_post()
 {
-    fetch("http://localhost:8000/api/token/", {
-        method:'post',
-        credentials: 'include'
+
+    var csrfToken = getCookie("csrf-token");
+    fetch("http://localhost:8000/api/logout/", {
+        method: 'post',
+        credentials: 'include',
+        headers:{
+			'X-CSRFToken':csrfToken
+		}
     })
-    .then(data=>{
-        csrftoken = data.csrfToken;
-        fetch("http://localhost:8000/api/logout/", {
-            method: 'post',
-            credentials: 'include',
-            'X-CSRFToken': csrftoken
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log("logged out ", data);
-        })
-        .catch(error => console.log("error", error));
+    .then(response => response.json())
+    .then(data => {
+        console.log("logged out ", data);
     })
-    
+    .catch(error => console.log("error", error));
 }
 
 fetch('http://localhost:8000/main/data/',{
@@ -47,3 +57,16 @@ fetch('http://localhost:8000/main/data/',{
 })
 
 
+
+
+async function fetchCsrfToken() {
+	const response = await fetch('/api/csrf-token/', {
+		credentials: 'include'
+	});
+	const data = await response.json();
+	return data.csrfToken;
+}
+
+fetchCsrfToken().then(csrfToken => {
+	document.querySelector('meta[name="csrf-token"]').setAttribute('content', csrfToken);
+});

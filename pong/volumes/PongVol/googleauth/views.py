@@ -1,6 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 
+
+from django.http import JsonResponse
+from rest_framework.decorators import api_view
+
+from users.models import User
+from django.http import HttpResponseRedirect
 # Create your views here.
 
 
@@ -9,9 +15,6 @@ def home (request):
 def logout_view(request):
     logout(request)
     return redirect('/')
-
-from django.http import JsonResponse
-from rest_framework.decorators import api_view
 # from your_jwt_library import generate_jwt  # Replace with your actual JWT generation method
 import jwt, requests
 
@@ -54,14 +57,7 @@ def google_auth(request):
         return JsonResponse({'error': 'Failed to authenticate with Google'}, status=400)
 
 
-from users.models import User
-from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
-from rest_framework.exceptions import AuthenticationFailed
-import jwt
-import datetime
-from users.serializers import UserSerializer
-from django.http import HttpResponseRedirect
+
 from users.functions import gen_token
 @api_view(['GET'])
 def google_dauth(request):

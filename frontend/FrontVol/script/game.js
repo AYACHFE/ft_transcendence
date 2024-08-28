@@ -180,6 +180,7 @@ async function moveBall() {
 		}
 		await sleep(700);
 		moveBall;
+		// sendGameState();
 	}
 	newChance = false;
 	
@@ -228,6 +229,7 @@ async function moveBall() {
     ball.style.top = `${ballY}px`;
 
     requestAnimationFrame(moveBall);
+	// sendGameState();
 }
 moveBall();
 
@@ -241,6 +243,40 @@ moveBall();
     // .then(data => {
     //         document.getElementById('user_name').innerHTML = data.user_name;
     // })
+
+
+////////////////////////// updates the variables for the online game //////////////////////////
+
+// Assuming you have variables for paddle positions, ball position, and score
+let paddlePos = { player1: parseInt(leftRacket.style.top), player2: parseInt(rightRacket.style.top) };
+let ballPos = { x: ballX, y: ballY };
+let score = { player1: scoreP1, player2: scoreP2 };
+
+const roomName = 'some-room-name';  // This could be dynamically generated
+const gameSocket = new WebSocket(
+    'ws://' + window.location.host + '/ws/pingpong/' + roomName + '/'
+);
+
+gameSocket.onmessage = function(e) {
+    const data = JSON.parse(e.data);
+
+    // Update game state based on received data
+    paddlePos = data.paddle_pos;
+    ballPos = data.ball_pos;
+    score = data.score;
+
+    // Update your game UI accordingly
+    updateGameUI(paddlePos, ballPos, score);
+};
+
+function sendGameState() {
+    gameSocket.send(JSON.stringify({
+        'paddle_pos': paddlePos,
+        'ball_pos': ballPos,
+        'score': score,
+    }));
+}
+
 
 
 ////////////////////////// Save game result to the server //////////////////////////

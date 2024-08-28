@@ -5,6 +5,7 @@ export default class Dashboard extends HTMLElement {
         this.innerHTML = `
                 <head>
                     <link rel="stylesheet" href="../style/dashboard.css">
+                    <meta name="csrf-token" content="">
                 </head>
         <div class="container" id="dashboardid">
             <div class="side-panel">
@@ -21,9 +22,9 @@ export default class Dashboard extends HTMLElement {
                         <img src="../images/Sms.svg">
                     </a>
                 </div> 
-                <a href="/" data-link  class="nav__link logout flex-center">
+                <button data-link  class="nav__link logout flex-center" onclick="logout_post()">
                     <img src="../images/Logout.svg">
-                </a>
+                </button>
             </div>
             <div class="main">
                 <div class="header-bar">
@@ -128,5 +129,9 @@ export default class Dashboard extends HTMLElement {
     
     }
 }
+
+let script = document.createElement('script');
+script.src = '../script/dashboard.js';
+document.body.appendChild(script);
 
 customElements.define("dashboard-page", Dashboard);

@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from django.http.response import JsonResponse
 from django.template.loader import render_to_string
-
+from users.models import User
+from django.utils import timezone
+from users.serializers import UserSerializer
 # Create your views here.
 
 
@@ -38,10 +40,14 @@ def DataView(request):
         uid = request.user.id
         email = request.user.email
         user_name = request.user.name
+        online_users = User.objects.filter(last_seen__gte=timezone.now() - timezone.timedelta(minutes=5))
+        online_users_serializer = UserSerializer(online_users, many=True)
+
     data = JsonResponse({
         'message':'message from DataView',
         'user_name': user_name,
         'id': uid,
-        'email': email
+        'email': email,
+        'online_users':online_users_serializer.data
     })
     return data
