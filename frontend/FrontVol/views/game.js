@@ -10,7 +10,7 @@ export default class Game extends HTMLElement {
             this.innerHTML = data;
 
             let script = document.createElement('script');
-            script.src = '../script/game.js';
+            script.src = '../script/-game.js';
             document.body.appendChild(script);
         });
     }

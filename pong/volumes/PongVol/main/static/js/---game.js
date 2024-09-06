@@ -1,6 +1,7 @@
-var startGameElements = document.querySelectorAll('.start-game h2');
-var gameover = document.querySelectorAll('.game-over h2');
-var ball_ = document.querySelectorAll('.ball');
+// Get all the start game text elements
+let startGameElements = document.querySelectorAll('.start-game h2');
+let gameover = document.querySelectorAll('.game-over h2');
+let ball_ = document.querySelectorAll('.ball');
 
 // Create a function to handle the event
 function hideStartGameElements() {
@@ -24,27 +25,28 @@ hideGameOver();
 const gameBoard = document.querySelector('.board');
 const ball = document.querySelector('.ball');
 
-var leftRacket = document.querySelector('.left-racket img');
+const leftRacket = document.querySelector('.left-racket img');
 const rightRacket = document.querySelector('.right-racket img');
-var leftRacketRect;
-var rightRacketRect;
+let leftRacketRect;
+let rightRacketRect;
 
-var boardWidth = gameBoard.clientWidth;
-var boardHeight = gameBoard.clientHeight;
-var rect = gameBoard.getBoundingClientRect();
+let boardWidth = gameBoard.clientWidth;
+let boardHeight = gameBoard.clientHeight;
+let rect = gameBoard.getBoundingClientRect();
 //
 window.addEventListener('resize', function() {
     boardHeight = gameBoard.clientHeight;
     boardWidth = gameBoard.clientWidth;
 	rect = gameBoard.getBoundingClientRect();
+
 });
 
 
 //---------------------- racket event listener to move up and down ----------------------\\
-var moveUpRight = false;
-var moveDownRight = false;
-var moveUpLeft = false;
-var moveDownLeft = false;
+let moveUpRight = false;
+let moveDownRight = false;
+let moveUpLeft = false;
+let moveDownLeft = false;
 
 document.addEventListener('keydown', function(event) {
     switch(event.key) {
@@ -81,10 +83,10 @@ document.addEventListener('keyup', function(event) {
 });
 
 
-var newTopRightUp;
-var newTopRightDown;
-var newTopLeftUp;
-var newTopLeftDown;
+let newTopRightUp;
+let newTopRightDown;
+let newTopLeftUp;
+let newTopLeftDown;
 setInterval(function() {
     const leftRacket = document.querySelector('.left-racket img');
     const rightRacket = document.querySelector('.right-racket img');
@@ -124,14 +126,14 @@ setInterval(function() {
 }, 20); // Change this value to make the rackets move smoother or choppier
 
 //--------------------------ball------------------------------------\\
-var ballDiameter = ball.clientWidth;
-var leftRacketPos = leftRacket.offsetTop;
-var ballX = boardWidth / 2 - ballDiameter + rect.top; // Initial X position at the center of the board
-var ballY = boardHeight / 2 - ballDiameter/2 + rect.left; // Initial Y position
-var speedX = 10; // Horizontal speed
-var speedY = 10; // Vertical speed
+const ballDiameter = ball.clientWidth;
+const leftRacketPos = leftRacket.offsetTop;
+let ballX = boardWidth / 2 - ballDiameter + rect.top; // Initial X position at the center of the board
+let ballY = boardHeight / 2 - ballDiameter/2 + rect.left; // Initial Y position
+let speedX = 10; // Horizontal speed
+let speedY = 10; // Vertical speed
 
-var isMoving = false;
+let isMoving = false;
 	document.addEventListener('keydown', function() {
 		isMoving = true;
 	});
@@ -139,10 +141,10 @@ var isMoving = false;
 		isMoving = true;
 	});
 
-var scoreP1 = 0;
-var scoreP2 = 0;
-var scoreP1_html = document.querySelector('.user-1-score > h2');
-var scoreP2_html = document.querySelector('.user-2-score > h2');
+let scoreP1 = 0;
+let scoreP2 = 0;
+let scoreP1_html = document.querySelector('.user-1-score > h2');
+let scoreP2_html = document.querySelector('.user-2-score > h2');
 var racket = document.getElementsByClassName('left-racket')[0];
 
 
@@ -152,7 +154,7 @@ function sleep(ms) {
 
 const initleftRacketRect = leftRacket.getBoundingClientRect();
 const initrightRacketRect = rightRacket.getBoundingClientRect();
-var newChance;
+let newChance;
 async function moveBall() {
 	if (!isMoving) {
 		requestAnimationFrame(moveBall);
@@ -174,21 +176,20 @@ async function moveBall() {
 			middle_line.style.display = 'none';
 			ball.style.display = 'none';
 			gameOverMessage.style.display = 'block';
-			gameEnded(scoreP1 == 3 ? 1 : 2, scoreP1 == 3 ? 2 : 1, 0, scoreP1 == 3 ? 'win' : 'lose');
+			endGame();
 			return;
 		}
 		await sleep(700);
 		moveBall;
-		// sendGameState();
 	}
 	newChance = false;
 	
     ballX += speedX;
     ballY += speedY;
     // Check for collision with the walls and reverse direction if needed
-	var ballRect = ball.getBoundingClientRect();
-	var leftRacketRect = leftRacket.getBoundingClientRect();
-	var rightRacketRect = rightRacket.getBoundingClientRect();
+	let ballRect = ball.getBoundingClientRect();
+	let leftRacketRect = leftRacket.getBoundingClientRect();
+	let rightRacketRect = rightRacket.getBoundingClientRect();
     if (ballX + ballDiameter + 10 > rect.right - ballDiameter) {
 		if (ballRect.top + ballRect.height >= rightRacketRect.top && ballRect.top <= rightRacketRect.bottom)
 		{
@@ -228,83 +229,41 @@ async function moveBall() {
     ball.style.top = `${ballY}px`;
 
     requestAnimationFrame(moveBall);
-	// sendGameState();
 }
-moveBall();
+// moveBall();
 
+// ------------------------------ time-counter ------------------------------\\
 
+let startTime, intervalId;
 
-    // fetch('http://localhost:8000/main/data/',{
-    //     method:"get",
-    //     credentials:"include"
-    // })
-    // .then(response => response.json())
-    // .then(data => {
-    //         document.getElementById('user_name').innerHTML = data.user_name;
-    // })
-
-
-////////////////////////// updates the variables for the online game //////////////////////////
-
-// Assuming you have variables for paddle positions, ball position, and score
-var paddlePos = { player1: parseInt(leftRacket.style.top), player2: parseInt(rightRacket.style.top) };
-var ballPos = { x: ballX, y: ballY };
-var score = { player1: scoreP1, player2: scoreP2 };
-
-const roomName = 'test';  // This could be dynamically generated
-const gameSocket = new WebSocket(
-    'ws://' + "localhost:8000" + '/ws/game/' + roomName + '/'
-);
-
-gameSocket.onmessage = function(e) {
-    const data = JSON.parse(e.data);
-
-    // Update game state based on received data
-    paddlePos = data.paddle_pos;
-    ballPos = data.ball_pos;
-    score = data.score;
-
-    // Update your game UI accordingly
-    updateGameUI(paddlePos, ballPos, score);
-};
-
-function sendGameState() {
-    gameSocket.send(JSON.stringify({
-        'paddle_pos': paddlePos,
-        'ball_pos': ballPos,
-        'score': score,
-    }));
+// Call this function when the game starts
+function startGame() {
+	startTime = Date.now();
+    intervalId = setInterval(updateTime, 1000); // update time every second
+	console.log("asdasd");
+    // starts the game
+	moveBall();
 }
 
-
-
-////////////////////////// Save game result to the server //////////////////////////
-
-// Function to get the value of a cookie
-
-
-function gameEnded(winnerId, loserId, duration, result) {
-	console.log('Game ended with result:', result);
-	const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
-	fetch('http://localhost:8000/game/save_game_result/', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-			'X-CSRFToken': csrftoken
-		},
-		body: new URLSearchParams({
-			'winner_id': winnerId,
-			'loser_id': loserId,
-			'duration': duration,
-			'result': result
-		})
-	})
-	.then(response => response.json())
-	.then(data => {
-		if (data.status === 'success') {
-			console.log('Game result saved successfully');
-		} else {
-			console.log('Failed to save game result:', data.message);
-		}
-	});
+// Call this function to update the time
+function updateTime() {
+	let currentTime = Date.now();
+    let timeDiff = currentTime - startTime; // in ms
+    let seconds = Math.floor(timeDiff / 1000); // convert to seconds
+    document.querySelector('.time h2').textContent = formatTime(seconds);
 }
+
+// Call this function to format the time as mm:ss
+function formatTime(seconds) {
+	let minutes = Math.floor(seconds / 60);
+    seconds = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+// Call this function when the game ends
+function endGame() {
+	clearInterval(intervalId); // stop the timer
+    // Rest of your game end logic here
+}
+
+startGame();
