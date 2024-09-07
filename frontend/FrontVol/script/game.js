@@ -228,7 +228,7 @@ async function moveBall() {
     ball.style.top = `${ballY}px`;
 
     requestAnimationFrame(moveBall);
-	// sendGameState();
+	sendGameState();
 }
 moveBall();
 
@@ -259,16 +259,14 @@ const gameSocket = new WebSocket(
 gameSocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
 
-    // Update game state based on received data
     paddlePos = data.paddle_pos;
     ballPos = data.ball_pos;
     score = data.score;
-
-    // Update your game UI accordingly
-    updateGameUI(paddlePos, ballPos, score);
+    // updateGameUI(paddlePos, ballPos, score);
 };
 
 function sendGameState() {
+	console.log('Sending game state to the server:', paddlePos, ballPos, score);
     gameSocket.send(JSON.stringify({
         'paddle_pos': paddlePos,
         'ball_pos': ballPos,
