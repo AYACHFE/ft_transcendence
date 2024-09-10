@@ -106,7 +106,7 @@ setInterval(function() {
 		if (moveDownRight) {
 			// Move the right racket down
 			newTopRightDown = (parseInt(rightRacket.style.top) || 0) + step;
-			if (newTopRightDown <= boardHeight / 2 - 100) {
+			if (newTopRightDown <= boardHeight / 2 - 140) {
 				rightRacket.style.top = newTopRightDown + 'px';
 			}
 		}
@@ -124,14 +124,42 @@ setInterval(function() {
     	if (moveDownLeft) {
     	    // Move the left racket down
     	    newTopLeftDown = (parseInt(leftRacket.style.top) || 0) + step;
-    	    if (newTopLeftDown <= boardHeight / 2 - 100) {
+    	    if (newTopLeftDown <= boardHeight / 2 - 140) {
     	        leftRacket.style.top = newTopLeftDown + 'px';
     	    }
     	}
 	}
-	// sendGameState();
-	// updateGameUI({ player1: parseInt(leftRacket.style.top), player2: parseInt(rightRacket.style.top) }, { x: ballX, y: ballY }, { player1: scoreP1, player2: scoreP2 });
+
 }, 20); // Change this value to make the rackets move smoother or choppier
+
+//--------------------------time-counter------------------------------------\\
+let counter = 0;
+let counterInterval = null;
+
+function startCounter() {
+    counterInterval = setInterval(function() {
+        counter++;
+
+        // Calculate the number of minutes and seconds
+        let minutes = Math.floor(counter / 60);
+        let seconds = counter % 60;
+
+        // Pad the minutes and seconds with leading zeros if they are less than 10
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+
+        // Update the time element
+        document.querySelector('.time h2').innerHTML = minutes + ':' + seconds;
+    }, 1000);
+}
+
+function stopCounter() {
+    // Stop the counter
+    if (counterInterval) {
+        clearInterval(counterInterval);
+        counterInterval = null;
+    }
+}
 
 //--------------------------ball------------------------------------\\
 var ballDiameter = ball.clientWidth;
@@ -162,37 +190,49 @@ function sleep(ms) {
 const initleftRacketRect = leftRacket.getBoundingClientRect();
 const initrightRacketRect = rightRacket.getBoundingClientRect();
 var newChance;
+var newTime = false;
 
 async function moveBall() {
 	if (!isMoving) {
 		requestAnimationFrame(moveBall);
         return;
     }
+	if (!newTime) {
+		newTime = true;
+		startCounter();
+	}
 	scoreP1_html.innerHTML = scoreP1;
 	scoreP2_html.innerHTML = scoreP2;
 
-	if (role == 'host') {
-
+	
 	if (newChance) {
+		// if (role == 'guest')
+			console.log('new chance');
 		ball.style.left = `${ballX}px`;
 		ball.style.top = `${ballY}px`;
-		if (scoreP1 == 100 || scoreP2 == 100) {
+		if (scoreP1 == 3 || scoreP2 == 3) {
 			const gameOverMessage = document.querySelector('.game-over h2');
 			const middle_line = document.querySelector('.middle-line');
 			const ball = document.querySelector('.ball');
 			
 			// // Change the content of the div
-			gameOverMessage.innerHTML = 'Game Over!<br> Player ' + (scoreP1 == 3 ? '1' : '2') + ' wins!';
+			if (role == 'host')
+				gameOverMessage.innerHTML = 'You Win!';
+			else
+				gameOverMessage.innerHTML = 'You Loose!';
+				
 			middle_line.style.display = 'none';
 			ball.style.display = 'none';
 			gameOverMessage.style.display = 'block';
 			// gameEnded(scoreP1 == 3 ? 1 : 2, scoreP1 == 3 ? 2 : 1, 0, scoreP1 == 3 ? 'win' : 'lose');
+			stopCounter();
 			return;
 		}
 		// sendGameState();
 		// await sleep(700);
 	}
 	newChance = false;
+	if (role == 'host') {
 	
 			ballX += speedX;
 			ballY += speedY;
@@ -269,11 +309,25 @@ function updateGameUI(paddlePos, ballPos, score) {
     if (role == 'guest') {
 		ball.style.left = `${ballPos.x}px`;
     	ball.style.top = `${ballPos.y}px`;
+    	// Update scores
+		scoreP1 = score.player1;
+		scoreP2 = score.player2;
+	
+		// the end of the game
+		if (scoreP1 == 3 || scoreP2 == 3) {
+			const gameOverMessage = document.querySelector('.game-over h2');
+			const middle_line = document.querySelector('.middle-line');
+			const ball = document.querySelector('.ball');
+			
+			gameOverMessage.innerHTML = 'You Loose!';
+				
+			middle_line.style.display = 'none';
+			ball.style.display = 'none';
+			gameOverMessage.style.display = 'block';
+			stopCounter();
+			return;
+		}
 	}
-	// console.log('ball position:', ballPos.x, ballPos.y);
-    // Update scores
-    scoreP1_html.innerHTML = score.player1;
-    scoreP2_html.innerHTML = score.player2;
 }
 
 gameSocket.onmessage = function(e) {
@@ -289,6 +343,7 @@ gameSocket.onmessage = function(e) {
         ballPos = data.ball_pos;
         score = data.score;
         updateGameUI(paddlePos, ballPos, score);
+		hideStartGameElements();
     }
 };
 
