@@ -22,7 +22,7 @@ export default class Dashboard extends HTMLElement {
                         <img src="../images/Sms.svg">
                     </a>
 					<a href="/dashboard/settings" class="btn-option flex-center btn-simple  nav__link" data-link>
-                        <img src="../images/Sms.svg">
+                        <img src="../images/Settings.svg">
                     </a>
                 </div> 
                 <button data-link  class="nav__link logout flex-center" onclick="logout_post()">
