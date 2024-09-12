@@ -201,6 +201,7 @@ async function moveBall() {
 		newTime = true;
 		startCounter();
 	}
+	// console.log('ballX', ballX, 'ballY', ballY);
 	scoreP1_html.innerHTML = scoreP1;
 	scoreP2_html.innerHTML = scoreP2;
 
@@ -210,7 +211,7 @@ async function moveBall() {
 			console.log('new chance');
 		ball.style.left = `${ballX}px`;
 		ball.style.top = `${ballY}px`;
-		if (scoreP1 == 3 || scoreP2 == 3) {
+		if (scoreP1 == 10 || scoreP2 == 10) {
 			const gameOverMessage = document.querySelector('.game-over h2');
 			const middle_line = document.querySelector('.middle-line');
 			const ball = document.querySelector('.ball');
@@ -252,7 +253,7 @@ async function moveBall() {
 					newChance = true;
 				}
 			}
-			if (ballX + 10 < rect.left) {
+			if (ballX < rect.left) {
 				
 				if (ballRect.top + ballRect.height >= leftRacketRect.top && ballRect.top <= leftRacketRect.bottom)
 				{
@@ -266,10 +267,12 @@ async function moveBall() {
 					newChance = true;
 				}
 			}
-			if (ballY + ballDiameter + 10 > rect.bottom) {
+			if (ballY + ballDiameter > rect.bottom) {
 				speedY = -speedY;
 			}
-			if (ballY + 10 < rect.top) {
+			
+			if (ballY < rect.top) {
+				console.log('ballY:', ballY, 'rect.top:', rect.top);
 				ballY = rect.top;
 				speedY = -speedY;
 			}
@@ -314,7 +317,7 @@ function updateGameUI(paddlePos, ballPos, score) {
 		scoreP2 = score.player2;
 	
 		// the end of the game
-		if (scoreP1 == 3 || scoreP2 == 3) {
+		if (scoreP1 == 10 || scoreP2 == 10) {
 			const gameOverMessage = document.querySelector('.game-over h2');
 			const middle_line = document.querySelector('.middle-line');
 			const ball = document.querySelector('.ball');
@@ -334,7 +337,9 @@ gameSocket.onmessage = function(e) {
 	const data = JSON.parse(e.data);
 	if (data.type === 'assign_role') {
 		role = data.role;
+		// const username = data.username;
 		console.log('Your role is:', role);
+		// console.log('Your username is:', username);
     }
 	
     if (data.paddle_pos && data.ball_pos && data.score && role != data.role) {
@@ -392,3 +397,5 @@ function sendGameState() {
 // 		}
 // 	});
 // }
+
+

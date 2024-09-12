@@ -56,6 +56,7 @@ class  PingPongConsumer(AsyncWebsocketConsumer):
                     'type': 'assign_role',
                     'role': 'host',
                     'channel_name': new_host_channel_name
+                    
                 }
             )
 
