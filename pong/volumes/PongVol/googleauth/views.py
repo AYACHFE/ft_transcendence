@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
+from django.conf import settings
 
 
 from django.http import JsonResponse
@@ -30,8 +31,8 @@ def google_auth(request):
     # Exchange code for tokens
     response = requests.post(google_token_url, data={
         'code': code,
-        'client_id': '36859905646-l3ad3gji2poscl1u0r2osg2qmnehq405.apps.googleusercontent.com',
-        'client_secret': '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',
+        'client_id':settings.GOOGLE_CLIENT_ID,
+        'client_secret': settings.GOOGLE_CLIENT_SECRET,
         'redirect_uri': redirect_uri,
         'grant_type': 'authorization_code'
     })
@@ -68,8 +69,8 @@ def google_dauth(request):
     # Exchange code for tokens
     response = requests.post(google_token_url, data={
         'code': code,
-        'client_id': '36859905646-l3ad3gji2poscl1u0r2osg2qmnehq405.apps.googleusercontent.com',
-        'client_secret': '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',
+        'client_id':settings.GOOGLE_CLIENT_ID,
+        'client_secret': settings.GOOGLE_CLIENT_SECRET,
         'redirect_uri': redirect_uri,
         'grant_type': 'authorization_code'
     })

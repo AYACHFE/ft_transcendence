@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
+from decimal import localcontext
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,6 +28,36 @@ SECRET_KEY = 'django-insecure-t-+d!r7qqkym$=5(lpn%)2u3(=ql(+ow$0dqw154)gk85psz72
 DEBUG = True
 
 ALLOWED_HOSTS = ["pong", "localhost"]
+
+PING_PONG_UID = config('PING_PONG_UID')
+PING_PONG_SECRET = config('PING_PONG_SECRET')
+
+GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET')
+
+JWT_SECRET = config('JWT_SECRET')
+
+
+# EMAILING SETTINGS
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+# SMTP server settings
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_FROM = 'boulhoujjatmehdi@gmail.com'
+EMAIL_HOST_USER = 'boulhoujjatmehdi@gmail.com'    # Your SMTP email
+EMAIL_HOST_PASSWORD = 'ltqojbwulvmudhub' 
+EMAIL_PORT = 587                       # For TLS use 587, for SSL use 465
+EMAIL_USE_TLS = True                   # True for TLS (recommended), False if using SSL
+
+PASSWORD_RESET_TIMEOUT = 14400 # //TODO: CHECK IF THIS NECESSARY, its more likely that its not.-_-
+
+# Default "from" address for emails
+# DEFAULT_FROM_EMAIL = 'webmaster@yourdomain.com'
+
+# Email subject prefix (useful for identifying emails from your site)
+# EMAIL_SUBJECT_PREFIX = '[Your Website] '
+
 
 
 
@@ -47,6 +79,10 @@ INSTALLED_APPS = [
 	'game',
 
     'googleauth',
+
+    'django_otp',
+    'django_otp.plugins.otp_totp',
+    'qrcode',
 
 
 ]
@@ -83,7 +119,6 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
         },
-
     },
 ]
 
@@ -162,9 +197,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.User'
 
 CORS_ALLOW_CREDENTIALS= True
-CORS_ORIGIN_ALLOW_ALL= True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080"
+]
 
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8080/']
+# CSRF_TRUSTED_ORIGINS = ['http://localhost:8090/'] //TODO CHECK IF NOT A PROBLEM TO REMOVE THIS
 
 
 AUTHENTICATION_BACKENDS = (

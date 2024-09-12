@@ -9,6 +9,7 @@ import Game from "../views/game.js";
 import Home from "../views/home.js";
 import Login from "../views/login.js";
 import Loading from "../views/loading.js";
+import OTP from "../views/otp.js"
 
 
 
@@ -16,6 +17,11 @@ export const Routes = [
     {
         path: '/error404',
         component: Error404,
+        auth: false
+    },
+    {
+        path: '/otp',
+        component: OTP,
         auth: false
     },
     {

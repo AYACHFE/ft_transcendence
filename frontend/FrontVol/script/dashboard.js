@@ -40,9 +40,8 @@ function logout_post()
 			'X-CSRFToken':csrfToken
 		}
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log("logged out ", data);
+    .then(() =>{
+        window.location.href = "/login";
     })
     .catch(error => console.log("error", error));
 }

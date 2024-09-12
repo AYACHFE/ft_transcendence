@@ -51,11 +51,14 @@ document.getElementById('signInForm').addEventListener('submit', function(event)
 			'X-CSRFToken':csrfToken
 		}
 	})
-	.then(response => response.json())  // Parse the JSON from the response
+	.then(response => {
+		if(response.redirected){
+			window.location.href = response.url;
+		}
+		return response.json();
+	})
 	.then(data => {
-		// Handle the data from the response
 		showMessage(data.detail, "signInMessage");
-
 		console.log(data);
 	})
 	.catch(error => console.error('Error:', error));

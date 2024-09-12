@@ -2,6 +2,7 @@
     padding: 0;
     margin: 0;
     font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
 }
 
 body {
@@ -17,12 +18,15 @@ body {
 dashboard-page{
     height: 100vh;
     width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 dashboard-page .container {
 
-    width: 100%;
-    height: 100%;
+    width: 95%;
+    height: 95%;
     position: relative;
     display: flex;
     justify-content: center;
@@ -43,26 +47,23 @@ dashboard-page .header-bar {
     width: 95%;
     /* border: 1px solid #000000; */
     display: flex;
-    align-items: center;
+    align-items: start;
     justify-content: space-between;
     /* position: relative; */
 }
 
-dashboard-page .header-name {
+dashboard-page .header-name{
     display: flex;
-    justify-content: start;
-    align-items: start;
+    justify-content: center;
+    place-items: center;
     width: 10%;
     height: 50%;
     font-size: 1.3vw;
-}
-
-dashboard-page .header-name h2:nth-child(1) {
-    color: #FFFFFF;
-}
-
-dashboard-page .header-name h2:nth-child(2) {
     color: #3DBDA7;
+}
+dashboard-page .header-name::before{
+    content: "Hi, ";
+    color: #FFFFFF;
 }
 
 dashboard-page .header-notifications {
@@ -213,6 +214,10 @@ dashboard-page .side-user {
 
 dashboard-page .overflow-style::-webkit-scrollbar {
     display: none;
+}
+dashboard-page .overflow-style{
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
 }
 
 dashboard-page .flex-col {

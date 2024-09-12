@@ -1,0 +1,170 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static 'css/style.css'%}">
+        <link rel="stylesheet" id="dynamic_css" href="">
+            <title>HOME | AIT LWEB</title>
+    </head>
+    <body onload="loadContent('home')">
+        <div class="container" >
+            <div class="side-panel">
+                 <img src=" {%static  'images/Logo.svg'  %}" class="logo">
+                <div class="nav-options" >
+                    <button class="btn-option flex-center btn-highlight" onclick="loadContent('home')">
+                        <img src=" {%static  'images/Home.svg'  %}">
+                    </button>
+                    <button class="btn-option flex-center btn-simple" onclick="loadContent('game')">
+                        <img src=" {%static  'images/Users.svg'  %}">
+                    </button>
+                    <button class="btn-option flex-center btn-simple">
+                        <img src=" {%static 'images/Sms.svg'   %}">
+                    </button>
+                </div> 
+                <button class="logout flex-center" onclick="logout()">
+                    <img src=" {%static  'images/Logout.svg'  %}">
+                </button>
+            </div>
+            <div class="main">
+                <div class="header-bar">
+                    <p class="header-name">
+                        {{name}}
+                    </p>
+                    <input class="header-search" type="text" placeholder="Search For Friends">
+                    <div class="header-notifications">
+                        <div class="notifications-widget"></div>
+                        <div class="notifications-widget"></div>
+                    </div>
+                </div>
+                <div class="center-console">
+                    <div class="parent" id="content">
+                    </div>
+                </div> 
+            </div>
+            <div class="right-side-panel">
+                 <div class="upper-section">
+                    <div class="profile-photo">
+                        <img src="{%static  'images/image_42.png'  %} ">
+                    </div>
+                    <img class="upper-section-icone" src="{%static  'images/Vector.svg'  %}">
+                    <div class="users-display overflow-style flex-col">
+                        <div class="user" style="background-color:#D9D9D9;">
+                            <img src="{%static  'images/users/happy-1.svg'  %}" alt="">
+                            <div class="user-status active "></div>
+                            <div class="user-ingame active"><p>in Game</p></div>
+                        </div>
+                        <div class="user" style="background-color:#F7C5BF;">
+                            <img src="{%static   'images/users/happy-2.svg' %}" alt="">
+                            <div class="user-status active "></div>
+                            <div class="user-ingame active"><p>in Game</p></div>
+                            
+                        </div>
+                        <div class="user" style="background-color:#FF8A8A;">
+                            <img src="{%static  'images/users/happy-3.svg'  %}" alt="">
+                            <div class="user-status active "></div>
+                            <div class="user-ingame "><p>in Game</p></div>
+                            
+                        </div>
+                        <div class="user" style="background-color:#FFBEB8;">
+                            <img src="{%static  'images/users/happy-6.svg'  %}" alt="">
+                            <div class="user-status active "></div>
+                            <div class="user-ingame "><p>in Game</p></div>
+                        </div>
+                        <div class="user" style="background-color:#C5C6C6;">
+                            <img src="{%static  'images/users/happy-5.svg'  %}" alt="">
+                            <div class="user-status "></div>
+                            <div class="user-ingame "><p>in Game</p></div>
+                        </div>
+                        <div class="user" style="background-color:#CEC3FF;">
+                            <img src="{%static  'images/users/happy-4.svg'  %}" alt="">
+                            <div class="user-status "></div>
+                            <div class="user-ingame "><p>in Game</p></div>
+                        </div>
+                        <div class="user" style="background-color:#D9D9D9;">
+                            <img src="{%static  'images/users/happy-1.svg'  %}" alt="">
+                            <div class="user-status "></div>
+                            <div class="user-ingame "><p>in Game</p></div>
+                        </div>
+                        <div class="user" style="background-color:#F7C5BF;">
+                            <img src="{%static  'images/users/happy-2.svg'  %}" alt="">
+                            <div class="user-status "></div>
+                            <div class="user-ingame "><p>in Game</p></div>
+                        </div>
+                        <div class="user" style="background-color:#D9D9D9;">
+                            <img src="{%static  'images/users/happy-1.svg'  %}" alt="">
+                            <div class="user-status "></div>
+                            <div class="user-ingame "><p>in Game</p></div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="lower-section">
+                        <div class="lower-section-header-img flex-center">
+                            <img  src="{%static  'images/Chat.svg'  %}">
+                        </div>
+                        <div class="friends-list overflow-style">
+                            <div class="friend" style="background-color: #D9D9D9;">
+                                <img src="{%static 'images/users/1_men.svg'   %}">
+                                <div class="user-status active"></div>
+                            </div>
+                            <div class="friend" style="background-color: #D9D9D9;">
+                                <img src="{%static  'images/users/2_men.svg'  %}">
+                                <div class="user-status"></div>
+                            </div>
+                            <div class="friend" style="background-color: #D9D9D9;">
+                                <img src="{%static   'images/users/3_men.svg' %}">
+                                <div class="user-status"></div>
+                            </div>
+                        </div>
+                </div> 
+            </div>
+        </div>
+        <script src="{%static  'js/script.js'  %}"></script>
+        {% comment %} <script src="" id="dynamic_js"></script> {% endcomment %}
+        <script>
+            function loadContent(page) {
+                fetch(`/${page}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('content').innerHTML = data.content;
+                        document.getElementById('dynamic_css').href = data.css;
+                        loadScript(data.js);
+                    });
+            }
+            function loadScript(src) {
+                const existingScript = document.getElementById('dynamic-js');
+                if (existingScript) {
+                    existingScript.remove();
+                }
+                const script = document.createElement('script');
+                script.src = src;
+                script.id = 'dynamic-js';
+                script.onload = () => console.log(`${src} loaded`);
+                document.body.appendChild(script);
+            }
+            function logout()
+            {
+                const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
+                fetch('/api/logout/', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        // Include the CSRF token in the request headers
+                        'X-CSRFToken': csrftoken
+                    }
+                })
+                .then(response => {
+                    if(response.ok){
+                        window.location.href = '/login/';
+                    }
+                    else{
+                        console.log('Logout Failed!');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        </script>
+    </body>
+</html>

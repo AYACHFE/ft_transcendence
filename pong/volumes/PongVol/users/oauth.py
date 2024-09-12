@@ -7,6 +7,7 @@ import requests
 from rest_framework.exceptions import AuthenticationFailed
 from .models import User
 from .functions import gen_token
+from django.conf import settings
 
 
 
@@ -20,8 +21,8 @@ class oauth42(APIView):
         response_token = requests.post(
             api42_token_url, data={
                 'code': code,
-                'client_id': 'u-s4t2ud-6f00f915a8502d3af9d46351766176e32619718d006f2088cc14307c7efbbb8e',
-                'client_secret': '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',
+                'client_id': settings.PING_PONG_UID,
+                'client_secret': settings.PING_PONG_SECRET,
                 'redirect_uri': redirect_url,
                 'grant_type': 'authorization_code'
             }
@@ -48,7 +49,7 @@ class oauth42(APIView):
 
             if created:
                 pass
-
+            
             jwt_token = gen_token(user)
 
             response = HttpResponseRedirect('/dashboard')
@@ -59,4 +60,4 @@ class oauth42(APIView):
 
             return response
         else:
-            return Response({'else': 'true','response': response.json()})
+            return Response({'else': 'true', 'code': response_token.json()})
