@@ -1,0 +1,176 @@
+settings-page .center-console{
+    width: 100%;
+    display: flex;
+	justify-content: center;
+ 
+}
+settings-page .message{
+	color: rgb(135, 6, 6);
+}
+settings-page .good{
+	color: rgb(7, 184, 25);
+}
+settings-page .settings-frame {
+	width: 80%;
+	height: 80%;
+	display: flex;
+	justify-content: center;
+	background-color: #00453F;
+	border-radius: 50px;
+	padding: 3%;
+}
+settings-page .settings-side-bar {
+	height: 100%;
+	background-color: #04927B;
+	display: flex;
+	flex: 3;
+	flex-direction: column;
+	border-radius: 35px;
+	margin-right: 1.5%;
+	padding: 6% 4%;
+	
+}
+
+settings-page .settings-main {
+	height: 100%;
+	background-color: #04927B;
+	display: flex;
+	flex: 7;
+	border-radius: 35px;
+	margin-left: 1.5%;
+	font-weight: bold;
+	font-size: 0.7vw;
+	flex-direction: column;
+	padding: 5%;
+}
+
+settings-page .settings-btn {
+	width: 100%;
+	height: 10%;
+	display: flex;
+	align-items: center;
+	background-color: transparent;
+	border-radius: 35px;
+	border: 0px;
+	/* font-size: 1.5vw; */
+	font-size: 1vw;
+	color: #00453F;
+	text-decoration: none;
+	padding: 5% 8%;
+	font-weight: bold;
+	margin: 1% 0%;
+}
+
+settings-page .settings-btn:hover {
+	background-color: #00766A;
+}
+settings-page .settings-main input {
+    background-color: #00766A;
+    border: none; /* optional: removes the default border */
+    padding: 1.5%;
+    border-radius: 10px;
+	width: 100%;
+}
+settings-page .settings-main input:focus {
+    outline: none; /* removes the default browser outline */
+    box-shadow: 0 0 10px #9ecaed; /* adds a glow effect */
+}
+settings-page .general-form {
+	margin: 2%  0%;
+}
+settings-page .general-form-submit  {
+	margin: 2%  0%;
+	/* background-color: #00766A; */
+	border: none;
+	color: #00453F;
+	font-size: 0.7vw;
+	/* border-radius: 10px; */
+}
+
+/* -------------settings-language-css------------- */
+
+
+settings-page .language-select {
+	font-size: 0.7vw; /* Adjust the font size */
+    color: #333; /* Text color */
+    padding: 1% 3%; /* Add some padding */
+    border: 1px solid #ccc; /* Border around the select box */
+    border-radius: 10px; /* Rounded corners */
+    background-color: transparent;
+    cursor: pointer;
+	width: 100%;
+	margin: 2% 0%;
+}
+
+/* Style the select box when it's focused */
+settings-page .language-select:focus {
+	outline: none; /* Removes the default focus outline */
+    border-color: #00453F; /* Example: change border color on focus */
+}
+
+settings-page .language-submit {
+	width: 100%;
+	padding: 2%;
+	background-color: #00766A;
+	font-size: 0.7vw;
+	border: none;
+	border-radius: 10px;
+	
+	padding: 1% 3%;
+    border-radius: 10px;
+    background-color: #00766A;
+    color: #00453F;
+    cursor: pointer;
+	margin: 2% 0%;
+}
+settings-page .language-submit input:focus {
+	outline: none; /* removes the default browser outline */
+	box-shadow: 0 0 10px #9ecaed; /* adds a glow effect */
+}
+
+/* -------------avatars------------- */
+
+settings-page .avatar-image {
+	width: 100%;
+	height: auto;
+	margin: auto;
+	display: block;
+}
+
+settings-page .svg-avatar-selection {
+	padding: 2% 5%;
+    display: flex;
+	/* flex-direction: column; */
+    flex-wrap: wrap;
+    /* justify-content: start; Align items to the start of the container */
+    gap: 10px; /* Optional: adds some space between the items */
+}
+
+settings-page .avatar-option {
+	flex: 0 1 auto; /* Flex items can grow and shrink but not beyond their auto size */
+	background-color: #3DBDA7;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center; /* Center horizontally */
+	align-items: center; /* Center vertically */
+	width: 3vw; /* was 6vw */
+	height: 3vw; /* was 6vw */
+	/* width: 110px;
+	height: 110px; */
+}
+
+settings-page .avatar-option:hover {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8); /* Glowing effect on hover */
+}
+
+settings-page .avatar-option.selected {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8); /* Glowing effect stays when selected */
+}
+
+/* ------------- settings_icons ------------- */
+
+settings-page .settings-icon {
+	height: 100%;
+	width: auto;
+	margin: 0% 4%;
+}
