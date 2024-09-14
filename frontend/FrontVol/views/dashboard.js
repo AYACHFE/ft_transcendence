@@ -9,7 +9,9 @@ export default class Dashboard extends HTMLElement {
                 </head>
         <div class="container" id="dashboardid">
             <div class="side-panel">
-                 <img src="../images/Logo.svg" class="logo">
+                <a href="/dashboard" class="logo" data-link>
+					<img src="../images/Logo.svg">
+				<a>
                 <div class="nav-options" >
                     <a href="/dashboard" class="btn-option flex-center btn-simple btn-highlight nav__link"  data-link>
                         <img src="../images/Home.svg">

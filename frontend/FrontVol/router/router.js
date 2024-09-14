@@ -6,6 +6,7 @@ import Chat from "../views/chat.js";
 import Contact from "../views/contact.js";
 import Dash from "../views/dash.js";
 import Game from "../views/game.js";
+import Online_Game from "../views/online-game.js";
 import Home from "../views/home.js";
 import Login from "../views/login.js";
 import Loading from "../views/loading.js";
@@ -68,6 +69,11 @@ export const Routes = [
     {
         path: '/dashboard/game',
         component: Game,
+        auth: true
+    },
+    {
+        path: '/dashboard/online-game',
+        component: Online_Game,
         auth: true
     },
     {
