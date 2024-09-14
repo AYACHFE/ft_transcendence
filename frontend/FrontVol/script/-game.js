@@ -296,7 +296,10 @@ var paddlePos = { player1: parseInt(leftRacket.style.top), player2: parseInt(rig
 var ballPos = { x: ballX, y: ballY };
 var score = { player1: scoreP1, player2: scoreP2 };
 
-const roomName = 'test';  // This could be dynamically generated
+const roomIdElment = document.getElementsByTagName('online-game-page');
+console.log(roomIdElment);
+const roomName = roomIdElment[0].attributes[0].nodeValue;
+console.log(`Room name is : ${roomName}`);  // This could be dynamically generated
 const gameSocket = new WebSocket(
     'ws://' + "localhost:8000" + '/ws/game/' + roomName + '/'
 );

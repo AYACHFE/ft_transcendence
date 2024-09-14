@@ -32,7 +32,7 @@ export default class Dash extends HTMLElement {
 
         </div>
         <div class="game-picker">
-            <a href="/dashboard/game" class="picker-1" data-link>
+            <a href="/dashboard/online-popup" class="picker-1" data-link>
                 <img src="./images/controller.svg" alt="">
                 <p>SOLO</p>
             </a>

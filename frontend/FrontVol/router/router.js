@@ -7,6 +7,7 @@ import Contact from "../views/contact.js";
 import Dash from "../views/dash.js";
 import Game from "../views/game.js";
 import Online_Game from "../views/online-game.js";
+import Online_Popup from "../views/online-popup.js";
 import Home from "../views/home.js";
 import Login from "../views/login.js";
 import Loading from "../views/loading.js";
@@ -77,6 +78,11 @@ export const Routes = [
         auth: true
     },
     {
+        path: '/dashboard/online-popup',
+        component: Online_Popup,
+        auth: true
+    },
+    {
         path: '/dashboard/settings',
         component: Settings,
         auth: true
@@ -118,23 +124,41 @@ class Router {
     }
 
     render() {
-        if (!this.route) {
-            this.route = this.routes.find(route => route.path === "/error404");
-        }
-
-        const curr_page = new this.route.component();
-        let content_ = document.getElementById("app");
-        content_.innerHTML = '';
-
-        if (this.active_path.startsWith("/dashboard")) {
-            content_.innerHTML = '<dashboard-page></dashboard-page>';
-            content_ = document.getElementById("dashscripte");
-        }
-
-        if (content_) {
-            content_.appendChild(curr_page);
-        }
+    if (!this.route) {
+        this.route = this.routes.find(route => route.path === "/error404");
     }
+
+    const curr_page = new this.route.component();
+    let content_ = document.getElementById("app");
+    content_.innerHTML = '';
+
+    if (this.active_path.startsWith("/dashboard")) {
+        content_.innerHTML = '<dashboard-page></dashboard-page>';
+        content_ = document.getElementById("dashscripte");
+        
+        // AYMANE: Add the dashboard popup-component
+		// Handle special case for /dashboard/online-game to show the popup and blur background
+        if (this.active_path === '/dashboard/online-popup') {
+            // Add the popup component
+            const popup = document.createElement('online-popup');
+            document.body.appendChild(popup);
+            popup.openModal();
+            
+            // Add blur effect to the dashboard
+            document.querySelector('dashboard-page').classList.add('blurred-background');
+            
+            return; // Prevent further rendering since the popup is already shown
+        } else {
+            // Remove blur effect when navigating away from online-game
+            document.querySelector('dashboard-page').classList.remove('blurred-background');
+        }
+		//AYMANE: End of the dashboard popup-component
+    }
+
+    if (content_) {
+        content_.appendChild(curr_page);
+    }
+}
 
     async navigate(path) {
         this.route = this.routes.find(route => route.path === "/loading");
