@@ -32,25 +32,25 @@ export default class OnlinePopup extends HTMLElement {
 			padding-bottom: 3%;
 		  }
 		  input {
-		    padding: 10px;
-		    border: 1px solid #ccc;
-		    border-radius: 4px;
-		    font-size: 16px;
-		}
-		input:focus {
-		    outline: none; /* removes the default browser outline */
-		    box-shadow: 0 0 10px #9ecaed; /* adds a glow effect */
-		}
-		button {
-	    	padding: 10px 20px;
-	    	border: none;
-	    	border-radius: 5px;
-	    	background-color: #00453F;
-	    	color: #3DBDA7;
-	    	font-size: 1.1rem;
-	    	cursor: pointer;
+			padding: 10px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			font-size: 16px;
+		  }
+		  input:focus {
+			outline: none; /* removes the default browser outline */
+			box-shadow: 0 0 10px #9ecaed; /* adds a glow effect */
+		  }
+		  button {
+			padding: 10px 20px;
+			border: none;
+			border-radius: 5px;
+			background-color: #00453F;
+			color: #3DBDA7;
+			font-size: 1.1rem;
+			cursor: pointer;
 			background-color: white;
-		}
+		  }
   
 		  #closeBtn {
 			float: right;
@@ -62,6 +62,9 @@ export default class OnlinePopup extends HTMLElement {
 			filter: blur(5px); /* Adjust the blur strength */
 			transition: filter 0.3s ease;
 		  }
+		  input {
+			margin: 10px;
+		  }
 		</style>
   
 		<div id="modal" class="modal">
@@ -70,17 +73,24 @@ export default class OnlinePopup extends HTMLElement {
 			<h2>Create or Join a Room</h2>
 			<button id="createRoomBtn">Create Room</button>
 			<p id="roomId"></p>
+			<p id="waitingMessage" style="display: none;">Waiting for a player to join the room...</p>
 			<input type="text" id="joinRoomInput" placeholder="Enter Room ID to Join" />
 			<button id="joinRoomBtn">Join Room</button>
+			<p id="errorMessage" style="display: none;">Please enter a valid Room ID!</p>
 		  </div>
 		</div>
 	  `;
+  
+	  // Variables to store room state
+	  this.roomId = null; // To store the room ID after the first generation
   
 	  // Get elements
 	  this.modal = this.shadowRoot.querySelector('#modal');
 	  this.closeBtn = this.shadowRoot.querySelector('#closeBtn');
 	  this.createRoomBtn = this.shadowRoot.querySelector('#createRoomBtn');
 	  this.roomIdElement = this.shadowRoot.querySelector('#roomId');
+	  this.waitingMessage = this.shadowRoot.querySelector('#waitingMessage');
+	  this.errorMessage = this.shadowRoot.querySelector('#errorMessage');
 	  this.joinRoomBtn = this.shadowRoot.querySelector('#joinRoomBtn');
 	  this.joinRoomInput = this.shadowRoot.querySelector('#joinRoomInput');
   
@@ -102,31 +112,33 @@ export default class OnlinePopup extends HTMLElement {
 	  document.body.classList.remove('blurred-background'); // Remove blur
 	}
   
-	// Create a room ID and display it
+	// Create a room ID and display it (only the first time)
 	createRoom() {
-	  const roomId = this.generateRoomId();
-	  this.roomIdElement.textContent = `Room ID: ${roomId}`;
-	  this.roomIdElement.style.display = 'block';
+	  if (!this.roomId) {
+		this.roomId = this.generateRoomId();
+		this.roomIdElement.textContent = `Room ID: ${this.roomId}`;
+		this.roomIdElement.style.display = 'block';
+		this.waitingMessage.style.display = 'block'; // Show waiting message
 	}
-  
-	// Generate a random room ID
-	generateRoomId() {
-	  return Math.random().toString(36).substring(2, 8).toUpperCase();
-	}
-  
-	// Handle joining the room
-	joinRoom() {
-	  const roomId = this.joinRoomInput.value;
-	  if (roomId) {
+}
+
+// Generate a random room ID
+generateRoomId() {
+	return Math.random().toString(36).substring(2, 8).toUpperCase();
+}
+
+// Handle joining the room
+joinRoom() {
+	const roomId = this.joinRoomInput.value;
+	if (roomId) {
 		this.joinRoomById(roomId);
-	  } else {
-		alert('Please enter a valid Room ID!');
+	} else {
+		this.errorMessage.style.display = 'block';
 	  }
 	}
   
-	// Simulate joining the room (replace this with an actual API or WebSocket call in a real application)
 	joinRoomById(roomId) {
-		this.closeModal();
+	  this.closeModal();
 	  let game = document.createElement('online-game-page');
 	  game.setAttribute('roomid', roomId);
 	  let parent = document.getElementsByClassName('center-console')[0];
@@ -137,4 +149,5 @@ export default class OnlinePopup extends HTMLElement {
   }
   
   // Define the new element
-customElements.define('online-popup', OnlinePopup);
+  customElements.define('online-popup', OnlinePopup);
+  
