@@ -8,6 +8,7 @@ import Dash from "../views/dash.js";
 import Game from "../views/game.js";
 import Online_Game from "../views/online-game.js";
 import Online_Popup from "../views/online-popup.js";
+import Tournament from "../views/tournament.js";
 import Home from "../views/home.js";
 import Login from "../views/login.js";
 import Loading from "../views/loading.js";
@@ -80,6 +81,11 @@ export const Routes = [
     {
         path: '/dashboard/online-popup',
         component: Online_Popup,
+        auth: true
+    },
+    {
+        path: '/dashboard/tournament',
+        component: Tournament,
         auth: true
     },
     {

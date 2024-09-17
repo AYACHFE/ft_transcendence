@@ -7,7 +7,7 @@ down:
 re:  down all
 
 volclean: down
-	rm -rf /Users/aachfenn/Desktop/django/django/volume/*
+	rm -rf /Users/gebruiker/Desktop/django/django/volume/*
 	docker volume prune -f
 	# docker volume rm $(docker volume ls -qf dangling=true)
 
