@@ -1,6 +1,6 @@
-var startGameElements = document.querySelectorAll('.start-game h2');
-var gameover = document.querySelectorAll('.game-over h2');
-var ball_ = document.querySelectorAll('.ball');
+const startGameElements = document.querySelectorAll('.start-game h2');
+const gameover = document.querySelectorAll('.game-over h2');
+const ball_ = document.querySelectorAll('.ball');
 let role;
 // Create a function to handle the event
 function hideStartGameElements() {
@@ -24,14 +24,14 @@ hideGameOver();
 const gameBoard = document.querySelector('.board');
 const ball = document.querySelector('.ball');
 
-var leftRacket = document.querySelector('.left-racket img');
+const leftRacket = document.querySelector('.left-racket img');
 const rightRacket = document.querySelector('.right-racket img');
-var leftRacketRect;
-var rightRacketRect;
+// const leftRacketRect;
+// var rightRacketRect;
 
-var boardWidth = gameBoard.clientWidth;
-var boardHeight = gameBoard.clientHeight;
-var rect = gameBoard.getBoundingClientRect();
+let boardWidth = gameBoard.clientWidth;
+let boardHeight = gameBoard.clientHeight;
+let rect = gameBoard.getBoundingClientRect();
 //
 window.addEventListener('resize', function() {
     boardHeight = gameBoard.clientHeight;
@@ -41,10 +41,10 @@ window.addEventListener('resize', function() {
 
 
 //---------------------- racket event listener to move up and down ----------------------\\
-var moveUpRight = false;
-var moveDownRight = false;
-var moveUpLeft = false;
-var moveDownLeft = false;
+let moveUpRight = false;
+let moveDownRight = false;
+let moveUpLeft = false;
+let moveDownLeft = false;
 
 document.addEventListener('keydown', function(event) {
 	// if (role == 'host') {
@@ -85,13 +85,13 @@ document.addEventListener('keyup', function(event) {
 	}
 });
 
-var newTopRightUp;
-var newTopRightDown;
-var newTopLeftUp;
-var newTopLeftDown;
+let newTopRightUp;
+let newTopRightDown;
+let newTopLeftUp;
+let newTopLeftDown;
 setInterval(function() {
-    const leftRacket = document.querySelector('.left-racket img');
-    const rightRacket = document.querySelector('.right-racket img');
+    // const leftRacket = document.querySelector('.left-racket img');
+    // const rightRacket = document.querySelector('.right-racket img');
     const step = 10; // Change this value to make the rackets move faster or slower
 
 	if (role == 'guest') {
@@ -162,14 +162,14 @@ function stopCounter() {
 }
 
 //--------------------------ball------------------------------------\\
-var ballDiameter = ball.clientWidth;
-var leftRacketPos = leftRacket.offsetTop;
-var ballX = boardWidth / 2 - ballDiameter + rect.top; // Initial X position at the center of the board
-var ballY = boardHeight / 2 - ballDiameter/2 + rect.left; // Initial Y position
-var speedX = 5; // Horizontal speed
-var speedY = 5; // Vertical speed
+const ballDiameter = ball.clientWidth;
+// var leftRacketPos = leftRacket.offsetTop;
+let ballX = boardWidth / 2 - ballDiameter + rect.top; // Initial X position at the center of the board
+let ballY = boardHeight / 2 - ballDiameter/2 + rect.left; // Initial Y position
+let speedX = 5; // Horizontal speed
+let speedY = 5; // Vertical speed
 
-var isMoving = false;
+let isMoving = false;
 document.addEventListener('keydown', function() {
 	isMoving = true;
 });
@@ -177,11 +177,11 @@ document.addEventListener('click', function() {
 	isMoving = true;
 });
 
-var scoreP1 = 0;
-var scoreP2 = 0;
-var scoreP1_html = document.querySelector('.user-1-score > h2');
-var scoreP2_html = document.querySelector('.user-2-score > h2');
-var racket = document.getElementsByClassName('left-racket')[0];
+let scoreP1 = 0;
+let scoreP2 = 0;
+const scoreP1_html = document.querySelector('.user-1-score > h2');
+const scoreP2_html = document.querySelector('.user-2-score > h2');
+const racket = document.getElementsByClassName('left-racket')[0];
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -189,8 +189,8 @@ function sleep(ms) {
 
 const initleftRacketRect = leftRacket.getBoundingClientRect();
 const initrightRacketRect = rightRacket.getBoundingClientRect();
-var newChance;
-var newTime = false;
+let newChance;
+let newTime = false;
 
 async function moveBall() {
 	if (!isMoving) {
@@ -204,7 +204,7 @@ async function moveBall() {
 	// console.log('ballX', ballX, 'ballY', ballY);
 	scoreP1_html.innerHTML = scoreP1;
 	scoreP2_html.innerHTML = scoreP2;
-
+ 
 	
 	if (newChance) {
 		// if (role == 'guest')
@@ -238,9 +238,9 @@ async function moveBall() {
 			ballX += speedX;
 			ballY += speedY;
 			// Check for collision with the walls and reverse direction if needed
-			var ballRect = ball.getBoundingClientRect();
-			var leftRacketRect = leftRacket.getBoundingClientRect();
-			var rightRacketRect = rightRacket.getBoundingClientRect();
+			const ballRect = ball.getBoundingClientRect();
+			const leftRacketRect = leftRacket.getBoundingClientRect();
+			const rightRacketRect = rightRacket.getBoundingClientRect();
 			if (ballX + ballDiameter + 10 > rect.right - ballDiameter) {
 				if (ballRect.top + ballRect.height >= rightRacketRect.top && ballRect.top <= rightRacketRect.bottom)
 				{
@@ -292,9 +292,9 @@ moveBall();
 ////////////////////////// updates the variables for the online game //////////////////////////
 
 
-var paddlePos = { player1: parseInt(leftRacket.style.top), player2: parseInt(rightRacket.style.top) };
-var ballPos = { x: ballX, y: ballY };
-var score = { player1: scoreP1, player2: scoreP2 };
+let paddlePos = { player1: parseInt(leftRacket.style.top), player2: parseInt(rightRacket.style.top) };
+let ballPos = { x: ballX, y: ballY };
+let score = { player1: scoreP1, player2: scoreP2 };
 
 const roomName = 'test';  // This could be dynamically generated
 const gameSocket = new WebSocket(
