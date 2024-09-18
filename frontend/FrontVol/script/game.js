@@ -16,7 +16,7 @@ function hideGameOver() {
 }
 
 // Add the function as an event listener for multiple events
-document.addEventListener('click', hideStartGameElements);
+// document.addEventListener('click', hideStartGameElements);
 document.addEventListener('keypress', hideStartGameElements);
 hideGameOver();
 //---------------------------rackets-movemnt-----------------------------------\\
@@ -135,9 +135,9 @@ var isMoving = false;
 	document.addEventListener('keydown', function() {
 		isMoving = true;
 	});
-	document.addEventListener('click', function() {
-		isMoving = true;
-	});
+	// document.addEventListener('click', function() {
+	// 	isMoving = true;
+	// });
 
 var scoreP1 = 0;
 var scoreP2 = 0;

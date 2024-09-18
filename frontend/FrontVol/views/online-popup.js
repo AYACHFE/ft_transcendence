@@ -112,15 +112,19 @@ export default class OnlinePopup extends HTMLElement {
 	  document.body.classList.remove('blurred-background'); // Remove blur
 	}
   
-	// Create a room ID and display it (only the first time)
 	createRoom() {
-	  if (!this.roomId) {
-		this.roomId = this.generateRoomId();
-		this.roomIdElement.textContent = `Room ID: ${this.roomId}`;
-		this.roomIdElement.style.display = 'block';
-		this.waitingMessage.style.display = 'block'; // Show waiting message
-	}
-}
+		if (!this.roomId) {
+		  this.roomId = this.generateRoomId();
+		  this.roomIdElement.textContent = `Room ID: ${this.roomId}`;
+		  this.roomIdElement.style.display = 'block';
+		  this.waitingMessage.style.display = 'block';
+
+		  setTimeout(() => {
+			this.joinRoomById(this.roomId);
+		  }, 3000);
+		}
+	  }
+	  
 
 // Generate a random room ID
 generateRoomId() {

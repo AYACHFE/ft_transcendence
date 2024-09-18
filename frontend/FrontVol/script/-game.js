@@ -1,3 +1,7 @@
+// const roomIdElment = document.getElementsByTagName('online-game-page');
+// const roomName = roomIdElment[0].attributes[0].nodeValue;
+// document.querySelector('.time h2').innerHTML = 'RoomID :' + roomName;
+
 var startGameElements = document.querySelectorAll('.start-game h2');
 var gameover = document.querySelectorAll('.game-over h2');
 var ball_ = document.querySelectorAll('.ball');
@@ -16,7 +20,7 @@ function hideGameOver() {
 }
 
 // Add the function as an event listener for multiple events
-document.addEventListener('click', hideStartGameElements);
+// document.addEventListener('click', hideStartGameElements);
 document.addEventListener('keypress', hideStartGameElements);
 hideGameOver();
 //---------------------------rackets-movemnt-----------------------------------\\
@@ -173,9 +177,9 @@ var isMoving = false;
 document.addEventListener('keydown', function() {
 	isMoving = true;
 });
-document.addEventListener('click', function() {
-	isMoving = true;
-});
+// document.addEventListener('click', function() {
+// 	isMoving = true;
+// });
 
 var scoreP1 = 0;
 var scoreP2 = 0;
@@ -296,10 +300,8 @@ var paddlePos = { player1: parseInt(leftRacket.style.top), player2: parseInt(rig
 var ballPos = { x: ballX, y: ballY };
 var score = { player1: scoreP1, player2: scoreP2 };
 
-const roomIdElment = document.getElementsByTagName('online-game-page');
-console.log(roomIdElment);
-const roomName = roomIdElment[0].attributes[0].nodeValue;
-console.log(`Room name is : ${roomName}`);  // This could be dynamically generated
+
+console.log(`Room name is : ${roomName}`);
 const gameSocket = new WebSocket(
     'ws://' + "localhost:8000" + '/ws/game/' + roomName + '/'
 );
