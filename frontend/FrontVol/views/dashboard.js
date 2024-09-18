@@ -17,7 +17,7 @@ export default class Dashboard extends HTMLElement {
                         <img src="../images/Home.svg">
                     </a>
                 
-                    <a href="/dashboard/game" class="btn-option flex-center btn-simple  nav__link"  data-link>
+                    <a href="/dashboard/tournament" class="btn-option flex-center btn-simple  nav__link"  data-link>
                         <img  src="../images/Users.svg">
                     </a>
                     <a href="/dashboard/chat" class="btn-option flex-center btn-simple  nav__link" data-link>

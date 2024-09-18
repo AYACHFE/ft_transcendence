@@ -10,6 +10,9 @@ export default class Tournament extends HTMLElement {
 
 
         });
+		var script = document.createElement('script');
+		script.src = '../script/tournament.js';
+		document.head.appendChild(script);
     }
 }
 
