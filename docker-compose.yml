@@ -64,19 +64,19 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /Users/gebruiker/Desktop/back-end/pong/volumes/PongVol
+      device: /Users/aachfenn/Desktop/back-end/pong/volumes/PongVol
       o: bind
   DatabaseVol:
     driver: local
     driver_opts:
       type: none
-      device: /Users/gebruiker/Desktop/back-end/pong/volumes/DatabaseVol
+      device: /Users/aachfenn/Desktop/back-end/pong/volumes/DatabaseVol
       o: bind
   FrontVol:
     driver: local
     driver_opts:
       type: none
-      device: /Users/gebruiker/Desktop/back-end/frontend/FrontVol
+      device: /Users/aachfenn/Desktop/back-end/frontend/FrontVol
       o: bind
 
 

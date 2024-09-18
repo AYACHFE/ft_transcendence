@@ -1,4 +1,11 @@
 <style>
+	/* .parent {
+	    background-image: url('../images/tournament/card.svg');
+	    background-size: cover;
+	    background-repeat: no-repeat;
+	    background-position: center;
+		border-radius: 50px;
+	} */
 	.parent {
 		padding: 5%;
 		grid-template-rows: repeat(8, 1fr);
@@ -7,18 +14,20 @@
 		display: grid;
 		height: 100%;
 		width: 100%;
+
 	}
 	.div1, .div2, .div3, .div4, .div5, .div6, .div7, .div8, .div9, .div10, .div11, .div12, .div13, .div14, .div15 {
-        height: 100%;
-        width: 100%;
-        padding: 5%; /* Adjust the padding value as needed */
+        height: auto;
+        width: 9vw;
+        padding: 5%;
     }
 	.div16, .div17, .div18, .div19, .div20, .div21, .div22 {
 		display: flex;
         justify-content: center;
         align-items: center;
-
-        position: relative;
+		position: relative;
+		height: auto;
+		width: auto;
 	}
 	.div1 { grid-area: 1 / 1 / 2 / 2; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center;  }
 	.div2 { grid-area: 2 / 1 / 3 / 2; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center;  }
@@ -43,12 +52,18 @@
 	.div21 { grid-area: 6 / 4 / 8 / 5; }
 	.div22 { grid-area: 2 / 6 / 8 / 7; }
 
-	.the-turnament img {
-		width: 100%;
-		height: 100%;
+	.parent img {
+		width: 15vh;
+		height: auto;
+		object-fit: cover;
 	}
-
-
+	.parent h3 {
+		font-size: 1.5em;
+		display: flex;
+    	justify-content: center;
+    	align-items: center;
+    	text-align: center;
+	}
 
 </style>
 <div class="parent">
@@ -60,18 +75,18 @@
 	<div class="div6"  contenteditable="true" >    </div>
 	<div class="div7"  contenteditable="true" >    </div>
 	<div class="div8"  contenteditable="true" >    </div>
-	<div class="div9"  contenteditable="true" >    </div>
-	<div class="div10" contenteditable="true" >   </div>
-	<div class="div11" contenteditable="true" >   </div>
-	<div class="div12" contenteditable="true" >   </div>
-	<div class="div13" contenteditable="true" >   </div>
-	<div class="div14" contenteditable="true" >   </div>
-	<div class="div15" contenteditable="true" >   </div>
+	<div class="div9"  > <h3>XXXXXXX</h3> </div>
+	<div class="div10" > <h3>XXXXXXX</h3> </div>
+	<div class="div11" > <h3>XXXXXXX</h3> </div>
+	<div class="div12" > <h3>XXXXXXX</h3> </div>
+	<div class="div13" > <h3>XXXXXXX</h3> </div>
+	<div class="div14" > <h3>XXXXXXX</h3> </div>
+	<div class="div15" > <h3>XXXXXXX</h3> </div>
 	<div class="div16"> <img src="../images/tournament/small-bracket.svg"> </div>
 	<div class="div17"> <img src="../images/tournament/small-bracket.svg"> </div>
 	<div class="div18"> <img src="../images/tournament/small-bracket.svg"> </div>
 	<div class="div19"> <img src="../images/tournament/small-bracket.svg"> </div>
-	<div class="div20"> </div>
-	<div class="div21"> </div>
-	<div class="div22"> </div>
+	<div class="div20"> <img src="../images/tournament/medium-bracket.svg"> </div>
+	<div class="div21"> <img src="../images/tournament/medium-bracket.svg"> </div>
+	<div class="div22"> <img src="../images/tournament/large-bracket.svg"> </div>
 </div>
