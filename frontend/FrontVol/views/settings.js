@@ -26,18 +26,18 @@ export default class Settings extends HTMLElement {
         </div>
     </div>
         `;
-
+    console.log("hi settinga");
     var mydata;
 
     fetch("http://localhost:8000/main/data/", {
       method: "get",
       credentials: "include",
-    })
-      .then((response) => response.json())
+    }).then((response) => response.json())
       .then((data) => {
         mydata = data;
+        console.log("Fetched data:", mydata);
         var defaultpage = document.getElementById("submitdefault");
-        if (defaultpage) {
+        if (defaultpage && mydata) {
           ensertdata(mydata);
           tcheckifdatachange(mydata);
         }
@@ -51,7 +51,7 @@ export default class Settings extends HTMLElement {
     var lastnameInput = document.getElementById("lastname");
     var usernameInput = document.getElementById("username");
     function ensertdata(mydata) {
-      console.log(mydata);
+      console.log("mydata " + mydata.first_name);
       if (mydata && mydata.first_name) {
         firstnameInput.placeholder = mydata.first_name;
       } else {

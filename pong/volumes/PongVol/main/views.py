@@ -34,20 +34,25 @@ def GameView(request):
 
 def DataView(request):
     user_name = None
+    username = None
+    first_name = None
+    last_name = None
     uid = None
     email = None
     if request.user.is_authenticated:
         uid = request.user.id
         email = request.user.email
         user_name = request.user.name
-        online_users = User.objects.filter(last_seen__gte=timezone.now() - timezone.timedelta(minutes=5))
-        online_users_serializer = UserSerializer(online_users, many=True)
-
+        first_name = request.user.first_name
+        last_name = request.user.last_name
+        username = request.user.username
     data = JsonResponse({
         'message':'message from DataView',
         'user_name': user_name,
         'id': uid,
         'email': email,
-        'online_users':online_users_serializer.data
+        'first_name': first_name,
+        'last_name': last_name,
+        'username': username,
     })
     return data
