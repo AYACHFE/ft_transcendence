@@ -21,54 +21,70 @@ export default class Settings extends HTMLElement {
                 </a>
             </div>
             <div class="settings-main">
-                <settings-default></settings-default>
+                
             </div>
         </div>
     </div>
         `;
-    console.log("hi settinga");
+
+    var links = document.querySelectorAll(".settings-btn");
+
+    
+
+    function handleClick(e) {
+      e.preventDefault();
+
+      var mainContent = document.querySelector(".settings-main");
+
+      while (mainContent.firstChild) {
+        mainContent.removeChild(mainContent.firstChild);
+      }
+
+      var newElementName = "settings-" + this.classList[1];
+
+      var newElement = document.createElement(newElementName);
+      mainContent.appendChild(newElement);
+    }
+
+    links.forEach(function (link) {
+      link.addEventListener("click", handleClick);
+    });
+    const defaultLink = document.querySelector(".settings-btn.default")
+    defaultLink.click();
+  }
+}
+
+class Settings_security extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.innerHTML = `
+            <form id="registration-form" class="Settings_security">
+                <label class="general-form" for="password">Current Password:</label><br>
+                <input class="general-form" type="password" id="Current_password" name="password"><br>
+                <label class="general-form" for="password">New Password:</label><br>
+                <input class="general-form" type="password" id="New_password" name="password"><br>
+                <label class="general-form" for="confirm-password">Confirm Password:</label><br>
+                <input class="general-form" type="password" id="confirm_password" name="confirm-password"><br>
+                <input class="general-form-submit" id="changepasssubmit" type="submit" value="Save Changes">
+            </form>
+         
+        `;
     var mydata;
 
     fetch("http://localhost:8000/main/data/", {
       method: "get",
       credentials: "include",
-    }).then((response) => response.json())
+    })
+      .then((response) => response.json())
       .then((data) => {
         mydata = data;
-        console.log("Fetched data:", mydata);
-        var defaultpage = document.getElementById("submitdefault");
-        if (defaultpage && mydata) {
-          ensertdata(mydata);
-          tcheckifdatachange(mydata);
-        }
         var securitypage = document.getElementById("changepasssubmit");
         if (securitypage) {
           tcheckpass(mydata);
         }
       });
-
-    var firstnameInput = document.getElementById("firstname");
-    var lastnameInput = document.getElementById("lastname");
-    var usernameInput = document.getElementById("username");
-    function ensertdata(mydata) {
-      console.log("mydata " + mydata.first_name);
-      if (mydata && mydata.first_name) {
-        firstnameInput.placeholder = mydata.first_name;
-      } else {
-        firstnameInput.placeholder = "Enter your firstname";
-      }
-      if (mydata && mydata.last_name) {
-        lastnameInput.placeholder = mydata.last_name;
-      } else {
-        lastnameInput.placeholder = "Enter your lastname";
-      }
-      if (mydata && mydata.username) {
-        usernameInput.placeholder = mydata.username;
-      } else {
-        usernameInput.placeholder = "Enter your username";
-      }
-    }
-
     function tcheckpass(mydata) {
       var form_pass = document.getElementById("changepasssubmit");
 
@@ -81,7 +97,7 @@ export default class Settings extends HTMLElement {
           var confirm_password =
             document.getElementById("confirm_password").value;
 
-          myform = document.querySelector(".Settings_security");
+          var myform = document.querySelector(".Settings_security");
 
           if (
             tcheckpasswordmatchi(
@@ -165,139 +181,9 @@ export default class Settings extends HTMLElement {
       }
       return 1;
     }
-
-    function tcheckifdatachange(mydata) {
-      var form = document.getElementById("submitdefault");
-      if (form) {
-        // var firstnameInput = document.getElementById('firstname');
-        // var lastnameInput = document.getElementById('lastname');
-        // var usernameInput = document.getElementById('username');
-        form.addEventListener("click", function (event) {
-          event.preventDefault();
-          var firstnameValue = document.getElementById("firstname").value;
-          var lastnameValue = document.getElementById("lastname").value;
-          var usernameValue = document.getElementById("username").value;
-
-          if (
-            (firstnameValue !== "" &&
-              firstnameValue !== firstnameInput.placeholder) ||
-            (lastnameValue !== "" &&
-              lastnameValue !== lastnameInput.placeholder) ||
-            (usernameValue !== "" &&
-              usernameValue !== usernameInput.placeholder)
-          ) {
-            somethingchanged(mydata);
-          }
-        });
-      }
-    }
-    function somethingchanged(mydata) {
-      var firstnameValue = document.getElementById("firstname").value;
-      var lastnameValue = document.getElementById("lastname").value;
-      var usernameValue = document.getElementById("username").value;
-      var data = {
-        myId: mydata.id,
-        first_name: firstnameValue,
-        last_name: lastnameValue,
-        user_name: usernameValue,
-      };
-      // console.log(data);
-      var jsonString = JSON.stringify(data);
-
-      fetch(`http://localhost:8000/settings/?myId=${mydata.id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: jsonString,
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Success:", data);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-    }
-
-    //main page
-
-    var links = document.querySelectorAll(".settings-btn");
-
-    function handleClick(e) {
-      e.preventDefault();
-
-      var mainContent = document.querySelector(".settings-main");
-
-      while (mainContent.firstChild) {
-        mainContent.removeChild(mainContent.firstChild);
-      }
-
-      var newElementName = "settings-" + this.classList[1];
-
-      var newElement = document.createElement(newElementName);
-      mainContent.appendChild(newElement);
-    }
-
-    links.forEach(function (link) {
-      link.addEventListener("click", handleClick);
-    });
-
-    //defoult page
-
-    var images = [
-      "1_men.svg",
-      "2_men.svg",
-      "3_men.svg",
-      "4_men.svg",
-      "5_men.svg",
-      "6_men.svg",
-      "happy-1.svg",
-      "happy-2.svg",
-      "happy-3.svg",
-      "happy-4.svg",
-      "happy-5.svg",
-      "happy-6.svg",
-    ];
-
-    // Function to generate HTML for an image
-    function generateHTML(image, index) {
-      var id = "avatar" + (index + 1);
-      var alt = "Avatar " + (index + 1);
-      return `
-        <div class="avatar-option">
-            <input type="radio" id="${id}" name="avatar" value="${image}" hidden>
-            <label for="${id}"><img src="../images/users/${image}" alt="${alt}" class="avatar-image"></label>
-        </div>
-    `;
-    }
-
-    // Generate HTML for all images
-    var avatar_images = images.map(generateHTML).join("\n");
-
-    var avatarchose = document.querySelector(".svg-avatar-selection");
-    if (avatarchose) avatarchose.innerHTML = avatar_images;
   }
-}
 
-class Settings_security extends HTMLElement {
-  constructor() {
-    super();
-  }
-  connectedCallback() {
-    this.innerHTML = `
-            <form id="registration-form" class="Settings_security">
-                <label class="general-form" for="password">Current Password:</label><br>
-                <input class="general-form" type="password" id="Current_password" name="password"><br>
-                <label class="general-form" for="password">New Password:</label><br>
-                <input class="general-form" type="password" id="New_password" name="password"><br>
-                <label class="general-form" for="confirm-password">Confirm Password:</label><br>
-                <input class="general-form" type="password" id="confirm_password" name="confirm-password"><br>
-                <input class="general-form-submit" id="changepasssubmit" type="submit" value="Save Changes">
-            </form>
-         
-        `;
-  }
+  disconnectedCallback() {}
 }
 
 class Settings_language extends HTMLElement {
@@ -315,6 +201,8 @@ class Settings_language extends HTMLElement {
                 <button class="language-submit" type="submit">Change Language</button>
             </form>
         `;
+
+        
   }
 }
 
@@ -334,12 +222,7 @@ class Settings_default extends HTMLElement {
                 
                 <label class="general-form" for="avatar">Select an Avatar:</label><br>
                 <div class="svg-avatar-selection">
-                    
-                   
-                    
-                    
-                   
-               
+
                 </div>
                 
                 
@@ -358,7 +241,139 @@ class Settings_default extends HTMLElement {
                     
             </script>
         `;
-  }
+    var mydata;
+
+    fetch("http://localhost:8000/main/data/", {
+      method: "get",
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        mydata = data;
+        var defaultpage = document.getElementById("submitdefault");
+        if (defaultpage && mydata) {
+          ensertdata(mydata);
+          tcheckifdatachange(mydata);
+        }
+      });
+    var firstnameInput = document.getElementById("firstname");
+    var lastnameInput = document.getElementById("lastname");
+    var usernameInput = document.getElementById("username");
+
+    function ensertdata(mydata) {
+      if (mydata && mydata.first_name) {
+        firstnameInput.placeholder = mydata.first_name;
+      } else {
+        firstnameInput.placeholder = "Enter your firstname";
+      }
+      if (mydata && mydata.last_name) {
+        lastnameInput.placeholder = mydata.last_name;
+      } else {
+        lastnameInput.placeholder = "Enter your lastname";
+      }
+      if (mydata && mydata.username) {
+        usernameInput.placeholder = mydata.username;
+      } else {
+        usernameInput.placeholder = "Enter your username";
+      }
+    }
+
+    function tcheckifdatachange(mydata) {
+      var form = document.getElementById("submitdefault");
+      if (form) {
+        form.addEventListener("click", function (event) {
+          event.preventDefault();
+          var firstnameValue = document.getElementById("firstname").value;
+          var lastnameValue = document.getElementById("lastname").value;
+          var usernameValue = document.getElementById("username").value;
+
+          if (
+            (firstnameValue !== "" &&
+              firstnameValue !== firstnameInput.placeholder) ||
+            (lastnameValue !== "" &&
+              lastnameValue !== lastnameInput.placeholder) ||
+            (usernameValue !== "" &&
+              usernameValue !== usernameInput.placeholder)
+          ) {
+            somethingchanged(mydata);
+          }
+        });
+      }
+    }
+
+    function somethingchanged(mydata) {
+      var firstnameValue = document.getElementById("firstname").value;
+      var lastnameValue = document.getElementById("lastname").value;
+      var usernameValue = document.getElementById("username").value;
+      var avatar = document.querySelector('.avatar-option.active input[type="radio"]').value; // Get the URL from the selected radio button
+      var data = {
+        myId: mydata.id,
+        first_name: firstnameValue,
+        last_name: lastnameValue,
+        user_name: usernameValue,
+        avatar: avatar,
+      };
+
+      var jsonString = JSON.stringify(data);
+
+      fetch(`http://localhost:8000/settings/?myId=${mydata.id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonString,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Success:", data);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
+
+    var images = [
+      "1_men.svg",
+      "2_men.svg",
+      "3_men.svg",
+      "4_men.svg",
+      "5_men.svg",
+      "6_men.svg",
+      "happy-1.svg",
+      "happy-2.svg",
+      "happy-3.svg",
+      "happy-4.svg",
+      "happy-5.svg",
+      "happy-6.svg",
+    ];
+
+    function generateHTML(image, index) {
+      var id = "avatar" + (index + 1);
+      var alt = "Avatar " + (index + 1);
+      return `
+        <div class="avatar-option">
+          <input type="radio" id="${id}" name="avatar" value="${image}" hidden>
+          <label for="${id}"><img src="../images/users/${image}" alt="${alt}" class="avatar-image"></label>
+        </div>
+      `;
+    }
+    
+    var avatar_images = images.map(generateHTML).join("\n");
+    
+    var avatarchose = document.querySelector(".svg-avatar-selection");
+    if (avatarchose) avatarchose.innerHTML = avatar_images;
+    
+    var avatars = document.querySelectorAll(".avatar-option");
+    avatars.forEach(function(avatar) {
+      avatar.addEventListener('click', function() {
+        avatars.forEach(function(otherAvatar) {
+          otherAvatar.classList.remove('active');
+        });
+    
+        this.classList.add('active');
+      });
+    });
+}
 }
 
 customElements.define("settings-page", Settings);

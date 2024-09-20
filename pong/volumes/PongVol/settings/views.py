@@ -54,7 +54,18 @@ class SettingsViewSet(viewsets.ViewSet):
                 new_username = request.data.get('user_name', None)
                 new_firstname = request.data.get('first_name', None)
                 new_lastname = request.data.get('last_name', None)
-                # new_avatar = request.data.get('avatar', None)
+                new_avatar = request.data.get('avatar', None)
+
+
+                if new_avatar and new_avatar.startswith('data:'):
+                    image_data = new_avatar.split(',')[1]
+                    decoded_image = decode_base64(image_data)
+
+                    with open(f'user_{user.id}_avatar.jpg', 'wb') as f:
+                        f.write(decoded_image)
+                else:
+                    user.avatar = new_avatar
+
 
                 if new_username and user.username != new_username:
                     user.username = new_username
@@ -62,8 +73,7 @@ class SettingsViewSet(viewsets.ViewSet):
                     user.first_name = new_firstname
                 if new_lastname and user.last_name != new_lastname:
                     user.last_name = new_lastname
-                # if new_avatar and user.avatar != new_avatar:
-                #     user.avatar = new_avatar
+                
 
                 user.save()
 

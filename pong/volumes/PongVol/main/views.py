@@ -35,6 +35,7 @@ def GameView(request):
 def DataView(request):
     user_name = None
     username = None
+    # avatar = None
     first_name = None
     last_name = None
     uid = None
@@ -46,6 +47,7 @@ def DataView(request):
         first_name = request.user.first_name
         last_name = request.user.last_name
         username = request.user.username
+        # avatar = request.user.avatar
     data = JsonResponse({
         'message':'message from DataView',
         'user_name': user_name,
@@ -54,5 +56,6 @@ def DataView(request):
         'first_name': first_name,
         'last_name': last_name,
         'username': username,
+        # 'avatar': avatar,
     })
     return data

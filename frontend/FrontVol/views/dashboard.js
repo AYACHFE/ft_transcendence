@@ -89,7 +89,7 @@ export default class Dashboard extends HTMLElement {
             <div class="right-side-panel">
                  <div class="upper-section">
                     <div class="profile-photo">
-                        <img src="../images/image_42.png">
+                        <img src="../images/users/1_men.svg">
                     </div>
                     <img class="upper-section-icone" src="../images/Vector.svg">
                     <div class="users-display overflow-style flex-col">
@@ -187,6 +187,8 @@ export default class Dashboard extends HTMLElement {
             }).then(response => response.json())
             .then(data => {
                 document.getElementById("user_name").innerHTML = data.user_name;
+                document.querySelector("profile-photo").src = data.avatar;
+                
                 this.userData = data;
             })
         var buttons = document.querySelectorAll(".btn-option");
