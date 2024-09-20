@@ -160,12 +160,16 @@ settings-page .avatar-option {
 }
 
 settings-page .avatar-option:hover {
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8); /* Glowing effect on hover */
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
 }
 
-settings-page .avatar-option.selected {
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8); /* Glowing effect stays when selected */
+settings-page .avatar-option.active {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
 }
+/* 
+settings-page .avatar-option.selected {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8); 
+} */
 
 /* ------------- settings_icons ------------- */
 

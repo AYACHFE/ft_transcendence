@@ -3,7 +3,7 @@
   font-family: 'Poppins', sans-serif;
 }
 
-body {
+login-page {
 	background: #f6f5f7;
 	display: flex;
 	justify-content: center;
@@ -13,11 +13,21 @@ body {
 	margin: -20px 0 50px;
 }
 
-/* login-page{
-  
-} */
 
-.left-side {
+login-page .container {
+
+	border-radius: 20px;
+	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+	width: 1500px; 
+	height: 1000px; 
+	position: relative; 
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+login-page .left-side {
   height: 100%;
   width: 100%;
   background: linear-gradient(150deg , #003E38 10%, #003E38 14%,#014E46 28%,  #00766A 41%, #004E46 55%, #035149 62%, #035149 75% , #003E38 80%, #002924 99%);
@@ -29,7 +39,7 @@ body {
 }
 
 
-.btn-group {
+login-page .btn-group {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -38,7 +48,7 @@ body {
   margin-bottom: 32px;
 }
 
-.btn-group .btn {
+login-page .btn-group .btn {
   display: flex;
   align-items: center;
   column-gap: 4px;
@@ -53,7 +63,7 @@ body {
   
 }
 
-.left-side form {
+login-page .left-side form {
   width: 60%;
   display: flex;
   justify-content: center;
@@ -62,7 +72,7 @@ body {
 
 }
 
-input {
+login-page input {
   width: 92%;
   padding: 12px 18px;
   border: 2px solid #ccc;
@@ -76,12 +86,12 @@ input {
   position: relative;
 }
 
-input::placeholder {
+login-page input::placeholder {
   color: rgba(178,178,178, 0.5);
 }
 
 
-.login-btn {
+login-page .login-btn {
   width: 100%;
   padding: 8px 34px;
   margin: 4px 0 18px;
@@ -92,11 +102,11 @@ input::placeholder {
   border-radius: 20px;
   transition: all 0.4s ease;
 }
-.login-btn:hover {
+login-page .login-btn:hover {
   background-color: rgba(178,178,178, 0.5);
   color: #00453F;
 }
-.centerfor {
+login-page .centerfor {
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -104,7 +114,7 @@ input::placeholder {
   position: relative;
 
 }
-.centerfor .remember{
+login-page .centerfor .remember{
   display: flex;
 
   
@@ -114,7 +124,7 @@ input::placeholder {
   align-items: center;
 }
 
-.centerfor .remember #checkbox{
+login-page .centerfor .remember #checkbox{
   top: 8px;
   left: 5px;
   width: 24px;
@@ -122,7 +132,7 @@ input::placeholder {
   background-color: rgba(178,178,178, 0.5);
   border-radius: 4px;
 }
-.centerfor .remember #checkbox::before{
+login-page .centerfor .remember #checkbox::before{
   content: '';
   position: absolute;
   top: 3px;
@@ -134,24 +144,24 @@ input::placeholder {
 
 }
 
-.create_account{
+login-page .create_account{
   position: absolute;
   top: 60%;
   right: 53%;
 }
-.create_account h3{
+login-page .create_account h3{
   color: #B2B2B2;
   right: 0;
 }
 
-.centerfor .remember label{
+login-page .centerfor .remember label{
   position: absolute;
   left: 30px;
   justify-content: center;
   align-items: center;
 }
 
-.centerfor a{
+login-page .centerfor a{
   right: 0;
   position: absolute;
   font-size: 1rem;
@@ -161,13 +171,13 @@ input::placeholder {
   
 }
 
-.orline{
+login-page .orline{
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.or {
+login-page .or {
   color: rgba(178,178,178, 0.5);
   position: relative;
   text-align: center;
@@ -176,14 +186,14 @@ input::placeholder {
   font-weight: 600;
 }
 
-.orline .line{
+login-page .orline .line{
   width: 245px;
   height: 3px;
   background-color: #D9D9D9;
   border-radius: 5px;
 }
 
-.loginwith{
+login-page .loginwith{
   width: 100%;
   display: flex;
   margin-top: 50px;
@@ -193,7 +203,7 @@ input::placeholder {
 }
 
 
-.loginwith h3{
+login-page .loginwith h3{
   color: #B2B2B2;
   
 }
@@ -206,7 +216,7 @@ input::placeholder {
 
 
 
-button {
+login-page button {
 	border-radius: 20px;
   border: none;
   color: 3B2B2B2;
@@ -218,53 +228,44 @@ button {
 	transition: transform 80ms ease-in;
 }
 
-button:active {
+login-page button:active {
 	transform: scale(0.95);
 }
 
-button:focus {
+login-page button:focus {
 	outline: none;
 }
 
-button.ghost {
+login-page button.ghost {
 	background-color: transparent;
 }
 
-.container {
-	background-color: #fff;
-	border-radius: 20px;
-  	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 
-			0 10px 10px rgba(0,0,0,0.22);
-	/* position: relative; hadi tatkhlih mayban ?? */
-	overflow: hidden;
-	width: 70%;
-	height: 80%;
-}
 
-.form-container {
+
+login-page .form-container {
 	position: absolute;
 	top: 0;
 	height: 100%;
 	transition: all 0.6s ease-in-out;
 }
-.sign-in-container {
+login-page .sign-in-container {
   left: 0;
 	width: 50%;
 	z-index: 2;
 }
 
-.container.right-panel-active .sign-in-container {
+login-page .container.right-panel-active .sign-in-container {
   transform: translateX(100%);
 }
 
-.sign-up-container {
+login-page .sign-up-container {
   left: 0;
 	width: 50%;
 	opacity: 0;
 	z-index: 1;
 }
 
-.container.right-panel-active .sign-up-container {
+login-page .container.right-panel-active .sign-up-container {
   transform: translateX(100%);
 	opacity: 1;
 	z-index: 5;
@@ -273,7 +274,7 @@ button.ghost {
 
 
 
-.overlay-container {
+login-page .overlay-container {
   background-image: url(../images/boyinlogin.png);
   background-size:cover;
   background-position: center;
@@ -287,11 +288,11 @@ button.ghost {
 	z-index: 100;
 }
 
-.container.right-panel-active .overlay-container{
+login-page .container.right-panel-active .overlay-container{
   transform: translateX(-100%);
 }
 
-.overlay {
+login-page .overlay {
   
   position: relative;
 	left: -100%;
@@ -301,23 +302,23 @@ button.ghost {
 	transition: transform 0.6s ease-in-out;
 }
 
-.container.right-panel-active .overlay {
+login-page .container.right-panel-active .overlay {
   transform: translateX(50%);
 }
 
 
-.overlay-panel {
+login-page .overlay-panel {
   position: absolute;
   bottom: 100px;
   right: 0;
 	transition: transform 0.6s ease-in-out;
 }
 
-.overlay-left{
+login-page .overlay-left{
   align-items: start;
   left: 0;
 }
 
-.container.right-panel-active .overlay-left {
+login-page .container.right-panel-active .overlay-left {
   transform: translateX(10);
 } 

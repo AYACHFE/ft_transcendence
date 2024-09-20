@@ -102,7 +102,7 @@ export default class OnlinePopup extends HTMLElement {
   
 	// Show the modal and add blur effect to background
 	openModal() {
-	  this.modal.style.display = 'block';
+	//   this.modal.style.display = 'block';
 	  document.body.classList.add('blurred-background'); // Apply blur to body
 	}
   
@@ -116,8 +116,8 @@ export default class OnlinePopup extends HTMLElement {
 		if (!this.roomId) {
 		  this.roomId = this.generateRoomId();
 		  this.roomIdElement.textContent = `Room ID: ${this.roomId}`;
-		  this.roomIdElement.style.display = 'block';
-		  this.waitingMessage.style.display = 'block';
+		//   this.roomIdElement.style.display = 'block';
+		//   this.waitingMessage.style.display = 'block';
 
 		  setTimeout(() => {
 			this.joinRoomById(this.roomId);

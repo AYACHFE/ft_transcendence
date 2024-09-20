@@ -69,7 +69,7 @@ export default class Dash extends HTMLElement {
                             </div>
                         </div>
                         <div class="leader-name-rank">
-                            <div>Rachida</div>
+                            <div>Rachid</div>
                             <div>1</div>
                         </div>
                     </div>

@@ -12,6 +12,8 @@ class User(AbstractUser):
     username = models.CharField(max_length=255, unique=True, default='default_name')
     last_seen = models.DateTimeField(null=True, blank=True)
     twoFA = models.BooleanField(default=False)
+
+    avatar = models.ImageField(upload_to='avatars/', default="1_men.svg")
     
     
 

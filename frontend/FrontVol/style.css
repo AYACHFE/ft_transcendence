@@ -1,0 +1,368 @@
+* {
+    padding: 0;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
+
+body {
+
+    background: linear-gradient(150deg, #003631 1%, #01443d 14%, #003E38 28%, #00766A 41%, #004E46 55%, #035149 62%, #035149 75%, #003E38 80%, #002924 99%);
+    background-position: 80% 40%;
+    background-size: 150% 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height:100%;
+}
+
+
+.container {
+
+    width: 95%;
+    height:100vh;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main {
+    flex: 13;
+    height: 95%;
+    display: flex;
+    /* justify-content: center; */
+    /* align-items: center; */
+    flex-direction: column;
+}
+
+.header-bar {
+    flex: 1;
+    width: 95%;
+    /* border: 1px solid #000000; */
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    /* position: relative; */
+}
+
+.header-name{
+    display: flex;
+    justify-content: center;
+    place-items: center;
+    width: 10%;
+    height: 50%;
+    font-size: 1.3vw;
+    color: #3DBDA7;
+}
+.header-name::before{
+    content: "Hi, ";
+    color: #FFFFFF;
+}
+
+.header-notifications {
+    width: 8%;
+    height: 70%;
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    /* background-color: white; */
+}
+
+.notifications-widget {
+    flex: 1;
+    aspect-ratio: 1/1;
+    max-width: 48%;
+    max-height: 100%;
+    border-radius: 50%;
+    background-color: #00453F;
+}
+
+.header-search {
+    width: 30%;
+    height: 70%;
+    margin-left: 15%;
+    background-color: #00453F;
+    border: 0;
+    color: white;
+    padding: 0 1% 0;
+    border-radius: 4vw;
+}
+
+.side-panel {
+    flex: 1;
+    
+    height: 100%;
+    background: #00453F;
+    border-radius: 2vw;
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.logo {
+    aspect-ratio: 1/1;
+    width: 60%;
+    margin-top: 25%;
+}
+
+.nav-options {
+    width: 55%;
+    height: 40%;
+    margin-top: 100%;
+    /* padding:10px; */
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.nav-options img {
+    width: 50%;
+}
+.btn-simple {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.btn-option.btn-highlight img {
+    width: 60%;
+}
+
+.btn-highlight {
+    aspect-ratio: 1/1;
+    background-color: #3DBDA7;
+    border-radius: 50%;
+    box-shadow: 0 0 30px #3DBDA7;
+}
+
+
+.btn-option {
+    aspect-ratio: 1/1;
+    width: 80%;
+    margin-bottom: 50px;
+    border: 0;
+}
+
+.logout {
+    aspect-ratio: 1/1;
+    width: 50%;
+    bottom: 2%;
+    background-color: rgba(0, 0, 0, 0);
+    border: 0;
+    position: absolute;
+}
+
+.logout img {
+    width: 100%;
+}
+
+.right-side-panel {
+    flex: 1;
+    height: 100%;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    /* right: 0; */
+}
+
+
+/* ************* UPPER SECTION OF RIGHT PANEL */
+
+.upper-section {
+    width: 100%;
+    height: 70%;
+    background: #00453F;
+    border-radius: 3.5vh;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.profile-photo {
+    width: 80%;
+    padding-top: 10%;
+}
+
+.profile-photo img {
+    width: 100%;
+}
+
+.upper-section-icone {
+    width: 30%;
+    margin-top: 10%;
+}
+
+.side-user {
+    aspect-ratio: 1/1;
+    position: relative;
+    width: 55%;
+    margin-top: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    scroll-snap-align: start;
+}
+
+.overflow-style::-webkit-scrollbar {
+    display: none;
+}
+.overflow-style{
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.flex-col {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.flex-row {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.users-display {
+    margin-top: 13%;
+    width: 100%;
+    height: 80%;
+    overflow: scroll;
+    border-radius: 0 0 3vw 3vw;
+    scroll-snap-type: y mandatory;
+}
+
+.side-user img {
+    width: 100%;
+    position: relative;
+}
+
+.user-status-side {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 25%;
+    height: 25%;
+    border-radius: 50%;
+    border: 0.25vh solid #00453F;
+    background-color: #A5BAA9;
+}
+
+.user-status-side.active {
+    background-color: #36f00c;
+}
+
+.user-ingame-side.active {
+    width: 94%;
+    height: 34%;
+    background-color: #3DBDA7;
+    /* margin-top: 95%; */
+    position: absolute;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.6vw;
+    bottom: -16%;
+}
+
+.user-ingame-side {
+    display: none;
+}
+
+
+
+.lower-section {
+    width: 100%;
+    height: 27%;
+    bottom: 0;
+    border-radius: 75px;
+    background: #00453F;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.lower-section-header {
+    height: 20%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lower {
+    width: 100%;
+}
+
+.lower-section-header-img {
+    margin-top: 10%;
+    width: 100%;
+}
+
+.lower-section-header-img img {
+    width: 40%;
+}
+
+.friends-list {
+    width: 55%;
+    height: 76.5%;
+    margin-top: 5%;
+    border-radius: 15px;
+    overflow: scroll;
+    scroll-snap-type: y mandatory;
+}
+
+.friend {
+    position: relative;
+    width: 100%;
+    margin-top: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    scroll-snap-align: start;
+}
+
+.friend img {
+    aspect-ratio: 1/1;
+    width: 100%;
+}
+
+
+/* ----------CENTER CONSOLE-------------- */
+
+.center-console {
+	flex: 13;
+}
+
+chat-page  {
+    width: 100%;
+    height: 100%;
+}
+
+game-page{
+    width: 100%;
+    height: 100%;
+}
+
+.dash {
+    width: 100%;
+    height: 100%;
+}
+
+
