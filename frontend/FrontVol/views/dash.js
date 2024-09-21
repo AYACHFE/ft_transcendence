@@ -1,4 +1,4 @@
-
+import OnlinePopup from './online-popup.js';
 
 export default class Dash extends HTMLElement {
     constructor() {super()}
@@ -32,7 +32,7 @@ export default class Dash extends HTMLElement {
 
         </div>
         <div class="game-picker">
-            <a href="/dashboard/online-popup" class="picker-1" data-link>
+            <a class="picker-1" data-link>
                 <img src="./images/controller.svg" alt="">
                 <p>SOLO</p>
             </a>
@@ -135,6 +135,15 @@ export default class Dash extends HTMLElement {
         </body>
         </html>
         `;
+
+		let picker = document.querySelector('.picker-1');
+
+		picker.addEventListener('click', () => {
+			console.log("clicked");
+		    let popup = new OnlinePopup();
+		    document.body.appendChild(popup);
+		    popup.openModal();
+		});
     }
 }
 

@@ -61,11 +61,6 @@ export const Routes = [
         auth: true
     },
     {
-        path: '/dashboard/online-popup',
-        component: Online_Popup,
-        auth: true
-    },
-    {
         path: '/dashboard/tournament',
         component: Tournament,
         auth: true
