@@ -32,15 +32,15 @@ export default class Dash extends HTMLElement {
 
         </div>
         <div class="game-picker">
-            <a class="picker-1" data-link>
+            <a href="/dashboard/tournament" class="picker-1" data-link>
                 <img src="./images/controller.svg" alt="">
-                <p>SOLO</p>
+                <p>Tournament</p>
             </a>
             <a href="/dashboard/game"class="picker-2" data-link>
                 <img src="./images/double-controller.svg" alt="">
                 <p>MULTIPLAYER</p>
             </a>                                
-            <a href="/dashboard/online-game"class="picker-3" data-link>
+            <a class="picker-3" data-link>
                 <img src="./images/online-controller.svg" alt="">
                 <p>Online</p>
             </a>
@@ -136,7 +136,7 @@ export default class Dash extends HTMLElement {
         </html>
         `;
 
-		let picker = document.querySelector('.picker-1');
+		let picker = document.querySelector('.picker-3');
 
 		picker.addEventListener('click', () => {
 			console.log("clicked");

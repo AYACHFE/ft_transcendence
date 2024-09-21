@@ -142,9 +142,10 @@ joinRoom() {
 	  this.closeModal();
 	  let game = document.createElement('online-game-page');
 	  game.setAttribute('roomid', roomId);
+	//   console.log(roomId);
 	  let parent = document.getElementsByClassName('center-console')[0];
 	  if (parent) {
-		    parent.innerHTML = '';
+		parent.innerHTML = '';
 		parent.appendChild(game);
 	  }
 	}
