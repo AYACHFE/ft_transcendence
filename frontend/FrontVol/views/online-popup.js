@@ -58,10 +58,7 @@ export default class OnlinePopup extends HTMLElement {
 		  }
   
 		  /* Add a class for blur effect on background */
-		  .blurred-background {
-			filter: blur(5px); /* Adjust the blur strength */
-			transition: filter 0.3s ease;
-		  }
+		  
 		  input {
 			margin: 10px;
 		  }
@@ -102,8 +99,8 @@ export default class OnlinePopup extends HTMLElement {
   
 	// Show the modal and add blur effect to background
 	openModal() {
-	//   this.modal.style.display = 'block';
-	  document.body.classList.add('blurred-background'); // Apply blur to body
+	  this.modal.style.display = 'block';
+	//   document.body.classList.add('blurred-background');
 	}
   
 	// Close the modal and remove blur effect
@@ -116,12 +113,12 @@ export default class OnlinePopup extends HTMLElement {
 		if (!this.roomId) {
 		  this.roomId = this.generateRoomId();
 		  this.roomIdElement.textContent = `Room ID: ${this.roomId}`;
-		//   this.roomIdElement.style.display = 'block';
-		//   this.waitingMessage.style.display = 'block';
+		  this.roomIdElement.style.display = 'block';
+		  this.waitingMessage.style.display = 'block';
 
-		  setTimeout(() => {
+		//   setTimeout(() => {
 			this.joinRoomById(this.roomId);
-		  }, 3000);
+		//   }, 3000);
 		}
 	  }
 	  
@@ -145,8 +142,10 @@ joinRoom() {
 	  this.closeModal();
 	  let game = document.createElement('online-game-page');
 	  game.setAttribute('roomid', roomId);
+	//   console.log(roomId);
 	  let parent = document.getElementsByClassName('center-console')[0];
 	  if (parent) {
+		parent.innerHTML = '';
 		parent.appendChild(game);
 	  }
 	}

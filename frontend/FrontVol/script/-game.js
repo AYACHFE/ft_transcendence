@@ -1,7 +1,10 @@
-// const roomIdElment = document.getElementsByTagName('online-game-page');
-// const roomName = roomIdElment[0].attributes[0].nodeValue;
+const roomIdElment = document.getElementsByTagName('online-game-page');
+const roomName = roomIdElment[0].attributes[0].nodeValue;
 // document.querySelector('.time h2').innerHTML = 'RoomID :' + roomName;
-
+console.log(`Room name is : ${roomName}`);
+const gameSocket = new WebSocket(
+    'ws://' + "localhost:8000" + '/ws/game/' + roomName + '/'
+);
 var startGameElements = document.querySelectorAll('.start-game h2');
 var gameover = document.querySelectorAll('.game-over h2');
 var ball_ = document.querySelectorAll('.ball');
@@ -301,10 +304,7 @@ var ballPos = { x: ballX, y: ballY };
 var score = { player1: scoreP1, player2: scoreP2 };
 
 
-console.log(`Room name is : ${roomName}`);
-const gameSocket = new WebSocket(
-    'ws://' + "localhost:8000" + '/ws/game/' + roomName + '/'
-);
+
 
 function updateGameUI(paddlePos, ballPos, score) {
     // Update paddles' positions
