@@ -109,7 +109,8 @@ dashboard-page .side-panel {
 
 dashboard-page .logo {
     aspect-ratio: 1/1;
-    width: 60%;
+    /* AYMANE: I changed the width to 60% to make it look better */
+	/* width: 60%; */
     margin-top: 25%;
 }
 

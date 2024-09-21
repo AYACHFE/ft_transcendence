@@ -1,6 +1,10 @@
-const startGameElements = document.querySelectorAll('.start-game h2');
-const gameover = document.querySelectorAll('.game-over h2');
-const ball_ = document.querySelectorAll('.ball');
+// const roomIdElment = document.getElementsByTagName('online-game-page');
+// const roomName = roomIdElment[0].attributes[0].nodeValue;
+// document.querySelector('.time h2').innerHTML = 'RoomID :' + roomName;
+
+var startGameElements = document.querySelectorAll('.start-game h2');
+var gameover = document.querySelectorAll('.game-over h2');
+var ball_ = document.querySelectorAll('.ball');
 let role;
 // Create a function to handle the event
 function hideStartGameElements() {
@@ -16,7 +20,7 @@ function hideGameOver() {
 }
 
 // Add the function as an event listener for multiple events
-document.addEventListener('click', hideStartGameElements);
+// document.addEventListener('click', hideStartGameElements);
 document.addEventListener('keypress', hideStartGameElements);
 hideGameOver();
 //---------------------------rackets-movemnt-----------------------------------\\
@@ -173,9 +177,9 @@ let isMoving = false;
 document.addEventListener('keydown', function() {
 	isMoving = true;
 });
-document.addEventListener('click', function() {
-	isMoving = true;
-});
+// document.addEventListener('click', function() {
+// 	isMoving = true;
+// });
 
 let scoreP1 = 0;
 let scoreP2 = 0;
@@ -292,11 +296,12 @@ moveBall();
 ////////////////////////// updates the variables for the online game //////////////////////////
 
 
-let paddlePos = { player1: parseInt(leftRacket.style.top), player2: parseInt(rightRacket.style.top) };
-let ballPos = { x: ballX, y: ballY };
-let score = { player1: scoreP1, player2: scoreP2 };
+var paddlePos = { player1: parseInt(leftRacket.style.top), player2: parseInt(rightRacket.style.top) };
+var ballPos = { x: ballX, y: ballY };
+var score = { player1: scoreP1, player2: scoreP2 };
 
-const roomName = 'test';  // This could be dynamically generated
+
+console.log(`Room name is : ${roomName}`);
 const gameSocket = new WebSocket(
     'ws://' + "localhost:8000" + '/ws/game/' + roomName + '/'
 );

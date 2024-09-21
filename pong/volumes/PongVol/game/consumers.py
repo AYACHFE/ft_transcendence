@@ -16,13 +16,19 @@ class  PingPongConsumer(AsyncWebsocketConsumer):
 
         await self.accept()
 
-        # Assign roles based on the number of connected players
         if len(self.players) == 0:
             role = 'host'
             self.players.append(self.channel_name)
         elif len(self.players) == 1:
-            role = 'guest'
-            self.players.append(self.channel_name)
+            # Check if the host is still connected
+            host_channel_name = self.players[0]
+            if self.channel_layer.group_exists(host_channel_name):
+                role = 'guest'
+                self.players.append(self.channel_name)
+            else:
+                # The host is not connected, so this player becomes the host
+                role = 'host'
+                self.players[0] = self.channel_name
         else:
             # If more than 2 players try to connect, you can close the connection
             await self.close()
