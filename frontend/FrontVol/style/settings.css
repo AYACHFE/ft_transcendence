@@ -4,11 +4,25 @@ settings-page .center-console{
 	justify-content: center;
  
 }
+
+settings-page #submit_text{
+	color: rgb(209, 3, 3);
+	font-weight: 300;
+	font-size: 16px;
+    text-align: center;
+}
+
 settings-page .message{
 	color: rgb(135, 6, 6);
+	font-weight: 300;
+	font-size: 16px;
+    text-align: center;
 }
 settings-page .good{
 	color: rgb(7, 184, 25);
+	font-weight: 300;
+	font-size: 16px;
+    text-align: center;
 }
 settings-page .settings-frame {
 	width: 80%;

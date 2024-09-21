@@ -211,8 +211,9 @@ class Settings_default extends HTMLElement {
     super();
   }
   connectedCallback() {
-    this.innerHTML = `
+    this.innerHTML = /*html*/`
             <form id="registration-form" ">
+            <div id="submit_text"> </div>
                 <label class="general-form" for="first-name">First Name:</label><br>
                 <input class="general-form" type="text" id="firstname" name="first-name"><br>
                 <label class="general-form" for="last-name">Last Name:</label><br>
@@ -228,18 +229,7 @@ class Settings_default extends HTMLElement {
                 
                 <input id="submitdefault" class="general-form-submit" type="submit" value="Save Changes">
             </form>
-            <script>
-                    const avatars = document.querySelectorAll('.avatar-option');
-                    
-                    avatars.forEach(avatar => {
-                        avatar.addEventListener('click', function() {
-                            avatars.forEach(av => av.classList.remove('selected'));
-                            
-                            this.classList.add('selected');
-                        });
-                    });
-                    
-            </script>
+            
         `;
     var mydata;
 
@@ -286,6 +276,9 @@ class Settings_default extends HTMLElement {
           var firstnameValue = document.getElementById("firstname").value;
           var lastnameValue = document.getElementById("lastname").value;
           var usernameValue = document.getElementById("username").value;
+          // var avatar = document.querySelector('.avatar-option.active input[type="radio"]').value;
+
+
 
           if (
             (firstnameValue !== "" &&
@@ -293,9 +286,23 @@ class Settings_default extends HTMLElement {
             (lastnameValue !== "" &&
               lastnameValue !== lastnameInput.placeholder) ||
             (usernameValue !== "" &&
-              usernameValue !== usernameInput.placeholder)
+              usernameValue !== usernameInput.placeholder) 
+              // || (!avatar)
           ) {
             somethingchanged(mydata);
+          }
+          else{
+            var newElement = document.createElement("p");
+            newElement.textContent = "change some data";
+            newElement.id = "tempElement"; // Assign an id to the new element
+            document.getElementById("submit_text").appendChild(newElement);
+
+            setTimeout(function() {
+                var element = document.getElementById("tempElement");
+                if (element) {
+                    element.parentNode.removeChild(element);
+                }
+            }, 2000);
           }
         });
       }
@@ -305,7 +312,7 @@ class Settings_default extends HTMLElement {
       var firstnameValue = document.getElementById("firstname").value;
       var lastnameValue = document.getElementById("lastname").value;
       var usernameValue = document.getElementById("username").value;
-      var avatar = document.querySelector('.avatar-option.active input[type="radio"]').value; // Get the URL from the selected radio button
+      var avatar = document.querySelector('.avatar-option.active input[type="radio"]').value;
       var data = {
         myId: mydata.id,
         first_name: firstnameValue,

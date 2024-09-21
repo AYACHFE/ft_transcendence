@@ -4,9 +4,9 @@ import Chat from "../views/chat.js";
 import Contact from "../views/contact.js";
 import Dash from "../views/dash.js";
 import Game from "../views/game.js";
+import Tournament from "../views/tournament.js";
 import Online_Game from "../views/online-game.js";
 import Online_Popup from "../views/online-popup.js";
-import Tournament from "../views/tournament.js";
 import Home from "../views/home.js";
 import Login from "../views/login.js";
 import Loading from "../views/loading.js";
@@ -82,7 +82,8 @@ class Router {
         this.routes = Routes;
         this.active_path = window.location.pathname;
         this.route = this.matchRoute(this.active_path);
-
+        
+        // Handle browser navigation (back/forward)
         window.addEventListener("popstate", () => {
             this.active_path = window.location.pathname;
             this.route = this.matchRoute(this.active_path);
@@ -106,51 +107,49 @@ class Router {
         if (!this.route) {
             this.route = this.routes.find(route => route.path === "/error404");
         }
-    
+
+        const curr_page = new this.route.component();
         let content_ = document.getElementById("app");
-    
+        content_.innerHTML = '';
 
-        if (content_.firstChild) {
-            content_.firstChild.remove();
-        }
-    
-
-        const curr_page = new  this.route.component();
         if (this.active_path.startsWith("/dashboard")) {
             content_.innerHTML = '<dashboard-page></dashboard-page>';
             content_ = document.getElementById("dashscripte");
         }
-        content_.appendChild(curr_page);
 
+        if (content_) {
+            content_.appendChild(curr_page);
+        }
     }
-    
-
 
     async navigate(path) {
-       
+        this.route = this.routes.find(route => route.path === "/loading");
+        this.render();
 
         const route = await this.loadDataForRoute(path);
 
+        
         window.history.pushState({}, "", this.active_path);
         this.route = route;
         this.render();
     }
-
     async loadDataForRoute(path) {
+
         if (path.endsWith('/') && path != '/') {
             path = path.slice(0, -1);
         }
 
         const route = this.matchRoute(path);
-
+        
         if (route && route.path === '/login' && route.path === '/' && await this.isAuthenticated())
             path = '/dashboard';
-
         if (route && route.auth && !(await this.isAuthenticated())) {
             path = '/login';
         }
 
+    
         this.active_path = path;
+    
         return this.matchRoute(this.active_path);
     }
 
@@ -171,6 +170,7 @@ class Router {
 
 export const router = new Router();
 
+
 document.addEventListener("DOMContentLoaded", () => {
     document.body.addEventListener("click", e => {
         const aTag = e.target.closest('a[data-link]');
@@ -178,9 +178,9 @@ document.addEventListener("DOMContentLoaded", () => {
             e.preventDefault();
             router.navigate(aTag.getAttribute('href'));
         }
-        if (e.target.classList.contains('btn-simple')) {
-            const btnSimple = e.target;
-
+        const btnSimple = e.target.closest('.btn-simple');
+        if (btnSimple) {
+            console.log("holla");
             document.querySelectorAll('.btn-highlight').forEach(el => {
                 el.classList.remove('btn-highlight');
             });
@@ -190,4 +190,3 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     router.navigate(window.location.pathname);
 });
-

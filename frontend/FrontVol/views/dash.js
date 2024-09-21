@@ -40,7 +40,7 @@ export default class Dash extends HTMLElement {
                 <img src="./images/double-controller.svg" alt="">
                 <p>MULTIPLAYER</p>
             </a>                                
-            <a class="picker-3" data-link>
+            <a class="picker-3" >
                 <img src="./images/online-controller.svg" alt="">
                 <p>Online</p>
             </a>
