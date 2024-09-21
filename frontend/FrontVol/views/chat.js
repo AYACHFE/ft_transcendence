@@ -2,9 +2,11 @@ export default class Chat extends HTMLElement {
   constructor() {
     super();
     this.userdata = null;
-    this.mydata;
+    this.mydata = null;
     this.socket;
-    this.innerHTML = "laoding ....";
+    this.users = [];
+    this.originalUsers = [];
+    // this.innerHTML = "laoding ....";
   }
   async fetchData() {
     try {
@@ -17,6 +19,8 @@ export default class Chat extends HTMLElement {
       console.error("Error:", error);
     }
   }
+
+ 
 
   socketopenfun() {
     if (this.socket) {
@@ -34,18 +38,18 @@ export default class Chat extends HTMLElement {
     this.socket.onopen = function (e) {
       console.log("socket open");
     };
-    this.socket.onmessage = function (event) {
+  
+    this.socket.onmessage = (event) => {
       var data = JSON.parse(event.data);
       var messagesContent = document.querySelector(".messages-content");
       var newMessage = document.createElement("div");
       newMessage.textContent = data.content;
-
       if (data.sender == this.mydata.id) {
         newMessage.classList.add("message", "my-messages", "new");
       } else {
         newMessage.classList.add("message", "your-messages", "new");
       }
-
+    
       messagesContent.appendChild(newMessage);
       this.insertTime(data.time);
       messagesContent.scrollTop = messagesContent.scrollHeight;
@@ -98,6 +102,24 @@ export default class Chat extends HTMLElement {
     messagesContent.scrollTop = messagesContent.scrollHeight;
   }
 
+  insertMessage() {
+    var container = document.querySelector(".message-input");
+    
+
+    if (!container.value.trim()) return;
+
+    let datasend = {
+      sender: this.mydata.id,
+      receiver: this.userdata,
+      content: container.value,
+      time: new Date().toISOString(),
+    };
+
+    if (this.socket.readyState === WebSocket.OPEN) {
+      this.socket.send(JSON.stringify(datasend));
+    }
+  }
+
   async connectedCallback() {
     await this.fetchData();
     this.innerHTML = `
@@ -128,28 +150,31 @@ export default class Chat extends HTMLElement {
 
     let usersDisplay = document.querySelector(".users-display");
 
-    let users = [];
-    let originalUsers = [];
+    
 
     let searchInput = document.querySelector(".search");
 
-    searchInput.addEventListener("input", function () {
+    searchInput.addEventListener("input", () => {
       while (usersDisplay.firstChild) {
         usersDisplay.removeChild(usersDisplay.firstChild);
       }
-
+    
       if (searchInput.value) {
-        users = originalUsers.filter(function (user) {
-          return user.name.startsWith(searchInput.value);
-        });
+        this.users = this.originalUsers.filter(user => user.name.startsWith(searchInput.value));
       } else {
-        users = [...originalUsers];
+        this.users = [...this.originalUsers];
       }
+    
+      this.users.forEach((user) => {
+        let userComponent = createUserComponent(user, this.mydata.id, user.id);
 
-      users.forEach(function (user) {
-        var userComponent = createUserComponent(user);
+        userComponent.addEventListener("click", async () => {
+          this.userdata = user.id;
+          this.socketopenfun();
+          await this.getChatData();
+        });
 
-        usersDisplay.appendChild(userComponent);
+        if (usersDisplay) usersDisplay.appendChild(userComponent);
       });
     });
 
@@ -162,21 +187,17 @@ export default class Chat extends HTMLElement {
         const data = await res.json();
 
         data.forEach(
-          (user) => user.id != this.mydata.id && originalUsers.push(user)
+          (user) => user.id != this.mydata.id && this.originalUsers.push(user)
         );
-        users = [...originalUsers];
-        if (users[0]?.id) {
-          this.userdata = users[0].id;
+        this.users = [...this.originalUsers];
+        if (this.users[0]?.id) {
+          this.userdata = this.users[0].id;
           this.socketopenfun();
           await this.getChatData();
         }
 
-        users.forEach((user) => {
-          var userComponent = createUserComponent(
-            user,
-            this.mydata.id,
-            user.id
-          );
+        this.users.forEach((user) => {
+          let userComponent = createUserComponent(user, this.mydata.id, user.id);
 
           userComponent.addEventListener("click", async () => {
             this.userdata = user.id;
@@ -203,37 +224,23 @@ export default class Chat extends HTMLElement {
       }
     });
 
-    function insertMessage() {
-      var container = document.querySelector(".message-input");
+    
 
-      if (!container.value.trim()) return;
-      let datasend = {
-        sender: this.mydata.id,
-        receiver: this.userdata,
-        content: container.value,
-        time: new Date().toISOString(),
-      };
+    document
+  .querySelector(".message-submit")
+  .addEventListener("click", () => {
+    this.insertMessage();
+    document.querySelector(".message-input").value = "";
+  });
 
-      if (this.socket.readyState === WebSocket.OPEN) {
-        this.socket.send(JSON.stringify(datasend));
-      }
+  document
+  .querySelector(".message-input")
+  .addEventListener("keypress", (event) => {
+    if (event.key === "Enter") {
+      this.insertMessage();
+      event.target.value = "";
     }
-
-    document
-      .querySelector(".message-submit")
-      .addEventListener("click", function () {
-        insertMessage();
-        document.querySelector(".message-input").value = "";
-      });
-
-    document
-      .querySelector(".message-input")
-      .addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-          insertMessage();
-          event.target.value = "";
-        }
-      });
+  });
 
     function createUserComponent(user, myId, clickedId) {
       var userDiv = document.createElement("div");
