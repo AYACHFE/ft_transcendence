@@ -6,6 +6,8 @@ services:
     image: pong
     container_name: pong
     restart: always
+    depends_on:
+      - database
     volumes:
       - PongVol:/usr/src/app
     ports:
