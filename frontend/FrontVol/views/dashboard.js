@@ -90,8 +90,8 @@ export default class Dashboard extends HTMLElement {
             </div>
             <div class="right-side-panel">
                  <div class="upper-section">
-                    <div class="profile-photo">
-                        <img src="../images/users/1_men.svg">
+                    <div  class="profile-photo">
+                        <img id="proPhoto" src="">
                     </div>
                     <img class="upper-section-icone" src="../images/Vector.svg">
                     <div class="users-display overflow-style flex-col">
@@ -189,10 +189,13 @@ export default class Dashboard extends HTMLElement {
             }).then(response => response.json())
             .then(data => {
                 document.getElementById("user_name").innerHTML = data.user_name;
-                document.querySelector("profile-photo").src = data.avatar;
+                document.getElementById("proPhoto").src = '';
+                document.getElementById("proPhoto").src = '/api/profile-img/';
                 
                 this.userData = data;
             })
+            
+        
         var buttons = document.querySelectorAll(".btn-option");
         buttons.forEach(function(btn){
             btn.addEventListener('click', function(){
@@ -205,7 +208,7 @@ export default class Dashboard extends HTMLElement {
             });
         });
 
-        document.getElementById("logout_btn").addEventListener("click", this.logout_post);
+        document.getElementById("logout_btn").onclick =  (e) => this.logout_post(e);
         this.fetchCsrfToken().then(csrfToken => {
             document.querySelector('meta[name="csrf-token"]').setAttribute('content', csrfToken);
         });        

@@ -212,7 +212,7 @@ class Settings_default extends HTMLElement {
   }
   connectedCallback() {
     this.innerHTML = /*html*/`
-            <form id="registration-form" ">
+            <form id="registration-form">
             <div id="submit_text"> </div>
                 <label class="general-form" for="first-name">First Name:</label><br>
                 <input class="general-form" type="text" id="firstname" name="first-name"><br>
@@ -225,6 +225,9 @@ class Settings_default extends HTMLElement {
                 <div class="svg-avatar-selection">
 
                 </div>
+                <input class="general-form"  type="file" id="profile-img" accept="image/*">
+
+                
                 
                 
                 <input id="submitdefault" class="general-form-submit" type="submit" value="Save Changes">
@@ -277,17 +280,15 @@ class Settings_default extends HTMLElement {
           var lastnameValue = document.getElementById("lastname").value;
           var usernameValue = document.getElementById("username").value;
           // var avatar = document.querySelector('.avatar-option.active input[type="radio"]').value;
+          var profileImg = document.getElementById("profile-img");
 
 
 
           if (
-            (firstnameValue !== "" &&
-              firstnameValue !== firstnameInput.placeholder) ||
-            (lastnameValue !== "" &&
-              lastnameValue !== lastnameInput.placeholder) ||
-            (usernameValue !== "" &&
-              usernameValue !== usernameInput.placeholder) 
-              // || (!avatar)
+            (firstnameValue !== "" && firstnameValue !== firstnameInput.placeholder) ||
+            (lastnameValue !== "" && lastnameValue !== lastnameInput.placeholder) ||
+            (usernameValue !== "" && usernameValue !== usernameInput.placeholder) ||
+            (profileImg.files && profileImg.files.length > 0) 
           ) {
             somethingchanged(mydata);
           }
@@ -312,23 +313,27 @@ class Settings_default extends HTMLElement {
       var firstnameValue = document.getElementById("firstname").value;
       var lastnameValue = document.getElementById("lastname").value;
       var usernameValue = document.getElementById("username").value;
-      var avatar = document.querySelector('.avatar-option.active input[type="radio"]').value;
+      var profileImg = document.getElementById("profile-img");
+      // var avatar = document.querySelector('.avatar-option.active input[type="radio"]').value;
       var data = {
         myId: mydata.id,
         first_name: firstnameValue,
         last_name: lastnameValue,
         user_name: usernameValue,
-        avatar: avatar,
+        // avatar: avatar,
       };
+      let formData = new FormData();
+      formData.append('profile-img', profileImg.files[0]);
+      formData.append('data', JSON.stringify(data));
 
-      var jsonString = JSON.stringify(data);
-
-      fetch(`http://localhost:8000/settings/?myId=${mydata.id}`, {
+      // var jsonString = JSON.stringify(data);
+      const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
+      fetch(`/settings/`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          'X-CSRFToken': csrftoken 
         },
-        body: jsonString,
+        body: formData,
       })
         .then((response) => response.json())
         .then((data) => {
