@@ -2,6 +2,14 @@ export default class Login extends HTMLElement {
   constructor() {
 	super();
   }
+
+  	async fetchCsrfToken() {
+	const response = await fetch('/api/csrf-token/', {
+		credentials: 'include'
+	});
+	const data = await response.json();
+	return data.csrfToken;
+	}
   connectedCallback() {
 	this.innerHTML = /*html*/`
 		
@@ -19,7 +27,7 @@ export default class Login extends HTMLElement {
 						<input type="checkbox" id="checkbox" name="remember">
 						<label for="checkbox">Remember Me</label><br>
 					</div>
-					<a href="">Forgot Password ?</a><br>
+					<a id="forgetpassword">Forgot Password ?</a><br>
 				</div>
 				
 				<button type="submit" class="nav__link" class="login-btn">  Login</button>
@@ -88,10 +96,11 @@ export default class Login extends HTMLElement {
 	
 		`;
 
+
 	const signUpButton = document.getElementById("signUp");
 	const signInButton = document.getElementById("signIn");
 	const container = document.getElementById("container");
-
+	this.fetchCsrfToken();
 	signUpButton.addEventListener("click", () => {
 	  console.log("signup");
 	  container.classList.add("right-panel-active");
@@ -241,7 +250,170 @@ export default class Login extends HTMLElement {
 	if (authCode) {
 	  exchangeCodeForToken(authCode);
 	}
+
+
+
+
+	document.getElementById('forgetpassword').addEventListener('click', function() {
+		document.getElementById('container').innerHTML = '';
+		document.getElementById('container').appendChild(document.createElement('forget-password'));	
+	});
   }
 }
 
+
+class ForgetPassword extends HTMLElement{
+	// add simple form to foget password
+	constructor(){
+		super();
+	}
+
+	connectedCallback(){
+		this.innerHTML = /*html*/`
+	
+		<div class="left-side form-container sign-in-container ">
+		<form id="forgetPasswordForm">
+		<div id="sendemailstatus" style="color:red;"></div>
+				<h3 id="forgetPasswordMessage"></h3>
+				<div id="errorContainerForgetPassword"></div>
+				<input type="email"    id="register_pass_1" placeholder="Email" name="email" required />
+				<button type="submit" class="nav__link" class="login-btn">  Send Email</button>
+			</form>
+		</div>
+		<div class="overlay-container">
+			<div class="overlay">
+				
+			</div>
+		`;
+
+		
+		document.querySelector('#forgetPasswordForm').addEventListener('submit', function(event){
+			event.preventDefault();
+			var emailsend = document.querySelector('#register_pass_1').value;
+			if (!emailsend) {
+				return;
+			}
+			const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
+			var data = {
+				email: emailsend,
+			  };
+		  
+			  var jsonString = JSON.stringify(data);
+			fetch("/api/send-mail/", {
+				method: "POST",
+				body: jsonString,
+				credentials: "include",
+				headers: {
+				  "X-CSRFToken": csrftoken,
+				},
+			  }).then((response) => {
+				  return response.json();
+				})
+				.then((data) => {
+					var sendstatus = document.getElementById("sendemailstatus");
+					if (data.message === 'sucess') {
+						document.getElementById('container').innerHTML = '';
+						document.getElementById('container').appendChild(document.createElement('Set-new-password'));	
+					}
+					else if (data.message === 'email not found') {
+						sendstatus.innerHTML = " Email not found";
+					  console.log("error" , data);
+					}
+					else {
+						sendstatus.innerHTML = "Email sent error";
+					  console.log("error" , data);
+					}
+					setTimeout(() => {
+						if (sendstatus) {
+							sendstatus.innerHTML = "";
+						}
+					}, 2000);
+				})
+				.catch((error) => console.error("Error:", error));
+		});
+	}
+
+
+}
+
+class Setnewpassword extends HTMLElement{
+	// add simple form to foget password
+	constructor(){
+		super();
+	}
+
+	connectedCallback(){
+		this.innerHTML = /*html*/`
+
+		<div class="left-side form-container sign-in-container ">
+		<form id="resetpassword">
+		<div id="sendemailstatus" style="color:red;"></div>
+				<h3 id="forgetPasswordMessage"></h3>
+				<div id="errorContainerForgetPassword"></div>
+				<input type="text"    id="codesend" placeholder="entre code" name="number" required />
+				<input type="password"    id="newpassword" placeholder="password" name="password" required />
+				<button type="submit" class="nav__link" class="login-btn">submet new password</button>
+			</form>
+		</div>
+		<div class="overlay-container">
+			<div class="overlay">
+				
+			</div>
+		`;
+
+
+		document.querySelector('#resetpassword').addEventListener('submit', function(event){
+			event.preventDefault();
+			var code = document.querySelector('#codesend').value;
+			var newpassword = document.querySelector('#newpassword').value;
+			const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
+			var data = {
+				code: code,
+				new_password: newpassword,
+			  };
+		  
+			  var jsonString = JSON.stringify(data);
+			fetch("/api/change-pass/", {
+				method: "POST",
+				body: jsonString,
+				credentials: "include",
+				headers: {
+				  "X-CSRFToken": csrftoken,
+				  
+				},
+			  }).then((response) => {
+				  return response.json();
+				})
+				.then((data) => {
+					var sendstatus = document.getElementById("sendemailstatus");
+					if (data.message === 'sucess') {
+						
+						sendstatus.innerHTML = " password sucess";
+					  	console.log("sucess" , data);
+						// document.innerHTML = '';
+						document.body.innerHTML = '<login-page></login-page>';
+					}
+					else if (data.message === 'email not found') {
+						sendstatus.innerHTML = " Email not found";
+					  console.log("error" , data);
+					}
+					else {
+						sendstatus.innerHTML = "Email sent error";
+					  console.log("error" , data);
+					}
+					setTimeout(() => {
+						if (sendstatus) {
+							sendstatus.innerHTML = "";
+						}
+					}, 2000);
+				})
+				.catch((error) => console.error("Error:", error));
+		});
+	}
+
+}
+
+customElements.define("forget-password", ForgetPassword);
+customElements.define("set-new-password", Setnewpassword);
 customElements.define("login-page", Login);
+

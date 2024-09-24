@@ -13,5 +13,5 @@ urlpatterns = [
     path('accounts/google/login/callback/', google_dauth),
     path('accounts/', include('allauth.urls')),
     path('google/', include('googleauth.urls')),
-    # path('settings/', send_mail),
+
 ]
