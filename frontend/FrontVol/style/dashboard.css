@@ -366,6 +366,21 @@ game-page{
     height: 100%;
 }
 
+game-page{
+    width: 100%;
+    height: 100%;
+}
+
+game-tournament{
+    width: 100%;
+    height: 100%;
+}
+
+online-game-page{
+    width: 100%;
+    height: 100%;
+}
+
 .dash {
     width: 100%;
     height: 100%;

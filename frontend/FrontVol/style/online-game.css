@@ -3,6 +3,7 @@ online-game-page{
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	
 }
 
 online-game-page .parent {
