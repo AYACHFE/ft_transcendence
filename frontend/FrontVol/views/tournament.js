@@ -24,7 +24,7 @@ export default class Tournament extends HTMLElement {
         const player2 = this.players[this.currentMatch * 2 + 1];
 
 
-        document.querySelector('.parent').style.display = 'none';
+        document.querySelector('the-tournament').style.display = 'none';
 
 
         const gamePage = document.createElement('game-tournament');
@@ -45,7 +45,7 @@ export default class Tournament extends HTMLElement {
             gamePage.remove();
 
     
-            const parentDiv = document.querySelector('.parent');
+            const parentDiv = document.querySelector('the-tournament');
             parentDiv.style.visibility = 'visible'
             parentDiv.style.display = 'grid';     
 
@@ -128,13 +128,13 @@ export default class Tournament extends HTMLElement {
 
             <div class="parent">
                 <div class="div1 round1" contenteditable="true">renna</div>
-                <div class="div2 round1" contenteditable="true">2</div>
-                <div class="div3 round1" contenteditable="true">3</div>
-                <div class="div4 round1" contenteditable="true">4</div>
-                <div class="div5 round1" contenteditable="true">5</div>
-                <div class="div6 round1" contenteditable="true">6</div>
-                <div class="div7 round1" contenteditable="true">7</div>
-                <div class="div8 round1" contenteditable="true">8</div>
+                <div class="div2 round1" contenteditable="true">rachid</div>
+                <div class="div3 round1" contenteditable="true">holla</div>
+                <div class="div4 round1" contenteditable="true">ayman</div>
+                <div class="div5 round1" contenteditable="true">mehdi</div>
+                <div class="div6 round1" contenteditable="true">hassan</div>
+                <div class="div7 round1" contenteditable="true">whoiam</div>
+                <div class="div8 round1" contenteditable="true">none</div>
                 <div class="div9 round2"><h3 id="winner"></h3></div>
                 <div class="div10 round2"><h3 id="winner"></h3></div>
                 <div class="div11 round2"><h3 id="winner"></h3></div>
