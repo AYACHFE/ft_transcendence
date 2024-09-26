@@ -170,247 +170,347 @@ export default class Tournament extends HTMLElement {
 
 class GamePage extends HTMLElement {
     constructor() {
-        super();
+        super()
         this.player1 = '';
         this.player2 = '';
-        this.scoreP1 = 0;
-        this.scoreP2 = 0;
-        this.ballX = 0;
-        this.ballY = 0;
-        this.speedX = 10;
-        this.speedY = 10;
-        this.counter = 0;
-        this.counterInterval = null;
-        this.isMoving = false;
     }
-
-    connectedCallback() {
-        this.player1 = this.getAttribute('player1');
-        this.player2 = this.getAttribute('player2');
-
-        this.innerHTML = `
-            <div class="parent"> 
-                <div class="top-bar">
-                    <div class="user-1">
-                        <img class="tb-user-1-logo" src="../images/users/happy-2.svg" alt="#"> 
-                        <h2 class="user-1-name">${this.player1}</h2>
-                    </div>
-                    <div class="user-1-score"><h2>0</h2></div>
-                    <div class="time"><h2>00:00</h2></div>
-                    <div class="user-2-score"><h2>0</h2></div>
-                    <div class="user-2">
-                        <h2 class="user-2-name">${this.player2}</h2>
-                        <img class="tb-user-2-logo" src="../images/users/1_men.svg" alt="#">
-                    </div>
+  connectedCallback() {
+    this.player1 = this.getAttribute('player1');
+    this.player2 = this.getAttribute('player2');
+    this.innerHTML = `
+        <div class="parent">
+            <div class="top-bar">
+                <div class="user-1">
+                    <img class="tb-user-1-logo" src="../images/users/happy-2.svg" alt="#"> 
+                    <h2 class="user-1-name">${this.player1}</h2>
                 </div>
-                <div class="game-board">
-                    <div class="board">
-                        <div class="left-racket"><img src="../images/racket.svg" alt=""></div>
-                        <div class="middle-part">
-                            <div class="start-game start-game-first"><h2>Start</h2></div>
-                            <div class="game-over"><h2>Game-over</h2></div>
-                            <div class="middle-line"><img src="../images/middle-line.svg" alt="#"></div>
-                            <div class="start-game start-game-second"><h2>Game</h2></div>
-                        </div>
-                        <div class="right-racket"><img src="../images/racket.svg" alt=""></div>
-                        <div class="ball"></div>
-                    </div>
+                <div class="user-1-score"><h2>0</h2></div>
+                <div class="time"><h2>00:00</h2></div>
+                <div class="user-2-score"><h2>0</h2></div>
+                <div class="user-2">
+                    <h2 class="user-2-name">${this.player2}</h2>
+                    <img class="tb-user-2-logo" src="../images/users/1_men.svg" alt="#">
                 </div>
             </div>
-        `;
+            <div class="game-board">
+                <div class="board">
+                    <div class="left-racket"><img src="../images/racket.svg" alt=""></div>
+                    <div class="middle-part">
+                        <div class="start-game start-game-first"><h2>Start</h2></div>
+                        <div class="game-over"><h2>Game-over</h2></div>
+                        <div class="middle-line"><img src="../images/middle-line.svg" alt="#"></div>
+                        <div class="start-game start-game-second"><h2>Game</h2></div>
+                    </div>
+                    <div class="right-racket"><img src="../images/racket.svg" alt=""></div>
+                    <div class="ball"></div>
+                </div>
+            </div>
+        </div>
+    `;
+var startGameElements = document.querySelectorAll('.start-game h2');
+var gameover = document.querySelectorAll('.game-over h2');
+var ball_ = document.querySelectorAll('.ball');
 
-        this.initGame();
-    }
-
-    initGame() {
-        const startGameElements = this.querySelectorAll('.start-game h2');
-        const gameOverElement = this.querySelector('.game-over h2');
-        const ball = this.querySelector('.ball');
-
-        this.hideStartGameElements(startGameElements);
-        this.hideGameOver(gameOverElement);
-
-        document.addEventListener('keypress', () => this.hideStartGameElements(startGameElements));
-        this.moveRackets();
-        this.moveBall(ball);
-        this.startCounter();
-    }
-
-    hideStartGameElements(elements) {
-        elements.forEach(element => {
-            element.style.display = 'none';
-        });
-    }
-
-    hideGameOver(element) {
+// Create a function to handle the event
+function hideStartGameElements() {
+    // Loop through each start game text element and hide it
+    startGameElements.forEach(function(element) {
         element.style.display = 'none';
+    });
+}
+function hideGameOver() {
+    gameover.forEach(function(element) {
+        element.style.display = 'none';
+    });
+}
+
+// Add the function as an event listener for multiple events
+// document.addEventListener('click', hideStartGameElements);
+document.addEventListener('keypress', hideStartGameElements);
+hideGameOver();
+//---------------------------rackets-movemnt-----------------------------------\\
+//ball data
+const gameBoard = document.querySelector('.board');
+const ball = document.querySelector('.ball');
+
+var leftRacket = document.querySelector('.left-racket img');
+const rightRacket = document.querySelector('.right-racket img');
+var leftRacketRect;
+var rightRacketRect;
+
+var boardWidth = gameBoard.clientWidth;
+var boardHeight = gameBoard.clientHeight;
+var rect = gameBoard.getBoundingClientRect();
+//
+window.addEventListener('resize', function() {
+    boardHeight = gameBoard.clientHeight;
+    boardWidth = gameBoard.clientWidth;
+	rect = gameBoard.getBoundingClientRect();
+});
+
+
+//---------------------- racket event listener to move up and down ----------------------\\
+var moveUpRight = false;
+var moveDownRight = false;
+var moveUpLeft = false;
+var moveDownLeft = false;
+
+document.addEventListener('keydown', function(event) {
+    switch(event.key) {
+        case 'ArrowUp':
+            moveUpRight = true;
+            break;
+        case 'ArrowDown':
+            moveDownRight = true;
+            break;
+        case 'w':
+            moveUpLeft = true;
+            break;
+        case 's':
+            moveDownLeft = true;
+            break;
+    }
+});
+
+document.addEventListener('keyup', function(event) {
+    switch(event.key) {
+        case 'ArrowUp':
+            moveUpRight = false;
+            break;
+        case 'ArrowDown':
+            moveDownRight = false;
+            break;
+        case 'w':
+            moveUpLeft = false;
+            break;
+        case 's':
+            moveDownLeft = false;
+            break;
+    }
+});
+
+
+var newTopRightUp;
+var newTopRightDown;
+var newTopLeftUp;
+var newTopLeftDown;
+setInterval(function() {
+    const leftRacket = document.querySelector('.left-racket img');
+    const rightRacket = document.querySelector('.right-racket img');
+    const step = 10; // Change this value to make the rackets move faster or slower
+
+    if (moveUpRight) {
+        // Move the right racket up
+        newTopRightUp = (parseInt(rightRacket.style.top) || 0) - step;
+        if (newTopRightUp >= -boardHeight / 2) {
+            rightRacket.style.top = newTopRightUp + 'px';
+        }
     }
 
-    moveRackets() {
-        const gameBoard = this.querySelector('.board');
-        const leftRacket = this.querySelector('.left-racket img');
-        const rightRacket = this.querySelector('.right-racket img');
-        const step = 10;
-
-        let moveUpRight = false;
-        let moveDownRight = false;
-        let moveUpLeft = false;
-        let moveDownLeft = false;
-
-        document.addEventListener('keydown', (event) => {
-            switch(event.key) {
-                case 'ArrowUp':
-                    moveUpRight = true;
-                    break;
-                case 'ArrowDown':
-                    moveDownRight = true;
-                    break;
-                case 'w':
-                    moveUpLeft = true;
-                    break;
-                case 's':
-                    moveDownLeft = true;
-                    break;
-            }
-        });
-
-        document.addEventListener('keyup', (event) => {
-            switch(event.key) {
-                case 'ArrowUp':
-                    moveUpRight = false;
-                    break;
-                case 'ArrowDown':
-                    moveDownRight = false;
-                    break;
-                case 'w':
-                    moveUpLeft = false;
-                    break;
-                case 's':
-                    moveDownLeft = false;
-                    break;
-            }
-        });
-
-        setInterval(() => {
-            const boardHeight = gameBoard.clientHeight;
-
-            if (moveUpRight) {
-                const newTopRightUp = (parseInt(rightRacket.style.top) || 0) - step;
-                if (newTopRightUp >= 0) {
-                    rightRacket.style.top = newTopRightUp + 'px';
-                }
-            }
-            if (moveDownRight) {
-                const newTopRightDown = (parseInt(rightRacket.style.top) || 0) + step;
-                if (newTopRightDown <= boardHeight - 100) {
-                    rightRacket.style.top = newTopRightDown + 'px';
-                }
-            }
-            if (moveUpLeft) {
-                const newTopLeftUp = (parseInt(leftRacket.style.top) || 0) - step;
-                if (newTopLeftUp >= 0) {
-                    leftRacket.style.top = newTopLeftUp + 'px';
-                }
-            }
-            if (moveDownLeft) {
-                const newTopLeftDown = (parseInt(leftRacket.style.top) || 0) + step;
-                if (newTopLeftDown <= boardHeight - 100) {
-                    leftRacket.style.top = newTopLeftDown + 'px';
-                }
-            }
-        }, 20);
+    if (moveDownRight) {
+        // Move the right racket down
+        newTopRightDown = (parseInt(rightRacket.style.top) || 0) + step;
+        if (newTopRightDown <= boardHeight / 2 - 100) {
+            rightRacket.style.top = newTopRightDown + 'px';
+        }
     }
 
-    moveBall(ball) {
-        const boardWidth = this.querySelector('.board').clientWidth;
-        const boardHeight = this.querySelector('.board').clientHeight;
-        const ballDiameter = ball.clientWidth;
+    if (moveUpLeft) {
+        // Move the left racket up
+        newTopLeftUp = (parseInt(leftRacket.style.top) || 0) - step;
+        if (newTopLeftUp >= -boardHeight / 2) {
+            leftRacket.style.top = newTopLeftUp + 'px';
+        }
+    }
 
-        this.ballX = boardWidth / 2 - ballDiameter / 2;
-        this.ballY = boardHeight / 2 - ballDiameter / 2;
-        this.speedX = 10;
-        this.speedY = 10;
+    if (moveDownLeft) {
+        // Move the left racket down
+        newTopLeftDown = (parseInt(leftRacket.style.top) || 0) + step;
+        if (newTopLeftDown <= boardHeight / 2 - 100) {
+            leftRacket.style.top = newTopLeftDown + 'px';
+        }
+    }
+}, 20); // Change this value to make the rackets move smoother or choppier
 
-        let isMoving = false;
-        document.addEventListener('keydown', () => {
-            isMoving = true;
-        });
+//--------------------------ball------------------------------------\\
+var ballDiameter = ball.clientWidth;
+var leftRacketPos = leftRacket.offsetTop;
+var ballX = boardWidth / 2 - ballDiameter + rect.top; // Initial X position at the center of the board
+var ballY = boardHeight / 2 - ballDiameter/2 + rect.left; // Initial Y position
+var speedX = 10; // Horizontal speed
+var speedY = 10; // Vertical speed
 
-        const scoreP1Html = this.querySelector('.user-1-score > h2');
-        const scoreP2Html = this.querySelector('.user-2-score > h2');
+var isMoving = false;
+	document.addEventListener('keydown', function() {
+		isMoving = true;
+	});
+	// document.addEventListener('click', function() {
+	// 	isMoving = true;
+	// });
 
-        const move = () => {
-            if (!isMoving) {
-                requestAnimationFrame(move);
-                return;
-            }
+var scoreP1 = 0;
+var scoreP2 = 0;
+var scoreP1_html = document.querySelector('.user-1-score > h2');
+var scoreP2_html = document.querySelector('.user-2-score > h2');
+var racket = document.getElementsByClassName('left-racket')[0];
 
-            scoreP1Html.innerHTML = this.scoreP1;
-            scoreP2Html.innerHTML = this.scoreP2;
 
-            ball.style.left = `${this.ballX}px`;
-            ball.style.top = `${this.ballY}px`;
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+const initleftRacketRect = leftRacket.getBoundingClientRect();
+const initrightRacketRect = rightRacket.getBoundingClientRect();
+var newChance;
+var newTime = false;
+const moveBall = async () => {
+	if (!isMoving) {
+		requestAnimationFrame(moveBall);
+        return;
+    }
+	if (!newTime) {
+		newTime = true;
+		startCounter();
+	}
+	scoreP1_html.innerHTML = scoreP1;
+	scoreP2_html.innerHTML = scoreP2;
+	// scoreP1 = 3;
+	if (newChance) {
+		ball.style.left = `${ballX}px`;
+		ball.style.top = `${ballY}px`;
+		if (scoreP1 === 3 || scoreP2 === 3) {
+            const gameOverMessage = document.querySelector('.game-over h2');
+			const middle_line = document.querySelector('.middle-line');
+			const ball = document.querySelector('.ball');
 
         
-            if (this.scoreP1 === 3 || this.scoreP2 === 3) {
-                const gameOverMessage = this.querySelector('.game-over h2');
-                const middleLine = this.querySelector('.middle-line');
-                const ballElement = this.querySelector('.ball');
+            gameOverMessage.innerHTML = 'Game Over! Player ' + (scoreP1 === 3 ? this.player2 : this.player1) + ' wins!';
+            middle_line.style.display = 'none';
+            ball.style.display = 'none';
+            gameOverMessage.style.display = 'block';
 
-            
-                gameOverMessage.innerHTML = 'Game Over! Player ' + (this.scoreP1 === 3 ? '1' : '2') + ' wins!';
-                middleLine.style.display = 'none';
-                ballElement.style.display = 'none';
-                gameOverMessage.style.display = 'block';
+            await sleep(300);
+            this.dispatchEvent(new CustomEvent('game-finished', {
+                detail: { winner: scoreP1 === 3 ? this.player2 : this.player1 },
+                bubbles: true
+            }));
 
-            
-                this.dispatchEvent(new CustomEvent('game-finished', {
-                    detail: { winner: this.scoreP1 === 3 ? this.player1 : this.player2 },
-                    bubbles: true
-                }));
+            return;
+        }
+		await sleep(700);
+		moveBall;
+		// sendGameState();
+	}
+	newChance = false;
+	
+    ballX += speedX;
+    ballY += speedY;
+    // Check for collision with the walls and reverse direction if needed
+	var ballRect = ball.getBoundingClientRect();
+	var leftRacketRect = leftRacket.getBoundingClientRect();
+	var rightRacketRect = rightRacket.getBoundingClientRect();
+    if (ballX + ballDiameter + 10 > rect.right - ballDiameter) {
+		if (ballRect.top + ballRect.height >= rightRacketRect.top && ballRect.top <= rightRacketRect.bottom)
+		{
+			speedX = -speedX;
+		}
+		else {
+			scoreP2++;
+			ballX = boardWidth / 2 - ballDiameter / 2 + rect.top;
+			ballY = boardHeight / 2 - ballDiameter / 2 + rect.left;
+			newChance = true;
+		}
+	}
+	if (ballX + 10 < rect.left) {
+		
+		if (ballRect.top + ballRect.height >= leftRacketRect.top && ballRect.top <= leftRacketRect.bottom)
+		{
+			speedX = -speedX;
+			ballX = rect.left;
+		}
+		else {
+			scoreP1++;
+			ballX = boardWidth / 2 - ballDiameter / 2 + rect.top;
+			ballY = boardHeight / 2 - ballDiameter / 2 + rect.left;
+			newChance = true;
+		}
+	}
+	if (ballY + ballDiameter + 10 > rect.bottom) {
+		speedY = -speedY;
+	}
+	if (ballY + 10 < rect.top) {
+		ballY = rect.top;
+		speedY = -speedY;
+	}
 
-                return;
-            }
+    // Set the new position
+    ball.style.left = `${ballX}px`;
+    ball.style.top = `${ballY}px`;
 
-        
-            this.ballX += this.speedX;
-            this.ballY += this.speedY;
+    requestAnimationFrame(moveBall);
 
-        
-            if (this.ballX <= 0) {
-                this.scoreP2++;
-                this.ballX = boardWidth / 2 - ballDiameter / 2;
-            }
-            if (this.ballX + ballDiameter >= boardWidth) {
-                this.scoreP1++;
-                this.ballX = boardWidth / 2 - ballDiameter / 2;
-            }
-            if (this.ballY <= 0 || this.ballY + ballDiameter >= boardHeight) {
-                this.speedY = -this.speedY;
-            }
+}
+moveBall();
 
-            requestAnimationFrame(move);
-        };
 
-        move();
-    }
 
-    startCounter() {
-        this.counterInterval = setInterval(() => {
-            this.counter++;
-            const minutes = Math.floor(this.counter / 60);
-            const seconds = this.counter % 60;
 
-            this.querySelector('.time h2').innerText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-        }, 1000);
-    }
+////////////////////////// updates the variables for the online game //////////////////////////
 
-    disconnectedCallback() {
-        clearInterval(this.counterInterval);
-        console.log("Game disconnected");
-    }
+// Assuming you have variables for paddle positions, ball position, and score
+var paddlePos = { player1: parseInt(leftRacket.style.top), player2: parseInt(rightRacket.style.top) };
+var ballPos = { x: ballX, y: ballY };
+var score = { player1 : scoreP1, player2: scoreP2 };
+
+const roomName = 'test';  // This could be dynamically generated
+
+
+
+
+
+
+////////////////////////// Save game result to the server //////////////////////////
+
+
+//--------------------------time-counter------------------------------------\\
+	let counter = 0;
+	let counterInterval = null;
+
+	function startCounter() {
+		counterInterval = setInterval(function() {
+			counter++;
+
+			// Calculate the number of minutes and seconds
+			let minutes = Math.floor(counter / 60);
+			let seconds = counter % 60;
+
+			// Pad the minutes and seconds with leading zeros if they are less than 10
+			minutes = minutes < 10 ? '0' + minutes : minutes;
+			seconds = seconds < 10 ? '0' + seconds : seconds;
+
+			// Update the time element
+			document.querySelector('.time h2').innerHTML = minutes + ':' + seconds;
+		}, 1000);
+	}
+
+	function stopCounter() {
+		// Stop the counter
+		if (counterInterval) {
+			clearInterval(counterInterval);
+			counterInterval = null;
+		}
+	}
+
+}
+
+  disconnectedCallback() {
+    console.log("dis connected Callback");
+    if (this.intervalID)
+        clearInterval(this.intervalID)
+  }
 }
 
 customElements.define('game-tournament', GamePage);
+
 
 customElements.define("the-tournament", Tournament);

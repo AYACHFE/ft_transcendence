@@ -165,7 +165,7 @@ game-tournament .game-board {
 }
 
 game-tournament .board {
-	position: relative;
+	/* position: relative; */
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -237,7 +237,7 @@ game-tournament .game-over {
 
 game-tournament .ball {
     position: absolute;
-    top: 50%;
+    top: 57%;
     left: 50%;
     /* left: calc(50% - 22px); */
     width: 45px;
