@@ -95,7 +95,6 @@ game-page .board {
 	border-radius: 50px;
 	/* padding: 25%; */
 	box-shadow: inset 0 0 20px 1px #000000;
-	/* position: relative; */
 }
 online-game-page .left-racket, online-game-page .right-racket ,
 game-page .left-racket, game-page .right-racket {

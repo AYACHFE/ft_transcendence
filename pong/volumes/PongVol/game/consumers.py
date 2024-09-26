@@ -8,38 +8,33 @@ class  PingPongConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = f'pingpong_{self.room_name}'
-
         await self.channel_layer.group_add(
             self.room_group_name,
             self.channel_name
         )
-
         await self.accept()
-
         if len(self.players) == 0:
-            role = 'host'
+            self.role = 'host'
             self.players.append(self.channel_name)
         elif len(self.players) == 1:
             # Check if the host is still connected
             host_channel_name = self.players[0]
             if self.channel_layer.group_exists(host_channel_name):
-                role = 'guest'
+                self.role = 'guest'
                 self.players.append(self.channel_name)
             else:
                 # The host is not connected, so this player becomes the host
-                role = 'host'
+                self.role = 'host'
                 self.players[0] = self.channel_name
         else:
             # If more than 2 players try to connect, you can close the connection
             await self.close()
             return
-
         # Send the assigned role to the connecting player
         await self.send(text_data=json.dumps({
             'type': 'assign_role',
-            'role': role
+            'role': self.role
         }))
-
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(
             self.room_group_name,

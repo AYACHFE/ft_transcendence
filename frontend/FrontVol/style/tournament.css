@@ -1,0 +1,248 @@
+/* the-tournament
+{
+
+} */
+the-tournament .parent {
+    padding: 0% 5%;
+    grid-template-rows: repeat(8, 1fr) 1fr;
+        grid-column-gap: 3%;
+        grid-row-gap: 5%;
+        display: grid;
+        height: 100%;
+        width: 100%;
+
+    }
+the-tournament .div1, the-tournament .div2, the-tournament .div3, the-tournament .div4, the-tournament .div5, the-tournament .div6, the-tournament .div7, the-tournament .div8, the-tournament .div9, the-tournament .div10, the-tournament .div11, the-tournament .div12, the-tournament .div13, the-tournament .div14, the-tournament .div15 {
+        height: auto;
+        width: 9vw;
+        padding: 5%;
+    }
+the-tournament .div16, the-tournament .div17, the-tournament .div18, the-tournament .div19, the-tournament .div20, the-tournament .div21, the-tournament .div22 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        height: auto;
+        width: auto;
+    }
+the-tournament .div1 { grid-area: 1 / 1 / 2 / 2; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center;  }
+the-tournament .div2 { grid-area: 2 / 1 / 3 / 2; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center;  }
+the-tournament .div3 { grid-area: 3 / 1 / 4 / 2; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center;  }
+the-tournament .div4 { grid-area: 4 / 1 / 5 / 2; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center;  }
+the-tournament .div5 { grid-area: 5 / 1 / 6 / 2; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center;  }
+the-tournament .div6 { grid-area: 6 / 1 / 7 / 2; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center;  }
+the-tournament .div7 { grid-area: 7 / 1 / 8 / 2; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center;  }
+the-tournament .div8 { grid-area: 8 / 1 / 9 / 2; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center;  }
+the-tournament .div9 { grid-area: 1 / 3 / 3 / 4; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center;  }
+the-tournament .div10 { grid-area: 3 / 3 / 5 / 4; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; }
+the-tournament .div11 { grid-area: 5 / 3 / 7 / 4; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; }
+the-tournament .div12 { grid-area: 7 / 3 / 9 / 4; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; }
+the-tournament .div13 { grid-area: 6 / 5 / 8 / 6; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; }
+the-tournament .div14 { grid-area: 2 / 5 / 4 / 6; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; }
+the-tournament .div15 { grid-area: 4 / 7 / 6 / 8; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; }
+the-tournament .div16 { grid-area: 1 / 2 / 3 / 3; }
+the-tournament .div17 { grid-area: 3 / 2 / 5 / 3; }
+the-tournament .div18 { grid-area: 5 / 2 / 7 / 3; }
+the-tournament .div19 { grid-area: 7 / 2 / 9 / 3; }
+the-tournament .div20 { grid-area: 2 / 4 / 4 / 5; }
+the-tournament .div21 { grid-area: 6 / 4 / 8 / 5; }
+the-tournament .div22 { grid-area: 2 / 6 / 8 / 7; }
+
+the-tournament .parent img {
+        width: 15vh;
+        height: auto;
+        object-fit: cover;
+    }
+the-tournament .parent h3 {
+        font-size: 1.5em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+
+    the-tournament .play_game {
+        grid-area: 9 / 1 / 10 / 9;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 40%; /* Set width to 40% */
+        padding: 25px;
+        margin: 0 auto; /* Center the button */
+    }
+the-tournament .winner {
+        background-color: green;
+    }
+
+
+    
+
+
+game-tournament{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+   
+}
+
+
+game-tournament .parent {
+	width: 90%;
+	height: 100%;
+	display: flex;
+	/* justify-content: center;
+	align-items: center; */
+	background-color: #067D71;
+	border: 10px #067D71;
+	border-radius: 50px;
+	/* padding: 50px; */
+	flex-direction: column;
+	/* aspect-ratio: 1/1; */
+}
+
+game-tournament .top-bar {
+	display: flex;
+	flex:1;
+	justify-content: space-between;
+	background: linear-gradient(89.401deg, #3DBDA7 1%, #3DBDA7 33%, #3CBCA6 49%, #2AA795 67%, #0A8175 100%);
+	border-radius: 50px;
+	/* padding: 1%; */
+}
+
+game-tournament .time {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: rgb(0, 0, 0);
+	font-size: 2.2vw;
+}
+
+game-tournament .user-1 {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+game-tournament .user-2{
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+}
+
+
+game-tournament .user-1-name , game-tournament .user-2-name{
+	color: rgb(255, 255, 255);
+	font-size: 2vw;
+	padding: 1%;
+}
+
+
+game-tournament .tb-user-1-logo , game-tournament .tb-user-2-logo{
+	width: 30%;
+	padding: 0px 10px;
+}
+
+
+game-tournament .user-1-score , game-tournament .user-2-score{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: rgb(255, 255, 255);
+	font-size: 2vw;
+	/* padding: 0% 1%; */
+}
+
+
+game-tournament .game-board {
+	
+	width: 100%;
+	display: flex;
+	/* background: #7e2f2f; */
+	border-radius: 50px;
+	flex: 9;
+	justify-content: center;
+	align-items: center;
+}
+
+game-tournament .board {
+	/* position: relative; */
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 97%;
+	height: 94%;
+	display: flex;
+	background: #1D1E22;
+	border-radius: 50px;
+	/* padding: 25%; */
+	box-shadow: inset 0 0 20px 1px #000000;
+	/* position: relative; */
+}
+
+game-tournament .left-racket, game-tournament .right-racket {
+    padding: 0.5%;
+    position: relative;
+}
+
+
+game-tournament .left-racket img{
+    position: absolute;
+    top: 0;
+}
+
+game-tournament .right-racket img {
+    position: absolute;
+    top: 0;
+	left: -10px;
+}
+
+
+game-tournament .middle-line {
+
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+
+}
+
+game-tournament .middle-line img {
+	width: 100%;
+	height: 100%;
+}
+
+game-tournament .middle-part {
+	display: flex;
+    /* justify-content: space-around; */
+    align-items: center;
+	height: 100%;
+}
+
+game-tournament .start-game-first h2 {
+    color: rgb(113, 62, 62);
+    font-size: 3vw;
+    padding: 46px;
+}
+
+game-tournament .start-game-second h2 {
+    color: rgb(255, 255, 255);
+    font-size: 3vw;
+    padding: 30px;
+}
+game-tournament .game-over {
+	color: rgb(255, 255, 255);
+	font-size: 2vw;
+	/* padding: 30px; */
+}
+
+game-tournament .ball {
+    position: absolute;
+    top: 57%;
+    left: 50%;
+    /* left: calc(50% - 22px); */
+    width: 45px;
+    height: 45px;
+    background: white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}

@@ -2,28 +2,33 @@
 
 
 export default class Online_Game extends HTMLElement {
-    constructor() {super()}
-    // connectedCallback() {
-    //     fetch('/views/game.html')
-    //     .then(response => response.text())
-    //     .then(data => {
-    //         this.innerHTML = data;
+    constructor() {
+		super();
+		this.gameSocket = null;
+		this.intervalID = null;
+		this.allSockets = [];
+		this.roomName = null;
+		this.counterInterval = null;
+	}
+	
+	startCounter() {
+			let counter = 0;
+			this.counterInterval = setInterval(function() {
+				counter++;
 
-    //         let script = document.createElement('script');
-    //         script.src = '../script/-game.js';
-    //         document.body.appendChild(script);
+				// Calculate the number of minutes and seconds
+				let minutes = Math.floor(counter / 60);
+				let seconds = counter % 60;
 
-    //     });
-	// 	fetch('http://localhost:8000/main/data/', 
-	// 	{
-	// 		method: "get",
-	// 		credentials: "include"
-	// 	})
-	// 	.then(response => response.json())
-	// 	.then(data => {
-	// 		document.getElementsByClassName('user-1-name')[0].innerHTML = data.user_name;
-	// 	})
-    // }
+				// Pad the minutes and seconds with leading zeros if they are less than 10
+				minutes = minutes < 10 ? '0' + minutes : minutes;
+				seconds = seconds < 10 ? '0' + seconds : seconds;
+
+				// Update the time element
+				document.querySelector('.time h2').innerHTML = minutes + ':' + seconds;
+			}, 1000);
+		}
+
 	connectedCallback() {
 		this.innerHTML = `  
         <div class="parent">
@@ -57,11 +62,13 @@ export default class Online_Game extends HTMLElement {
     `;
 		const roomIdElment = document.getElementsByTagName('online-game-page');
 		const roomName = roomIdElment[0].attributes[0].nodeValue;
+		this.roomName = roomName;
 		// document.querySelector('.time h2').innerHTML = 'RoomID :' + roomName;
 		console.log(`Room name is : ${roomName}`);
-		const gameSocket = new WebSocket(
+		this.gameSocket = new WebSocket(
 			'ws://' + "localhost:8000" + '/ws/game/' + roomName + '/'
 		);
+		this.allSockets.push(this.gameSocket);
 		var startGameElements = document.querySelectorAll('.start-game h2');
 		var gameover = document.querySelectorAll('.game-over h2');
 		var ball_ = document.querySelectorAll('.ball');
@@ -101,6 +108,10 @@ export default class Online_Game extends HTMLElement {
 			boardHeight = gameBoard.clientHeight;
 			boardWidth = gameBoard.clientWidth;
 			rect = gameBoard.getBoundingClientRect();
+		});
+		window.addEventListener('load', () => {
+			boardHeight = gameBoard.clientHeight;
+			boardWidth = gameBoard.clientWidth;
 		});
 
 
@@ -197,25 +208,7 @@ export default class Online_Game extends HTMLElement {
 		}, 20); // Change this value to make the rackets move smoother or choppier
 
 		//--------------------------time-counter------------------------------------\\
-		let counter = 0;
-		let counterInterval = null;
-
-		function startCounter() {
-			counterInterval = setInterval(function() {
-				counter++;
-
-				// Calculate the number of minutes and seconds
-				let minutes = Math.floor(counter / 60);
-				let seconds = counter % 60;
-
-				// Pad the minutes and seconds with leading zeros if they are less than 10
-				minutes = minutes < 10 ? '0' + minutes : minutes;
-				seconds = seconds < 10 ? '0' + seconds : seconds;
-
-				// Update the time element
-				document.querySelector('.time h2').innerHTML = minutes + ':' + seconds;
-			}, 1000);
-		}
+		
 
 		function stopCounter() {
 			// Stop the counter
@@ -256,14 +249,14 @@ export default class Online_Game extends HTMLElement {
 		let newChance;
 		let newTime = false;
 
-		async function moveBall() {
+		const moveBall = async () => {
 			if (!isMoving) {
 				requestAnimationFrame(moveBall);
 				return;
 			}
 			if (!newTime) {
 				newTime = true;
-				startCounter();
+				this.startCounter();
 			}
 			// console.log('ballX', ballX, 'ballY', ballY);
 			scoreP1_html.innerHTML = scoreP1;
@@ -275,7 +268,7 @@ export default class Online_Game extends HTMLElement {
 					console.log('new chance');
 				ball.style.left = `${ballX}px`;
 				ball.style.top = `${ballY}px`;
-				if (scoreP1 == 10 || scoreP2 == 10) {
+				if (scoreP1 == maxScore || scoreP2 == maxScore) {
 					const gameOverMessage = document.querySelector('.game-over h2');
 					const middle_line = document.querySelector('.middle-line');
 					const ball = document.querySelector('.ball');
@@ -289,8 +282,9 @@ export default class Online_Game extends HTMLElement {
 					middle_line.style.display = 'none';
 					ball.style.display = 'none';
 					gameOverMessage.style.display = 'block';
-					// gameEnded(scoreP1 == 3 ? 1 : 2, scoreP1 == 3 ? 2 : 1, 0, scoreP1 == 3 ? 'win' : 'lose');
+					gameEnded(scoreP1 == maxScore ? 1 : 2, scoreP1 == maxScore ? 2 : 1, 0, scoreP1 == maxScore ? 'win' : 'lose');
 					stopCounter();
+					
 					return;
 				}
 				// sendGameState();
@@ -355,6 +349,7 @@ export default class Online_Game extends HTMLElement {
 
 		////////////////////////// updates the variables for the online game //////////////////////////
 
+		var maxScore = 10;
 
 		var paddlePos = { player1: parseInt(leftRacket.style.top), player2: parseInt(rightRacket.style.top) };
 		var ballPos = { x: ballX, y: ballY };
@@ -379,7 +374,7 @@ export default class Online_Game extends HTMLElement {
 				scoreP2 = score.player2;
 			
 				// the end of the game
-				if (scoreP1 == 10 || scoreP2 == 10) {
+				if (scoreP1 == maxScore || scoreP2 == maxScore) {
 					const gameOverMessage = document.querySelector('.game-over h2');
 					const middle_line = document.querySelector('.middle-line');
 					const ball = document.querySelector('.ball');
@@ -395,7 +390,7 @@ export default class Online_Game extends HTMLElement {
 			}
 		}
 
-		gameSocket.onmessage = function(e) {
+		this.gameSocket.onmessage = function(e) {
 			const data = JSON.parse(e.data);
 			if (data.type === 'assign_role') {
 				role = data.role;
@@ -403,6 +398,7 @@ export default class Online_Game extends HTMLElement {
 				console.log('Your role is:', role);
 				// console.log('Your username is:', username);
 			}
+			console.log(role);
 			
 			if (data.paddle_pos && data.ball_pos && data.score && role != data.role) {
 				// console.log('Received message from the server:', data);
@@ -414,54 +410,83 @@ export default class Online_Game extends HTMLElement {
 			}
 		};
 
-		function sendGameState() {
+		const sendGameState = () => {
 			paddlePos = { player1: parseInt(leftRacket.style.top), player2: parseInt(rightRacket.style.top) };
 			ballPos = { x: ballX, y: ballY };
 			score = { player1: scoreP1, player2: scoreP2 };
 			// console.log('Sending game state to the server:', paddlePos, ballPos, score);
-			gameSocket.send(JSON.stringify({
+			this.gameSocket.send(JSON.stringify({
 				'role': role,
 				'paddle_pos': paddlePos,
 				'ball_pos': ballPos,
 				'score': score,
 			}));
-		}
+		};
 
 
 
 		////////////////////////// Save game result to the server //////////////////////////
 
-		// Function to get the value of a cookie
+		function gameEnded(winnerId, loserId, duration, result) {
+			console.log('Game ended with result:', result);
+			const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrf-token')).split('=')[1];
+			fetch('api/game/save_game_result/', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
+					'X-CSRFToken': csrftoken
+				},
+				body: new URLSearchParams({
+					'winner_id': winnerId,
+					'loser_id': loserId,
+					'duration': duration,
+					'result': result
+				})
+			})
+			.then(response => response.json())
+			.then(data => {
+				if (data.status === 'success') {
+					console.log('Game result saved successfully');
+				} else {
+					console.log('Failed to save game result:', data.message);
+				}
+			});
+		}
 
 
-		// function gameEnded(winnerId, loserId, duration, result) {
-		// 	console.log('Game ended with result:', result);
-		// 	const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
-		// 	fetch('http://localhost:8000/game/save_game_result/', {
-		// 		method: 'POST',
-		// 		headers: {
-		// 			'Content-Type': 'application/x-www-form-urlencoded',
-		// 			'X-CSRFToken': csrftoken
-		// 		},
-		// 		body: new URLSearchParams({
-		// 			'winner_id': winnerId,
-		// 			'loser_id': loserId,
-		// 			'duration': duration,
-		// 			'result': result
-		// 		})
-		// 	})
-		// 	.then(response => response.json())
-		// 	.then(data => {
-		// 		if (data.status === 'success') {
-		// 			console.log('Game result saved successfully');
-		// 		} else {
-		// 			console.log('Failed to save game result:', data.message);
-		// 		}
-		// 	});
-		// }
+	}
 
-
-
+	//--------------------------remove the room_id from the DB------------------------------------\\
+	async deleteRoom(roomId) {
+		const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrf-token')).split('=')[1];
+		const response = await fetch(`api/game/delete-room/${roomId}/`, {
+			method: 'DELETE',
+			headers: {
+				'X-CSRFToken':csrftoken, 
+				'Content-Type': 'application/json',
+			},
+		});
+		
+		if (response.ok) {
+			console.log(`Room ${roomId} deleted successfully`);
+		} else {
+			console.error('Failed to delete room');
+		}
+	}
+	disconnectedCallback() {
+		console.log("dis connected Callback online game");
+		if (this.counterInterval) {
+			clearInterval(this.counterInterval)
+		}
+		if (this.gameSocket) {
+			this.gameSocket.close();
+			const index = this.allSockets.indexOf(this.gameSocket);
+            if (index > -1) {
+				this.allSockets.splice(index, 1);
+            }
+		}
+		const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrf-token')).split('=')[1];
+		this.deleteRoom(this.roomName);
 	}
 }
 

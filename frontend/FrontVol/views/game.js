@@ -134,7 +134,7 @@ setInterval(function() {
     if (moveDownRight) {
         // Move the right racket down
         newTopRightDown = (parseInt(rightRacket.style.top) || 0) + step;
-        if (newTopRightDown <= boardHeight / 2 - 100) {
+        if (newTopRightDown <= boardHeight / 2 - 150) {
             rightRacket.style.top = newTopRightDown + 'px';
         }
     }
@@ -150,7 +150,7 @@ setInterval(function() {
     if (moveDownLeft) {
         // Move the left racket down
         newTopLeftDown = (parseInt(leftRacket.style.top) || 0) + step;
-        if (newTopLeftDown <= boardHeight / 2 - 100) {
+        if (newTopLeftDown <= boardHeight / 2 - 150) {
             leftRacket.style.top = newTopLeftDown + 'px';
         }
     }
@@ -187,6 +187,7 @@ const initleftRacketRect = leftRacket.getBoundingClientRect();
 const initrightRacketRect = rightRacket.getBoundingClientRect();
 var newChance;
 var newTime = false;
+var maxScore = 3;
 async function moveBall() {
 	if (!isMoving) {
 		requestAnimationFrame(moveBall);
@@ -202,18 +203,18 @@ async function moveBall() {
 	if (newChance) {
 		ball.style.left = `${ballX}px`;
 		ball.style.top = `${ballY}px`;
-		if (scoreP1 == 3 || scoreP2 == 3) {
+		if (scoreP1 == maxScore || scoreP2 == maxScore) {
 			const gameOverMessage = document.querySelector('.game-over h2');
 			const middle_line = document.querySelector('.middle-line');
 			const ball = document.querySelector('.ball');
 			
 			// // Change the content of the div
-			gameOverMessage.innerHTML = 'Game Over!<br> Player ' + (scoreP1 == 3 ? '1' : '2') + ' wins!';
+			gameOverMessage.innerHTML = 'Game Over!<br> Player ' + (scoreP1 == maxScore ? '1' : '2') + ' wins!';
 			middle_line.style.display = 'none';
 			ball.style.display = 'none';
 			gameOverMessage.style.display = 'block';
 			stopCounter();
-			// gameEnded(scoreP1 == 3 ? 1 : 2, scoreP1 == 3 ? 2 : 1, 0, scoreP1 == 3 ? 'win' : 'lose');
+			gameEnded(scoreP1 == maxScore ? 1 : 2, scoreP1 == maxScore ? 2 : 1, 0, scoreP1 == maxScore ? 'win' : 'lose');
 			return;
 		}
 		await sleep(700);
@@ -305,7 +306,7 @@ gameSocket.onmessage = function(e) {
 };
 
 function sendGameState() {
-	console.log('Sending game state to the server:', paddlePos, ballPos, score);
+	// console.log('Sending game state to the server:', paddlePos, ballPos, score);
     gameSocket.send(JSON.stringify({
         'paddle_pos': paddlePos,
         'ball_pos': ballPos,
@@ -320,31 +321,31 @@ function sendGameState() {
 // Function to get the value of a cookie
 
 
-function gameEnded(winnerId, loserId, duration, result) {
-	console.log('Game ended with result:', result);
-	const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
-	fetch('http://localhost:8000/game/save_game_result/', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-			'X-CSRFToken': csrftoken
-		},
-		body: new URLSearchParams({
-			'winner_id': winnerId,
-			'loser_id': loserId,
-			'duration': duration,
-			'result': result
-		})
-	})
-	.then(response => response.json())
-	.then(data => {
-		if (data.status === 'success') {
-			console.log('Game result saved successfully');
-		} else {
-			console.log('Failed to save game result:', data.message);
-		}
-	});
-}
+// function gameEnded(winnerId, loserId, duration, result) {
+// 	console.log('Game ended with result:', result);
+// 	const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrf-token')).split('=')[1];
+// 	fetch('/api/game/save_game_result/', {
+// 		method: 'POST',
+// 		headers: {
+// 			'Content-Type': 'application/x-www-form-urlencoded',
+// 			'X-CSRFToken': csrftoken
+// 		},
+// 		body: new URLSearchParams({
+// 			'winner_id': winnerId,
+// 			'loser_id': loserId,
+// 			'duration': duration,
+// 			'result': result
+// 		})
+// 	})
+// 	.then(response => response.json())
+// 	.then(data => {
+// 		if (data.status === 'success') {
+// 			console.log('Game result saved successfully');
+// 		} else {
+// 			console.log('Failed to save game result:', data.message);
+// 		}
+// 	});
+// }
 
 //--------------------------time-counter------------------------------------\\
 	let counter = 0;

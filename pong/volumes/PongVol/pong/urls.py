@@ -6,6 +6,7 @@ from users.views import send_mail
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/game/', include('game.urls')),
     path('api/', include('users.urls')),
     path('chat/', include('chat.urls')),
     path('settings/', include('settings.urls')),
@@ -13,5 +14,5 @@ urlpatterns = [
     path('accounts/google/login/callback/', google_dauth),
     path('accounts/', include('allauth.urls')),
     path('google/', include('googleauth.urls')),
-    # path('settings/', send_mail),
+
 ]

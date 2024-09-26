@@ -6,14 +6,14 @@ from datetime import timedelta
 # Create your models here.
 
 class User(AbstractUser):
-    name = models.CharField(max_length=255)
+    # name = models.CharField(max_length=255)
     email = models.CharField(max_length=255, unique=True)
     password = models.CharField(max_length=255)
     username = models.CharField(max_length=255, unique=True, default='default_name')
     last_seen = models.DateTimeField(null=True, blank=True)
     twoFA = models.BooleanField(default=False)
 
-    avatar = models.ImageField(upload_to='avatars/', default="1_men.svg")
+    avatar = models.ImageField(upload_to='avatars/', default="avatars/bakhsous.png")
     
     
 

@@ -94,7 +94,7 @@ def google_dauth(request):
 
         user, created = User.objects.get_or_create(email=email, defaults={
             'username': user_info.get('email', email),
-            'name': user_name,
+            # 'name': user_name,
             # Set a random password, since they won't use it for OAuth login
             'password': User.objects.make_random_password(),
         })

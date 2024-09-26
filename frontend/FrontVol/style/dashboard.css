@@ -189,10 +189,13 @@ dashboard-page .upper-section {
 dashboard-page .profile-photo {
     width: 80%;
     padding-top: 10%;
+    border-radius: 50%;
+    overflow: hidden;
 }
 
 dashboard-page .profile-photo img {
     width: 100%;
+    border-radius: 50%;
 }
 
 dashboard-page .upper-section-icone {
@@ -362,6 +365,16 @@ chat-page  {
 }
 
 game-page{
+    width: 100%;
+    height: 100%;
+}
+
+online-game-page{
+    width: 100%;
+    height: 100%;
+}
+
+game-tournament{
     width: 100%;
     height: 100%;
 }
