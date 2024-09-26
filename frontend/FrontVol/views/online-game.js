@@ -2,8 +2,26 @@
 
 
 export default class Online_Game extends HTMLElement {
-    constructor() {super()}
+    constructor() {super()
+		this.counterInterval = null;
+	}
+	startCounter() {
+		let counter = 0;
+		this.counterInterval = setInterval(function() {
+			counter++;
 
+			// Calculate the number of minutes and seconds
+			let minutes = Math.floor(counter / 60);
+			let seconds = counter % 60;
+
+			// Pad the minutes and seconds with leading zeros if they are less than 10
+			minutes = minutes < 10 ? '0' + minutes : minutes;
+			seconds = seconds < 10 ? '0' + seconds : seconds;
+
+			// Update the time element
+			document.querySelector('.time h2').innerHTML = minutes + ':' + seconds;
+		}, 1000);
+	}
 	connectedCallback() {
 		this.innerHTML = `  
         <div class="parent">
@@ -177,25 +195,8 @@ export default class Online_Game extends HTMLElement {
 		}, 20); // Change this value to make the rackets move smoother or choppier
 
 		//--------------------------time-counter------------------------------------\\
-		let counter = 0;
-		let counterInterval = null;
-
-		function startCounter() {
-			counterInterval = setInterval(function() {
-				counter++;
-
-				// Calculate the number of minutes and seconds
-				let minutes = Math.floor(counter / 60);
-				let seconds = counter % 60;
-
-				// Pad the minutes and seconds with leading zeros if they are less than 10
-				minutes = minutes < 10 ? '0' + minutes : minutes;
-				seconds = seconds < 10 ? '0' + seconds : seconds;
-
-				// Update the time element
-				document.querySelector('.time h2').innerHTML = minutes + ':' + seconds;
-			}, 1000);
-		}
+		
+		
 
 		function stopCounter() {
 			// Stop the counter
@@ -243,7 +244,7 @@ export default class Online_Game extends HTMLElement {
 			}
 			if (!newTime) {
 				newTime = true;
-				startCounter();
+				this.startCounter();
 			}
 			// console.log('ballX', ballX, 'ballY', ballY);
 			scoreP1_html.innerHTML = scoreP1;
@@ -442,6 +443,12 @@ export default class Online_Game extends HTMLElement {
 
 
 
+	}
+	disconnetedCallback() {
+		console.log('disconnected');
+		if (this.counterInterval) {
+			clearInterval(this.counterInterval);
+		}
 	}
 }
 
