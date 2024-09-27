@@ -32,7 +32,7 @@ chat-page .chat .chattext {
 
 chat-page .user {
     position: relative;
-    width: 90%;
+    width: 80%;
     margin-top: 30px;
     border-radius: 50%;
     padding: 10px;
@@ -42,7 +42,7 @@ chat-page .user {
 
 chat-page .user.activeuser{
     background-color: #1a7264;
-    width: 80%; 
+    width: 85%; 
     border-radius: 30px; 
     padding-bottom: 20px;
     box-shadow: 0px 0px 15px rgba(0,0,0,0.2);
@@ -112,11 +112,45 @@ chat-page .user-ingame.active {
     bottom: -10%;
 }
 
-
-chat-page .flex-col {
-    display: flex;
-    flex-direction: column;
+chat-page .dots_block {
+    color: #FFFFFF;
+    position: absolute;
+    font-size: 1.8rem;
+    border-radius: 50%;
+    right: 50px;
+    top: 15px;
+    cursor: pointer;
 }
+
+chat-page .button_div {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+
+}
+chat-page .button_div .block_button{
+    position: absolute;
+    right: 0px;
+    bottom: 10px;
+    padding: 10px;
+    background-color: rgb(249, 74, 74);
+    color: white;
+    border: none;
+    border-radius: 10px;
+}
+chat-page .button_div .profile_button{
+    position: absolute;
+    right: 60px;
+    bottom: 10px;
+    padding: 10px;
+    background-color: #3DBDA7;
+    color: white;
+    border: none;
+    border-radius: 10px;
+}
+
+
+
 
 chat-page .user .username {
     display: flex;

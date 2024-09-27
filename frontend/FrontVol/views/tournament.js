@@ -104,6 +104,11 @@ export default class Tournament extends HTMLElement {
 			h5Elements.forEach((h5Element) => {
 				h5Element.textContent = "";
 			});
+			const round1Elements = document.querySelectorAll(".parent round1");
+			round1Elements.forEach((round1Elements) => {
+				round1Elements.textContent = "";
+			});
+			
 
 			const parentDiv = document.querySelector(".parent");
 			parentDiv.style.visibility = "visible";
@@ -169,14 +174,14 @@ export default class Tournament extends HTMLElement {
 		this.innerHTML = /*html*/ `
 
 			<div class="parent">
-				<div class="div1 round1" contenteditable="true"></div>
-				<div class="div2 round1" contenteditable="true"></div>
-				<div class="div3 round1" contenteditable="true"></div>
-				<div class="div4 round1" contenteditable="true"></div>
-				<div class="div5 round1" contenteditable="true"></div>
-				<div class="div6 round1" contenteditable="true"></div>
-				<div class="div7 round1" contenteditable="true"></div>
-				<div class="div8 round1" contenteditable="true"></div>
+				<div class="div1 round1" contenteditable="true"><h5></h5></div>
+				<div class="div2 round1" contenteditable="true"><h5></h5></div>
+				<div class="div3 round1" contenteditable="true"><h5></h5></div>
+				<div class="div4 round1" contenteditable="true"><h5></h5></div>
+				<div class="div5 round1" contenteditable="true"><h5></h5></div>
+				<div class="div6 round1" contenteditable="true"><h5></h5></div>
+				<div class="div7 round1" contenteditable="true"><h5></h5></div>
+				<div class="div8 round1" contenteditable="true"><h5></h5></div>
 				<div class="div9 round2"><h5 id="winner"></h5></div>
 				<div class="div10 round2"><h5 id="winner"></h5></div>
 				<div class="div11 round2"><h5 id="winner"></h5></div>
@@ -202,8 +207,11 @@ export default class Tournament extends HTMLElement {
 		this.updateButtonState();
 		this.elements.forEach(element => {
 			element.addEventListener('input', function() {
+				let h5 = this.querySelector('h5');
 				if (this.innerText.length > 10) {
-					this.innerText = this.innerText.substring(0, 10);
+					h5.innerText = this.innerText.substring(0, 10);
+				} else {
+					h5.innerText = this.innerText;
 				}
 			});
 		});
