@@ -98,7 +98,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'users.middleware.JWTAuthenticationMiddleware',
-    'users.middleware.UpdateLastSeenMiddleware'
+    'users.middleware.UpdateLastSeenMiddleware',
 ]
 
 
@@ -129,6 +129,9 @@ ASGI_APPLICATION = 'pong.asgi.application'
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+		'MIDDLEWARE': [
+            'users.middleware.CustomChannelsMiddlewa',
+        ],
         'CONFIG': {
             "hosts": [('redis', 6379)],
         },

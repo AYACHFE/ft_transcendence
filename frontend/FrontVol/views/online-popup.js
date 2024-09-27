@@ -1,6 +1,7 @@
 export default class OnlinePopup extends HTMLElement {
 	constructor() {
-	  super();
+		super();
+		this.role = null;
 	  
 	  // Create a shadow DOM
 	  this.attachShadow({ mode: 'open' });
@@ -122,6 +123,7 @@ export default class OnlinePopup extends HTMLElement {
 	// Handle room creation
 	async createRoom() {
 		if (!this.roomId) {
+			this.role = 'host';
 			this.roomId = this.generateRoomId();
 			this.roomIdElement.textContent = `Room ID: ${this.roomId}`;
 			this.roomIdElement.style.display = 'block';
@@ -139,7 +141,9 @@ export default class OnlinePopup extends HTMLElement {
 			});
 	
 			if (response.ok) {
-				this.joinRoomById(this.roomId);
+				// setInterval(() => {
+					this.joinRoomById(this.roomId);
+				// }, 10000);
 			} else {
 				console.log("Error creating room");
 				const errorData = await response.json();
@@ -170,7 +174,8 @@ export default class OnlinePopup extends HTMLElement {
 		const roomExists = await this.checkRoomExists(roomId);
 
 		if (roomExists) {
-			this.joinRoomById(roomId); // Only join if the room exists
+			this.role = 'guest';
+			this.joinRoomById(roomId);
 		} else {
 			this.errorMessage.textContent = 'Room does not exist!';
 			this.errorMessage.style.display = 'block';
@@ -182,6 +187,7 @@ export default class OnlinePopup extends HTMLElement {
 		this.closeModal();
 		let game = document.createElement('online-game-page');
 		game.setAttribute('roomid', roomId);
+		game.setAttribute('role', this.role);
 
 		let parent = document.getElementsByClassName('center-console')[0];
 		if (parent) {
