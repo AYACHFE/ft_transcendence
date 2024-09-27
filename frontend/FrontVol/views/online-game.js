@@ -10,6 +10,8 @@ export default class Online_Game extends HTMLElement {
 		this.roomName = null;
 		this.counterInterval = null;
 		this.role = null;
+		this.username_1 = null;
+		this.username_2 = null;
 	}
 	
 	startCounter() {
@@ -93,6 +95,28 @@ export default class Online_Game extends HTMLElement {
 		// document.addEventListener('click', hideStartGameElements);
 		document.addEventListener('keypress', hideStartGameElements);
 		hideGameOver();
+		//---------------------------fetching-usernames-----------------------------------\\
+		fetch('http://localhost:8000/main/data/', 
+		{
+			method: "get",
+			credentials: "include"
+		})
+		.then(response => response.json())
+		.then(data => {
+			document.getElementsByClassName('user-1-name')[0].innerHTML = data.user_name;
+			if (role == 'host')
+				this.username_1 = data.user_name;
+			else
+				this.username_2 = data.user_name;
+			console.log('username:', data.user_name);	
+		})
+		this.gameSocket.onopen = function() {
+			this.send(JSON.stringify({
+				username_1: this.username_1 ,
+				username_2: this.username_2
+			}));
+		};
+
 		//---------------------------rackets-movemnt-----------------------------------\\
 		//ball data
 		const gameBoard = document.querySelector('.board');
@@ -399,7 +423,7 @@ export default class Online_Game extends HTMLElement {
 				role = data.role;
 				// const username = data.username;
 				console.log('Your role is:', role);
-				// console.log('Your username is:', username);
+				console.log('Your username is:', data);
 			}
 			if (data.type === 'player_disconnected') {
 				console.log('Player disconnected:', data.role);
@@ -458,7 +482,6 @@ export default class Online_Game extends HTMLElement {
 				}
 			});
 		}
-
 
 	}
 

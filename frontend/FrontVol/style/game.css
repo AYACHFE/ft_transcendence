@@ -19,6 +19,7 @@ game-page .parent {
 	/* padding: 50px; */
 	flex-direction: column;
 	/* aspect-ratio: 1/1; */
+	/* aspect-ratio: 2 / 1; */
 }
 online-game-page .top-bar ,
 game-page .top-bar {

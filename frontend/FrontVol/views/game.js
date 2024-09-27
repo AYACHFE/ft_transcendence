@@ -6,13 +6,13 @@ export default class Game extends HTMLElement {
             <div class="top-bar">
                 <div class="user-1">
                     <img class="tb-user-1-logo" src="../images/users/happy-2.svg" alt="#"> 
-                    <h2 class="user-1-name">enna</h2>
+                    <h2 class="user-1-name">User1</h2>
                 </div>
                 <div class="user-1-score"><h2>0</h2></div>
                 <div class="time"><h2>00:00</h2></div>
                 <div class="user-2-score"><h2>0</h2></div>
                 <div class="user-2">
-                    <h2 class="user-2-name">Aymane</h2>
+                    <h2 class="user-2-name">User2</h2>
                     <img class="tb-user-2-logo" src="../images/users/1_men.svg" alt="#">
                 </div>
             </div>
