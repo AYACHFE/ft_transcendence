@@ -61,6 +61,8 @@ the-tournament .parent h5 {
         text-align: center;
     }
 	the-tournament .parent .round1{ 
+		font-size: 1.2rem;
+		font-weight: 400;
 		text-align: center;		
     }
 

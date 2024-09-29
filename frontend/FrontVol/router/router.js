@@ -127,13 +127,15 @@ class Router {
     }
 
     async navigate(path) {
+        // Display the loading component
         this.route = this.routes.find(route => route.path === "/loading");
         this.render();
-
+    
+        // Simulate loading or fetch your data here
         const route = await this.loadDataForRoute(path);
-
-        
-        window.history.pushState({}, "", this.active_path);
+    
+        // After loading or fetching is done, update the path and route
+        window.history.pushState({}, "", path);
         this.route = route;
         this.render();
     }
@@ -194,3 +196,4 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     router.navigate(window.location.pathname);
 });
+

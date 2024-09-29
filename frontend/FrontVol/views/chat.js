@@ -443,14 +443,36 @@ class ProfilePage extends HTMLElement {
 
     this.user = JSON.parse(this.getAttribute("user")); 
       console.log("holla",this.user);
+      let firstname = this.user.firstname;
+      let lastname = this.user.lastname;
+      let username = this.user.username;
+
+      if (!firstname) {
+        firstname = "firstname";
+      }
+      if (!lastname) {
+        lastname = "lastname";
+      }
+      if (!username) {
+        username = "username";
+      }
     this.innerHTML = /*html*/`
     
-      <div id="profile" class="profile">
+    
+        <div id="profile" class="profile-container">
         <div class="modal-content">
           <span id="closeBtn">&times;</span>
-          <img src="../images/users/happy-1.svg" alt="profile picture">
-          <h2>${this.user.username}</h2>
-        </div>
+          <div class="profile-image">
+              <img src="../images/users/happy-1.svg" alt="Profile Photo" />
+          </div>
+          <div class="profile-details">
+              <div class="name">
+                  <h2 id="user-firstname">${firstname}</h2>
+                  <h2 id="user-lastname">${lastname}</h2>
+              </div>
+              <p id="username">@${username}</p>
+          </div>
+          </div>
       </div>
     `;
     
