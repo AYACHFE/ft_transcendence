@@ -106,12 +106,13 @@ export default class Online_Game extends HTMLElement {
 		.then(data => {
 			document.getElementsByClassName('user-1-name')[0].innerHTML = data.user_name;
 			this.username = data.user_name;	
+			// console.log('--+==+--', this.username);
+			// console.log('----', this.username);
+			this.gameSocket.send(JSON.stringify({
+				'type': 'set_username',
+				'username': this.username
+			}));
 		})
-		// this.gameSocket.addEventListener('open', (event) => {
-		// 	// Replace 'username' with the actual username
-		// 	const data = JSON.stringify({ username: this.username });
-		// 	this.gameSocket.send(data);
-		// });
 		
 		
 
@@ -431,21 +432,29 @@ export default class Online_Game extends HTMLElement {
 				gameOverMessage.style.display = 'block';
 				return;
 			}
+			if (data.type === 'username_set') {
+				console.log(`Your username is set: ${data.username}`);
+			}
+		
+			if (data.type === 'player_joined') {
+				console.log(`${data.username} joined as ${data.role}`);
+			}
+			if (data.type === 'both_players_joined') {
+				console.log(`Host: ${data.host_username}, Guest: ${data.guest_username}`);
+				// Update the UI to display the usernames
+			}
 			
 			if (data.paddle_pos && data.ball_pos && data.score && role != data.role) {
-				// console.log('Received message from the server:', data);
 				paddlePos = {
-				    player1: (data.paddle_pos.player1 / 100) * boardHeight,  // Convert player 1's paddle position to pixels
-				    player2: (data.paddle_pos.player2 / 100) * boardHeight   // Convert player 2's paddle position to pixels
+				    player1: (data.paddle_pos.player1 / 100) * boardHeight,
+				    player2: (data.paddle_pos.player2 / 100) * boardHeight 
 				};
 
 				ballPos = {
-				    x: (data.ball_pos.x / 100) * boardWidth,   // Convert ball's X position to pixels
-				    y: (data.ball_pos.y / 100) * boardHeight   // Convert ball's Y position to pixels
+				    x: (data.ball_pos.x / 100) * boardWidth,
+				    y: (data.ball_pos.y / 100) * boardHeight
 				};
 				
-				// paddlePos = data.paddle_pos;
-				// ballPos = data.ball_pos;
 				score = data.score;
 				updateGameUI(paddlePos, ballPos, score);
 				hideStartGameElements();

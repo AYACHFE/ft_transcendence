@@ -7,7 +7,7 @@ class PingPongConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = f'pingpong_{self.room_name}'
-        self.user = self.scope['user']
+        self.username = None
         self.role = None
 
         # Initialize the room in the dictionary if it doesn't exist
@@ -91,6 +91,35 @@ class PingPongConsumer(AsyncWebsocketConsumer):
                 'score': score
             }
         )
+         # usename set
+        if 'type' not in data:
+            return
+        if data['type'] == 'set_username':
+            self.username = data['username']  # Set the username
+
+            # Notify the player that their username has been set
+            await self.send(text_data=json.dumps({
+                'type': 'username_set',
+                'username': self.username
+            }))
+
+            # Optionally broadcast to the group that a player has joined with their username
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'player_joined',
+                    'username': self.username,
+                    'role': self.role
+                }
+            )
+
+    async def player_joined(self, event):
+        await self.send(text_data=json.dumps({
+            'type': 'player_joined',
+            'username': event['username'],
+            'role': event['role']
+        }))
+
 
     async def game_state(self, event):
         paddle_pos = event['paddle_pos']
@@ -119,4 +148,3 @@ class PingPongConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'type': 'player_disconnected',
         }))
-
