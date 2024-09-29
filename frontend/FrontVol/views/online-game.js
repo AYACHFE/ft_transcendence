@@ -10,8 +10,9 @@ export default class Online_Game extends HTMLElement {
 		this.roomName = null;
 		this.counterInterval = null;
 		this.role = null;
-		this.username_1 = null;
-		this.username_2 = null;
+		this.hostUsername = null;
+		this.guestUsername= null;
+		this.username = null;
 	}
 	
 	startCounter() {
@@ -104,18 +105,15 @@ export default class Online_Game extends HTMLElement {
 		.then(response => response.json())
 		.then(data => {
 			document.getElementsByClassName('user-1-name')[0].innerHTML = data.user_name;
-			if (role == 'host')
-				this.username_1 = data.user_name;
-			else
-				this.username_2 = data.user_name;
-			console.log('username:', data.user_name);	
+			this.username = data.user_name;	
 		})
-		this.gameSocket.onopen = function() {
-			this.send(JSON.stringify({
-				username_1: this.username_1 ,
-				username_2: this.username_2
-			}));
-		};
+		// this.gameSocket.addEventListener('open', (event) => {
+		// 	// Replace 'username' with the actual username
+		// 	const data = JSON.stringify({ username: this.username });
+		// 	this.gameSocket.send(data);
+		// });
+		
+		
 
 		//---------------------------rackets-movemnt-----------------------------------\\
 		//ball data
@@ -291,8 +289,6 @@ export default class Online_Game extends HTMLElement {
 		
 			
 			if (newChance) {
-				// if (role == 'guest')
-					console.log('new chance');
 				ball.style.left = `${ballX}px`;
 				ball.style.top = `${ballY}px`;
 				if (scoreP1 == maxScore || scoreP2 == maxScore) {
@@ -421,30 +417,47 @@ export default class Online_Game extends HTMLElement {
 			const data = JSON.parse(e.data);
 			if (data.type === 'assign_role') {
 				role = data.role;
-				// const username = data.username;
 				console.log('Your role is:', role);
-				console.log('Your username is:', data);
 			}
-			if (data.type === 'player_disconnected') {
-				console.log('Player disconnected:', data.role);
-				return;
-			}
+			// if (data.type === 'player_disconnected') {
+			// 	console.log('Player disconnected:', data.role);
+			// 	alert('Player disconnected');
+			// 	return;
+			// }
 			
 			if (data.paddle_pos && data.ball_pos && data.score && role != data.role) {
 				// console.log('Received message from the server:', data);
-				paddlePos = data.paddle_pos;
-				ballPos = data.ball_pos;
+				paddlePos = {
+				    player1: (data.paddle_pos.player1 / 100) * boardHeight,  // Convert player 1's paddle position to pixels
+				    player2: (data.paddle_pos.player2 / 100) * boardHeight   // Convert player 2's paddle position to pixels
+				};
+
+				ballPos = {
+				    x: (data.ball_pos.x / 100) * boardWidth,   // Convert ball's X position to pixels
+				    y: (data.ball_pos.y / 100) * boardHeight   // Convert ball's Y position to pixels
+				};
+				
+				// paddlePos = data.paddle_pos;
+				// ballPos = data.ball_pos;
 				score = data.score;
 				updateGameUI(paddlePos, ballPos, score);
 				hideStartGameElements();
 			}
 		};
 
-		const sendGameState = () => {
-			paddlePos = { player1: parseInt(leftRacket.style.top), player2: parseInt(rightRacket.style.top) };
-			ballPos = { x: ballX, y: ballY };
+		const sendGameState = () => {	
+			// Convert it ti percentage
+			const paddlePos = {
+			    player1: (parseInt(leftRacket.style.top) / boardHeight) * 100,
+			    player2: (parseInt(rightRacket.style.top) / boardHeight) * 100
+			};
+			
+			const ballPos = {
+			    x: (ballX / boardWidth) * 100,
+			    y: (ballY / boardHeight) * 100
+			};
+
 			score = { player1: scoreP1, player2: scoreP2 };
-			// console.log('Sending game state to the server:', paddlePos, ballPos, score);
 			this.gameSocket.send(JSON.stringify({
 				'role': role,
 				'paddle_pos': paddlePos,
@@ -508,13 +521,8 @@ export default class Online_Game extends HTMLElement {
 		if (this.counterInterval) {
 			clearInterval(this.counterInterval)
 		}
-		if (this.gameSocket) {
+		if (this.gameSocket)
 			this.gameSocket.close();
-			const index = this.allSockets.indexOf(this.gameSocket);
-            if (index > -1) {
-				this.allSockets.splice(index, 1);
-            }
-		}
 		this.deleteRoom(this.roomName);
 	}
 }

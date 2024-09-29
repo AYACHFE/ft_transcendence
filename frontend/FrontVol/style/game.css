@@ -126,7 +126,7 @@ game-page .middle-line {
 }
 online-game-page .middle-line img ,
 game-page .middle-line img {
-	width: 100%;
+	/* width: 100%; */
 	height: 100%;
 }
 online-game-page .middle-part ,
