@@ -6,6 +6,7 @@ export default class Chat extends HTMLElement {
     this.socket;
     this.users = [];
     this.originalUsers = [];
+    
     // this.innerHTML = "laoding ....";
   }
   async fetchData() {
@@ -116,6 +117,8 @@ export default class Chat extends HTMLElement {
       this.socket.send(JSON.stringify(datasend));
     }
   }
+
+  
 
   async connectedCallback() {
     await this.fetchData();
@@ -360,7 +363,7 @@ export default class Chat extends HTMLElement {
         blockusersfun();
       };
       profileButton.onclick = function () {
-        showprofileuser();
+        showprofileuser(user);
       };
     
       // Add an event listener to the dots div to toggle the delete button
@@ -399,15 +402,72 @@ export default class Chat extends HTMLElement {
       return userDiv;
     }
     
+    function showprofileuser(user) {
+      console.log("prifile function");
+      // document.querySelector("#chatid").innerHTML = `<profile-page user=${this.userdata}></profile-page>`;
+      // document.querySelector("#chatid").style.display = "none";
+      var profilepage = document.createElement("profile-page");
+      profilepage.setAttribute("user", JSON.stringify(user));
+      document.querySelector("chat-page").appendChild(profilepage);
+    }
       
     function blockusersfun() {
       console.log("block function");
     }
-    function showprofileuser() {
-      console.log("prifile function");
-    }
+    
     
   }
 }
 
+
+class ProfilePage extends HTMLElement {
+	constructor() {
+	  super();
+	  this.user = null;
+    this.closeBtn = null;
+    this.modal
+	}
+  openModal() {
+	  this.modal.style.display = 'block';
+    console.log("openmodal");
+	//   document.body.classList.add('blurred-background');
+	}
+  
+	// Close the modal and remove blur effect
+	closeModal() {
+	  this.modal.style.display = 'none';
+	  document.body.classList.remove('blurred-background'); // Remove blur
+	}
+  connectedCallback(){
+    // this.attachShadow({ mode: 'open' });
+
+    this.user = JSON.parse(this.getAttribute("user")); 
+      console.log("holla",this.user);
+    this.innerHTML = /*html*/`
+    
+      <div id="profile" class="profile">
+        <div class="modal-content">
+          <span id="closeBtn">&times;</span>
+          <img src="../images/users/happy-1.svg" alt="profile picture">
+          <h2>${this.user.username}</h2>
+        </div>
+      </div>
+    `;
+    
+
+    this.modal = document.querySelector('#profile');
+    this.closeBtn = document.querySelector('#closeBtn');
+
+    this.openModal();
+    this.closeBtn.onclick = this.closeModal.bind(this);
+    document.onclick = event => {
+      if (event.target == this.modal) {
+          this.closeModal();
+      }
+  };
+  }
+	
+  }
+
+customElements.define("profile-page", ProfilePage);
 customElements.define("chat-page", Chat);

@@ -1,7 +1,6 @@
 import Dashboard from "../views/dashboard.js";
 import Error404 from "../views/404.js";
 import Chat from "../views/chat.js";
-import Contact from "../views/contact.js";
 import Dash from "../views/dash.js";
 import Game from "../views/game.js";
 import Tournament from "../views/tournament.js";
@@ -33,11 +32,6 @@ export const Routes = [
     {
         path: '/login',
         component: Login,
-        auth: false
-    },
-    {
-        path: '/contact',
-        component: Contact,
         auth: false
     },
     {
@@ -106,13 +100,23 @@ class Router {
     render() {
         if (!this.route) {
             this.route = this.routes.find(route => route.path === "/error404");
+            const curr_page = new this.route.component();
+            let content_ = document.getElementById("app");
+            content_.innerHTML = '';
+            if (content_) {
+                content_.appendChild(curr_page);
+            }
+            return;
         }
 
         const curr_page = new this.route.component();
         let content_ = document.getElementById("app");
         content_.innerHTML = '';
 
-        if (this.active_path.startsWith("/dashboard")) {
+
+
+        let path = this.active_path.split("/");
+        if (path[1] == "dashboard") {
             content_.innerHTML = '<dashboard-page></dashboard-page>';
             content_ = document.getElementById("dashscripte");
         }

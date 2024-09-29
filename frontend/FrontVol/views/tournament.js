@@ -571,6 +571,7 @@ class GamePage extends HTMLElement {
 	}
 }
 
+
 customElements.define("game-tournament", GamePage);
 
 customElements.define("the-tournament", Tournament);

@@ -141,19 +141,25 @@ header img{
     color: #3DBDA7;
     font-size: 24px;
 }
-.second .login button{
+
+.second .login .botton{
+    display: flex;
+    justify-content: space-around;
+    margin-top: 30px;
+}
+.second .login a{
     color: #013E38;
     background-color: #D9D9D9;
-    font-size: 32px;
+    text-decoration: none;
+    font-size: 24px;
     font-weight: 600;
-    /* border: 4px solid #D9D9D9; */
     border: none;
     border-radius: 20px;
-    padding: 40px 120px 40px 120px;
+    padding: 40px 100px 40px 100px;
     box-shadow: 10px 10px 5px 0px #013E38;
 }
 
-.second .login button:hover {
+.second .login a:hover {
     /* color: #347b74; */
     background-color: #97b7b4a0;
     box-shadow: 5px 5px 5px 0px #013E38;

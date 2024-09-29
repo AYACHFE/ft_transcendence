@@ -4,17 +4,20 @@ export default class E404 extends HTMLElement {
     constructor() {super()}
     connectedCallback() {
         this.innerHTML = `
-        <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Document</title>
-            </head>
-            <body>
-                <h1>404ss</h1>
-            </body>
-            </html>
+
+        <div class="error404">
+            <div class="center">
+                <h1>404 - Page Invaded!</h1>
+                <h5>go back to your Home</h5>
+
+                <a href="/" id="back-home" class="nav__link"  data-link>
+                Back to Home
+                </a>
+            </div>
+        </div>
+         
         `;
+        
     }
 }
 
