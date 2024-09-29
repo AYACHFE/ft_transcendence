@@ -113,3 +113,10 @@ class PingPongConsumer(AsyncWebsocketConsumer):
                 'type': 'assign_role',
                 'role': event['role']
             }))
+
+    async def player_disconnected(self, event):
+        # Broadcast the disconnection event to WebSocket clients
+        await self.send(text_data=json.dumps({
+            'type': 'player_disconnected',
+        }))
+

@@ -419,11 +419,18 @@ export default class Online_Game extends HTMLElement {
 				role = data.role;
 				console.log('Your role is:', role);
 			}
-			// if (data.type === 'player_disconnected') {
-			// 	console.log('Player disconnected:', data.role);
-			// 	alert('Player disconnected');
-			// 	return;
-			// }
+			if (data.type === 'player_disconnected') {
+				console.log('Player disconnected:');
+				const gameOverMessage = document.querySelector('.game-over h2');
+				const middle_line = document.querySelector('.middle-line');
+				const ball = document.querySelector('.ball');
+				hideStartGameElements();
+				gameOverMessage.innerHTML = 'Player disconnected!';
+				middle_line.style.display = 'none';
+				ball.style.display = 'none';
+				gameOverMessage.style.display = 'block';
+				return;
+			}
 			
 			if (data.paddle_pos && data.ball_pos && data.score && role != data.role) {
 				// console.log('Received message from the server:', data);
