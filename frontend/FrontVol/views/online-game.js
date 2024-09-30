@@ -4,6 +4,7 @@
 export default class Online_Game extends HTMLElement {
     constructor() {super()
 		this.counterInterval = null;
+		this.innerHTML = `<loading-page></loading-page>`;
 	}
 	startCounter() {
 		let counter = 0;

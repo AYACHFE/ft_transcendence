@@ -7,7 +7,7 @@ export default class Chat extends HTMLElement {
     this.users = [];
     this.originalUsers = [];
     
-    // this.innerHTML = "laoding ....";
+    this.innerHTML = "<loading-page></loading-page>";
   }
   async fetchData() {
     try {
@@ -118,9 +118,23 @@ export default class Chat extends HTMLElement {
     }
   }
 
+  btnhighlightfun(){
+      document.querySelectorAll('.btn-highlight').forEach(el => {
+        el.classList.remove('btn-highlight');
+    });
+
+    const chatButton = document.getElementById('chatbtn');
+
+    if (chatButton) {
+        chatButton.classList.add('btn-highlight');
+    }
+  }
   
 
   async connectedCallback() {
+
+ this.btnhighlightfun();
+       
     await this.fetchData();
     this.innerHTML = `
 		<div class="parent" id="chatid">
@@ -425,7 +439,9 @@ class ProfilePage extends HTMLElement {
 	  super();
 	  this.user = null;
     this.closeBtn = null;
-    this.modal
+    this.modal;
+    this.innerHTML = `<loading-page></loading-page>`
+
 	}
   openModal() {
 	  this.modal.style.display = 'block';
@@ -442,7 +458,6 @@ class ProfilePage extends HTMLElement {
     // this.attachShadow({ mode: 'open' });
 
     this.user = JSON.parse(this.getAttribute("user")); 
-      console.log("holla",this.user);
       let firstname = this.user.firstname;
       let lastname = this.user.lastname;
       let username = this.user.username;

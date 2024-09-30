@@ -1,8 +1,23 @@
 import OnlinePopup from './online-popup.js';
 
 export default class Dash extends HTMLElement {
-    constructor() {super()}
+    constructor() {
+        super()
+        this.innerHTML = `<loading-page></loading-page>`
+    }
+    btnhighlightfun(){
+        document.querySelectorAll('.btn-highlight').forEach(el => {
+          el.classList.remove('btn-highlight');
+      });
+  
+      const chatButton = document.getElementById('dashbtn');
+  
+      if (chatButton) {
+          chatButton.classList.add('btn-highlight');
+      }
+    }
     connectedCallback() {
+        this.btnhighlightfun();
         this.innerHTML = `
         <html lang="en">
         <head>

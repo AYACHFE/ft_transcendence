@@ -1,6 +1,7 @@
 export default class Login extends HTMLElement {
   constructor() {
 	super();
+	this.innerHTML = `<loading-page></loading-page>`;
   }
 
   	async fetchCsrfToken() {

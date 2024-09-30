@@ -4,6 +4,9 @@ from channels.db import database_sync_to_async
 from .models import Message
 from django.utils import timezone
 from users.models import User
+# from django.contrib.auth.models import AnonymousUser
+# from channels.auth import get_user
+
 
 
 from django.db.models import Q
@@ -46,7 +49,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.room_group_name = f"chat_{self.sender}_{self.receiver}"
         
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+        # self.user = await self.get_user()
+        # if isinstance(self.user, AnonymousUser):
+        #     await self.close()
+        # else:
         await self.accept()
+            
+    # @database_sync_to_async
+    # def get_user(self):
+    #     return get_user(self.scope)
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)

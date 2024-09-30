@@ -7,6 +7,7 @@ export default class Tournament extends HTMLElement {
 		this.rounds = [];
 		this.currentMatch = 0;
 		this.currentRound = 1;
+		this.innerHTML = `<loading-page></loading-page>`;
 	}
 
 	startTournament() {
@@ -167,8 +168,21 @@ export default class Tournament extends HTMLElement {
 	updateButtonState() {
 		this.playButton.disabled = !this.areAllFilled();
 	}
+	btnhighlightfun(){
+		document.querySelectorAll('.btn-highlight').forEach(el => {
+		  el.classList.remove('btn-highlight');
+	  });
+  
+	  const chatButton = document.getElementById('tournamentbtn');
+  
+	  if (chatButton) {
+		  chatButton.classList.add('btn-highlight');
+	  }
+	}
+	
 
 	connectedCallback() {
+		this.btnhighlightfun();
 		this.innerHTML = /*html*/ `
 
 			<div class="parent">

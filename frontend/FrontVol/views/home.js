@@ -1,6 +1,8 @@
 
 export default class Home extends HTMLElement {
-    constructor() {super()}
+    constructor() {super()
+        this.innerHTML = `<loading-page></loading-page>`
+    }
     connectedCallback() {
         this.innerHTML = `
                 <html>

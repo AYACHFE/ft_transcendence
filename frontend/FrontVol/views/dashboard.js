@@ -3,6 +3,7 @@ export default class Dashboard extends HTMLElement {
     constructor() {
         super()
         this.userData = null
+        this.innerHTML = `<loading-page></loading-page>`
     }
 
     async  fetchCsrfToken() {
@@ -53,17 +54,17 @@ export default class Dashboard extends HTMLElement {
 					<img src="../images/Logo.svg">
 				<a>
                 <div class="nav-options" >
-                    <a href="/dashboard" class="btn-option flex-center btn-simple btn-highlight nav__link"  data-link>
+                    <a href="/dashboard" id="dashbtn" class="btn-option flex-center btn-simple btn-simple nav__link"  data-link>
                         <img src="../images/Home.svg">
                     </a>
                 
-                    <a href="/dashboard/tournament" class="btn-option flex-center btn-simple  nav__link"  data-link>
+                    <a href="/dashboard/tournament" id="tournamentbtn" class="btn-option flex-center btn-simple  nav__link"  data-link>
                         <img  src="../images/Users.svg">
                     </a>
-                    <a href="/dashboard/chat" class="btn-option flex-center btn-simple  nav__link" data-link>
+                    <a href="/dashboard/chat" id="chatbtn" class="btn-option flex-center btn-simple  nav__link " data-link>
                         <img src="../images/Sms.svg">
                     </a>
-					<a href="/dashboard/settings" class="btn-option flex-center btn-simple  nav__link" data-link>
+					<a href="/dashboard/settings" id="settingsbtn" class="btn-option flex-center btn-simple  nav__link" data-link>
                         <img src="../images/Settings.svg">
                     </a>
                 </div> 

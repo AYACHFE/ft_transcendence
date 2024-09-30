@@ -1,6 +1,7 @@
 export default class OnlinePopup extends HTMLElement {
 	constructor() {
 	  super();
+	  this.innerHTML = `<loading-page></loading-page>`;
 	  
 	  // Create a shadow DOM
 	  this.attachShadow({ mode: 'open' });

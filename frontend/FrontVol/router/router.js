@@ -111,15 +111,25 @@ class Router {
 
         const curr_page = new this.route.component();
         let content_ = document.getElementById("app");
+        
+        
         content_.innerHTML = '';
-
-
-
+        
         let path = this.active_path.split("/");
+        // console.log("start");
         if (path[1] == "dashboard") {
-            content_.innerHTML = '<dashboard-page></dashboard-page>';
+            // if (!content_.innerHTML.includes('<dashboard-page></dashboard-page>')) {
+                // console.log("new one");
+                content_.innerHTML = '<dashboard-page></dashboard-page>';
+            // }
             content_ = document.getElementById("dashscripte");
+            // content_.innerHTML = '';
         }
+        // else
+        // {
+        //     console.log("fresh");
+        //     content_.innerHTML = '';
+        // }
 
         if (content_) {
             content_.appendChild(curr_page);
@@ -127,14 +137,8 @@ class Router {
     }
 
     async navigate(path) {
-        // Display the loading component
-        this.route = this.routes.find(route => route.path === "/loading");
-        this.render();
-    
-        // Simulate loading or fetch your data here
         const route = await this.loadDataForRoute(path);
     
-        // After loading or fetching is done, update the path and route
         window.history.pushState({}, "", path);
         this.route = route;
         this.render();
@@ -184,15 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
             e.preventDefault();
             router.navigate(aTag.getAttribute('href'));
         }
-        const btnSimple = e.target.closest('.btn-simple');
-        if (btnSimple) {
-            console.log("holla");
-            document.querySelectorAll('.btn-highlight').forEach(el => {
-                el.classList.remove('btn-highlight');
-            });
-
-            btnSimple.classList.add('btn-highlight');
-        }
+        
     });
     router.navigate(window.location.pathname);
 });
