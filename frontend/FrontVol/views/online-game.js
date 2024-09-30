@@ -150,8 +150,46 @@ export default class Online_Game extends HTMLElement {
 		let moveDownLeft = false;
 
 		document.addEventListener('keydown', function(event) {
-			// if (role == 'host') {
+			if (role == 'host') {
 				// console.log(event.key, "role is :",role);
+			switch(event.key) {
+				case 'ArrowUp':
+					moveUpLeft = true;
+					break;
+				case 'ArrowDown':
+					moveDownLeft = true;
+					break;
+				case 'w':
+					moveUpLeft = true;
+					break;
+				case 's':
+					moveDownLeft = true;
+					break;
+			}
+			}
+		});
+
+		document.addEventListener('keyup', function(event) {
+			if (role == 'host') {
+				// console.log(event.key, "role is :",role);
+			switch(event.key) {
+				case 'ArrowUp':
+					moveUpLeft = false;
+					break;
+				case 'ArrowDown':
+					moveDownLeft = false;
+					break;
+				case 'w':
+					moveUpLeft = false;
+					break;
+				case 's':
+					moveDownLeft = false;
+					break;
+			}
+			}
+		});
+		document.addEventListener('keydown', function(event) {
+			if (role == 'guest') {
 			switch(event.key) {
 				case 'ArrowUp':
 					moveUpRight = true;
@@ -160,32 +198,32 @@ export default class Online_Game extends HTMLElement {
 					moveDownRight = true;
 					break;
 				case 'w':
-					moveUpLeft = true;
+					moveUpRight = true;
 					break;
 				case 's':
-					moveDownLeft = true;
+					moveDownRight = true;
 					break;
-			// }
+			}
 			}
 		});
 
 		document.addEventListener('keyup', function(event) {
-			// if (role == 'host') {
-			switch(event.key) {
-				case 'ArrowUp':
-					moveUpRight = false;
-					break;
-				case 'ArrowDown':
-					moveDownRight = false;
-					break;
-				case 'w':
-					moveUpLeft = false;
-					break;
-				case 's':
-					moveDownLeft = false;
-					break;
-			// }
-			}
+			if (role == 'guest') {
+				switch(event.key) {
+					case 'ArrowUp':
+						moveUpRight = false;
+						break;
+					case 'ArrowDown':
+						moveDownRight = false;
+						break;
+					case 'w':
+						moveUpRight = false;
+						break;
+					case 's':
+						moveDownRight = false;
+						break;
+				}
+				}
 		});
 
 		let newTopRightUp;
@@ -238,11 +276,10 @@ export default class Online_Game extends HTMLElement {
 		//--------------------------time-counter------------------------------------\\
 		
 
-		function stopCounter() {
-			// Stop the counter
-			if (counterInterval) {
-				clearInterval(counterInterval);
-				counterInterval = null;
+		const stopCounter = () => {
+			if (this.counterInterval) {
+				clearInterval(this.counterInterval);
+				this.counterInterval = null;
 			}
 		}
 
@@ -308,7 +345,7 @@ export default class Online_Game extends HTMLElement {
 					middle_line.style.display = 'none';
 					ball.style.display = 'none';
 					gameOverMessage.style.display = 'block';
-					gameEnded(scoreP1 == maxScore ? 1 : 2, scoreP1 == maxScore ? 2 : 1, 0, scoreP1 == maxScore ? 'win' : 'lose');
+					gameEnded(scoreP1 == maxScore ? this.host_username : this.guest_username, scoreP1 == maxScore ? this.guest_username : this.host_username, 0, scoreP1 == maxScore ? 'win' : 'lose');
 					stopCounter();
 					
 					return;
@@ -375,7 +412,7 @@ export default class Online_Game extends HTMLElement {
 
 		////////////////////////// updates the variables for the online game //////////////////////////
 
-		var maxScore = 10;
+		var maxScore = 3;
 
 		var paddlePos = { player1: parseInt(leftRacket.style.top), player2: parseInt(rightRacket.style.top) };
 		var ballPos = { x: ballX, y: ballY };
@@ -423,11 +460,10 @@ export default class Online_Game extends HTMLElement {
 			}
 			if (data.type === 'start_game') {
 				isMoving = true;
-				console.log('cooooookie ',data.cookies)
 				hideStartGameElements();
 			}
 			if (data.type === 'player_disconnected') {
-				console.log('Player disconnected:');
+				isMoving = false;
 				const gameOverMessage = document.querySelector('.game-over h2');
 				const middle_line = document.querySelector('.middle-line');
 				const ball = document.querySelector('.ball');
@@ -446,7 +482,7 @@ export default class Online_Game extends HTMLElement {
 				this.guest_username = data.guest;
 				document.getElementsByClassName('user-1-name')[0].innerHTML = this.host_username;
 				document.getElementsByClassName('user-2-name')[0].innerHTML = this.guest_username;
-				console.log(`+=+Host: ${this.host_username}, Guest: ${this.guest_username}`);
+				// console.log(`+=+Host: ${this.host_username}, Guest: ${this.guest_username}`);
 			}
 			
 			if (data.paddle_pos && data.ball_pos && data.score && role != data.role) {
@@ -492,7 +528,6 @@ export default class Online_Game extends HTMLElement {
 		////////////////////////// Save game result to the server //////////////////////////
 
 		function gameEnded(winnerId, loserId, duration, result) {
-			console.log('Game ended with result:', result);
 			const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrf-token')).split('=')[1];
 			fetch('api/game/save_game_result/', {
 				method: 'POST',
