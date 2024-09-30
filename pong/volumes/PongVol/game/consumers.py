@@ -24,10 +24,17 @@ class PingPongConsumer(AsyncWebsocketConsumer):
         # Assign roles based on the number of connected players in the room
         if len(self.rooms[self.room_name]) == 0:
             self.role = 'host'
-            self.rooms[self.room_name].append(self.channel_name)
+            self.rooms[self.room_name].append({'channel': self.channel_name, 'username': None, 'role': 'host'})
         elif len(self.rooms[self.room_name]) == 1:
             self.role = 'guest'
-            self.rooms[self.room_name].append(self.channel_name)
+            self.rooms[self.room_name].append({'channel': self.channel_name, 'username': None, 'role': 'guest'})
+            
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'start_game',
+                }
+            )
         else:
             # If more than 2 players try to connect, close the connection
             await self.close()
@@ -38,6 +45,12 @@ class PingPongConsumer(AsyncWebsocketConsumer):
             'type': 'assign_role',
             'role': self.role
         }))
+        
+        
+    async def start_game(self, event):
+        await self.send(text_data=json.dumps({
+            'type': 'start_game'
+    }))
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(
@@ -96,6 +109,10 @@ class PingPongConsumer(AsyncWebsocketConsumer):
             return
         if data['type'] == 'set_username':
             self.username = data['username']  # Set the username
+            # if self.role == 'host':
+            #     self.rooms[self.room_name].append({'username': self.username, 'role': 'host'})
+            # elif self.role == 'guest':
+            #     self.rooms[self.room_name].append({'username': self.username, 'role': 'guest'})
 
             # Notify the player that their username has been set
             await self.send(text_data=json.dumps({

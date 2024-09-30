@@ -94,7 +94,7 @@ export default class Online_Game extends HTMLElement {
 
 		// Add the function as an event listener for multiple events
 		// document.addEventListener('click', hideStartGameElements);
-		document.addEventListener('keypress', hideStartGameElements);
+		// document.addEventListener('keypress', hideStartGameElements);
 		hideGameOver();
 		//---------------------------fetching-usernames-----------------------------------\\
 		fetch('http://localhost:8000/main/data/', 
@@ -253,9 +253,9 @@ export default class Online_Game extends HTMLElement {
 		let speedY = 5; // Vertical speed
 
 		let isMoving = false;
-		document.addEventListener('keydown', function() {
-			isMoving = true;
-		});
+		// document.addEventListener('keydown', function() {
+		// 	isMoving = true;
+		// });
 		// document.addEventListener('click', function() {
 		// 	isMoving = true;
 		// });
@@ -413,12 +413,15 @@ export default class Online_Game extends HTMLElement {
 				}
 			}
 		}
-
 		this.gameSocket.onmessage = function(e) {
 			const data = JSON.parse(e.data);
 			if (data.type === 'assign_role') {
 				role = data.role;
 				console.log('Your role is:', role);
+			}
+			if (data.type === 'start_game') {
+				isMoving = true;
+				hideStartGameElements();
 			}
 			if (data.type === 'player_disconnected') {
 				console.log('Player disconnected:');
@@ -436,13 +439,13 @@ export default class Online_Game extends HTMLElement {
 				console.log(`Your username is set: ${data.username}`);
 			}
 		
-			if (data.type === 'player_joined') {
-				console.log(`${data.username} joined as ${data.role}`);
-			}
-			if (data.type === 'both_players_joined') {
-				console.log(`Host: ${data.host_username}, Guest: ${data.guest_username}`);
-				// Update the UI to display the usernames
-			}
+			// if (data.type === 'player_joined') {
+			// 	console.log(`${data.username} joined as ${data.role}`);
+			// }
+			// if (data.type === 'both_players_joined') {
+			// 	console.log(`Host: ${data.host_username}, Guest: ${data.guest_username}`);
+			// 	// Update the UI to display the usernames
+			// }
 			
 			if (data.paddle_pos && data.ball_pos && data.score && role != data.role) {
 				paddlePos = {

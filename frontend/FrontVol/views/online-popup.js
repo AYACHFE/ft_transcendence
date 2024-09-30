@@ -139,6 +139,7 @@ export default class OnlinePopup extends HTMLElement {
 			});
 	
 			if (response.ok) {
+				// Copy the room ID to the clipboard
 				navigator.clipboard.writeText(this.roomId)
 			
 				setTimeout(() => {
