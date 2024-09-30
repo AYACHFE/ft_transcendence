@@ -110,29 +110,29 @@ class PingPongConsumer(AsyncWebsocketConsumer):
                 'role': event['role']
             }))
 
-        # usename set
-        if data['type'] == 'set_username':
-            self.username = data['username']  # Set the username
+    #     # usename set
+    #     if data['type'] == 'set_username':
+    #         self.username = data['username']  # Set the username
 
-            # Notify the player that their username has been set
-            await self.send(text_data=json.dumps({
-                'type': 'username_set',
-                'username': self.username
-            }))
+    #         # Notify the player that their username has been set
+    #         await self.send(text_data=json.dumps({
+    #             'type': 'username_set',
+    #             'username': self.username
+    #         }))
 
-            # Optionally broadcast to the group that a player has joined with their username
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {
-                    'type': 'player_joined',
-                    'username': self.username,
-                    'role': self.role
-                }
-            )
+    #         # Optionally broadcast to the group that a player has joined with their username
+    #         await self.channel_layer.group_send(
+    #             self.room_group_name,
+    #             {
+    #                 'type': 'player_joined',
+    #                 'username': self.username,
+    #                 'role': self.role
+    #             }
+    #         )
 
-    async def player_joined(self, event):
-        await self.send(text_data=json.dumps({
-            'type': 'player_joined',
-            'username': event['username'],
-            'role': event['role']
-        }))
+    # async def player_joined(self, event):
+    #     await self.send(text_data=json.dumps({
+    #         'type': 'player_joined',
+    #         'username': event['username'],
+    #         'role': event['role']
+    #     }))

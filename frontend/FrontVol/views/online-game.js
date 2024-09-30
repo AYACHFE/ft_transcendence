@@ -12,6 +12,8 @@ export default class Online_Game extends HTMLElement {
 		this.role = null;
 		this.hostUsername = null;
 		this.guestUsername= null;
+		this.host_username = null;
+		this.guest_username = null;
 		this.username = null;
 	}
 	
@@ -323,7 +325,7 @@ export default class Online_Game extends HTMLElement {
 					const ballRect = ball.getBoundingClientRect();
 					const leftRacketRect = leftRacket.getBoundingClientRect();
 					const rightRacketRect = rightRacket.getBoundingClientRect();
-					if (ballX + ballDiameter + 10 > rect.right - ballDiameter) {
+					if (ballX + 10 + (ballDiameter*2)> rect.right ) {
 						if (ballRect.top + ballRect.height >= rightRacketRect.top && ballRect.top <= rightRacketRect.bottom)
 						{
 							speedX = -speedX;
@@ -335,7 +337,7 @@ export default class Online_Game extends HTMLElement {
 							newChance = true;
 						}
 					}
-					if (ballX < rect.left) {
+					if (ballX < rect.left-(ballDiameter/2)) {
 						
 						if (ballRect.top + ballRect.height >= leftRacketRect.top && ballRect.top <= leftRacketRect.bottom)
 						{
@@ -421,6 +423,7 @@ export default class Online_Game extends HTMLElement {
 			}
 			if (data.type === 'start_game') {
 				isMoving = true;
+				console.log('cooooookie ',data.cookies)
 				hideStartGameElements();
 			}
 			if (data.type === 'player_disconnected') {
@@ -438,14 +441,13 @@ export default class Online_Game extends HTMLElement {
 			if (data.type === 'username_set') {
 				console.log(`Your username is set: ${data.username}`);
 			}
-		
-			// if (data.type === 'player_joined') {
-			// 	console.log(`${data.username} joined as ${data.role}`);
-			// }
-			// if (data.type === 'both_players_joined') {
-			// 	console.log(`Host: ${data.host_username}, Guest: ${data.guest_username}`);
-			// 	// Update the UI to display the usernames
-			// }
+			if (data.type === 'both_usernames') {
+				this.host_username = data.host;
+				this.guest_username = data.guest;
+				document.getElementsByClassName('user-1-name')[0].innerHTML = this.host_username;
+				document.getElementsByClassName('user-2-name')[0].innerHTML = this.guest_username;
+				console.log(`+=+Host: ${this.host_username}, Guest: ${this.guest_username}`);
+			}
 			
 			if (data.paddle_pos && data.ball_pos && data.score && role != data.role) {
 				paddlePos = {

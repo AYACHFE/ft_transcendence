@@ -104,39 +104,48 @@ class PingPongConsumer(AsyncWebsocketConsumer):
                 'score': score
             }
         )
-         # usename set
+
+        # Handle username setting
         if 'type' not in data:
             return
-        if data['type'] == 'set_username':
+        if 'type' in data and data['type'] == 'set_username':
             self.username = data['username']  # Set the username
-            # if self.role == 'host':
-            #     self.rooms[self.room_name].append({'username': self.username, 'role': 'host'})
-            # elif self.role == 'guest':
-            #     self.rooms[self.room_name].append({'username': self.username, 'role': 'guest'})
+            for player in self.rooms[self.room_name]:
+                if player['channel'] == self.channel_name:
+                    player['username'] = self.username
 
-            # Notify the player that their username has been set
             await self.send(text_data=json.dumps({
                 'type': 'username_set',
                 'username': self.username
             }))
 
-            # Optionally broadcast to the group that a player has joined with their username
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {
-                    'type': 'player_joined',
-                    'username': self.username,
-                    'role': self.role
-                }
-            )
+            # Check if both players have set their usernames
+            if len(self.rooms[self.room_name]) == 2 and all(player['username'] for player in self.rooms[self.room_name]):
+                host = self.rooms[self.room_name][0]['username']
+                guest = self.rooms[self.room_name][1]['username']
+                
+                # Broadcast the usernames of both players to the group
+                await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {
+                        'type': 'both_usernames',
+                        'host': host,
+                        'guest': guest
+                    }
+                )
 
-    async def player_joined(self, event):
+
+
+    async def both_usernames(self, event):
+        host = event['host']
+        guest = event['guest']
+
+        # Send both usernames to the WebSocket client
         await self.send(text_data=json.dumps({
-            'type': 'player_joined',
-            'username': event['username'],
-            'role': event['role']
+            'type': 'both_usernames',
+            'host': host,
+            'guest': guest
         }))
-
 
     async def game_state(self, event):
         paddle_pos = event['paddle_pos']
