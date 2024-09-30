@@ -1,6 +1,8 @@
 
 export default class Home extends HTMLElement {
-    constructor() {super()}
+    constructor() {super()
+        this.innerHTML = `<loading-page></loading-page>`
+    }
     connectedCallback() {
         this.innerHTML = `
                 <html>
@@ -11,9 +13,9 @@ export default class Home extends HTMLElement {
                     <header>
                         <img class="logo" src="../images/SVGRepo_iconCarrier.svg" alt="">
                         <div class="header-right">
-                            <a href="/">Home</a>
+                            <a href="/" class="nav__link" data-link>Home</a>
                             <a   href="#about">About</a>
-                            <a  href="/dashboard" class="nav__link" data-link>Contact</a>
+                            <a  href="/dashboard" class="nav__link" data-link>Dashboard</a>
                             <a href="/login" class="nav__link" data-link>login</a>
                         </div>
                     </header>
@@ -36,8 +38,8 @@ export default class Home extends HTMLElement {
                                     software engineering students at 1337 coding school<br>
                                      and this is our projects.</p>
                                 <div class="botton">
-                                    <button id="one">About Us</button>
-                                    <button id="two">Contact</button>
+                                    <a id="one" href="#about">About Us</a>
+                                    <a id="two" href="/dashboard" class="nav__link" data-link>Dashboard</a>
                                 </div>
                             </div>
                         </div>

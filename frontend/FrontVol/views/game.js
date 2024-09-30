@@ -1,6 +1,20 @@
 export default class Game extends HTMLElement {
-    constructor() {super()}
-  connectedCallback() {
+    constructor() {super()
+        this.innerHTML = `<loading-page></loading-page>`
+    }
+    btnhighlightfun(){
+        document.querySelectorAll('.btn-highlight').forEach(el => {
+          el.classList.remove('btn-highlight');
+      });
+  
+      const chatButton = document.getElementById('dashbtn');
+  
+      if (chatButton) {
+          chatButton.classList.add('btn-highlight');
+      }
+    }
+    connectedCallback() {
+        this.btnhighlightfun();
     this.innerHTML = `  
         <div class="parent">
             <div class="top-bar">

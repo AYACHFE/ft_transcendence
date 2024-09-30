@@ -32,7 +32,7 @@ chat-page .chat .chattext {
 
 chat-page .user {
     position: relative;
-    width: 90%;
+    width: 80%;
     margin-top: 30px;
     border-radius: 50%;
     padding: 10px;
@@ -42,7 +42,7 @@ chat-page .user {
 
 chat-page .user.activeuser{
     background-color: #1a7264;
-    width: 80%; 
+    width: 85%; 
     border-radius: 30px; 
     padding-bottom: 20px;
     box-shadow: 0px 0px 15px rgba(0,0,0,0.2);
@@ -112,11 +112,45 @@ chat-page .user-ingame.active {
     bottom: -10%;
 }
 
-
-chat-page .flex-col {
-    display: flex;
-    flex-direction: column;
+chat-page .dots_block {
+    color: #FFFFFF;
+    position: absolute;
+    font-size: 1.8rem;
+    border-radius: 50%;
+    right: 50px;
+    top: 15px;
+    cursor: pointer;
 }
+
+chat-page .button_div {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+
+}
+chat-page .button_div .block_button{
+    position: absolute;
+    right: 0px;
+    bottom: 10px;
+    padding: 10px;
+    background-color: rgb(249, 74, 74);
+    color: white;
+    border: none;
+    border-radius: 10px;
+}
+chat-page .button_div .profile_button{
+    position: absolute;
+    right: 60px;
+    bottom: 10px;
+    padding: 10px;
+    background-color: #3DBDA7;
+    color: white;
+    border: none;
+    border-radius: 10px;
+}
+
+
+
 
 chat-page .user .username {
     display: flex;
@@ -301,3 +335,68 @@ chat-page .search{
     color: white;
     border-radius: 24px;
 }
+chat-page .profile-container {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+}
+
+chat-page .modal-content {
+    background-color: #00453F;
+    margin: 15% auto;
+    padding: 2%;
+    border-radius: 25px;
+    width: 30%;
+    height: auto;
+    text-align: center;
+    z-index: 2;
+    color: #3DBDA7;
+    padding-bottom: 3%;
+    display: flex;
+    flex-direction: row;
+}
+
+chat-page #closeBtn {
+    float: right;
+    cursor: pointer;
+}
+
+chat-page .profile-image img {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    margin-right: 20px;
+    border: 2px solid #105852;
+}
+
+chat-page .profile-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+}
+
+chat-page .name {
+    display: flex;
+    gap: 10px;
+}
+
+chat-page .name h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+}
+
+chat-page .profile-details p {
+    margin: 5px 0 0;
+    font-size: 18px;
+    color: #666;
+}
+
+

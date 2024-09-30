@@ -4,6 +4,9 @@ from channels.db import database_sync_to_async
 from .models import Message
 from django.utils import timezone
 from users.models import User
+from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.exceptions import DenyConnection
+
 
 
 from django.db.models import Q
@@ -15,7 +18,10 @@ class GetLastMessage(AsyncWebsocketConsumer):
         self.room_group_name = f"chat_{self.sender}_{self.receiver}"
         
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
-        await self.accept()
+        if self.scope['user'].is_anonymous:
+            await self.close()
+        else:
+            await self.accept()
         await self.chat_message({})
 
     async def disconnect(self, close_code):
@@ -39,14 +45,24 @@ class GetLastMessage(AsyncWebsocketConsumer):
                 "content": message.content, 
             }
 
+
+
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        
         self.sender = self.scope["url_route"]["kwargs"]["sender"]
         self.receiver = self.scope["url_route"]["kwargs"]["receiver"]
         self.room_group_name = f"chat_{self.sender}_{self.receiver}"
         
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
-        await self.accept()
+        
+
+        if self.scope['user'].is_anonymous:
+            await self.close()
+        else:
+            await self.accept()
+
+
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)

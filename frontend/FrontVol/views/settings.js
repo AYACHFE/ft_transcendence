@@ -1,9 +1,22 @@
   export default class Settings extends HTMLElement {
   constructor() {
     super();
-   
+    this.innerHTML = `<loading-page></loading-page>`;
   }
+
+  btnhighlightfun(){
+    document.querySelectorAll('.btn-highlight').forEach(el => {
+      el.classList.remove('btn-highlight');
+  });
+
+  const chatButton = document.getElementById('settingsbtn');
+
+  if (chatButton) {
+      chatButton.classList.add('btn-highlight');
+  }
+}
   connectedCallback() {
+    this.btnhighlightfun();
     this.innerHTML = `
         <div class="center-console">
         <div class="settings-frame">

@@ -1,6 +1,7 @@
 export default class Login extends HTMLElement {
   constructor() {
 	super();
+	this.innerHTML = `<loading-page></loading-page>`;
   }
 
   	async fetchCsrfToken() {
@@ -11,7 +12,8 @@ export default class Login extends HTMLElement {
 	return data.csrfToken;
 	}
   connectedCallback() {
-	this.innerHTML = /*html*/`
+
+	this.innerHTML = `
 		
 		<div class="container" id="container">
 		<div class="left-side form-container sign-in-container ">

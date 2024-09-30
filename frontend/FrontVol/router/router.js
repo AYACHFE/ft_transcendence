@@ -1,7 +1,6 @@
 import Dashboard from "../views/dashboard.js";
 import Error404 from "../views/404.js";
 import Chat from "../views/chat.js";
-import Contact from "../views/contact.js";
 import Dash from "../views/dash.js";
 import Game from "../views/game.js";
 import Tournament from "../views/tournament.js";
@@ -33,11 +32,6 @@ export const Routes = [
     {
         path: '/login',
         component: Login,
-        auth: false
-    },
-    {
-        path: '/contact',
-        component: Contact,
         auth: false
     },
     {
@@ -106,16 +100,36 @@ class Router {
     render() {
         if (!this.route) {
             this.route = this.routes.find(route => route.path === "/error404");
+            const curr_page = new this.route.component();
+            let content_ = document.getElementById("app");
+            content_.innerHTML = '';
+            if (content_) {
+                content_.appendChild(curr_page);
+            }
+            return;
         }
 
         const curr_page = new this.route.component();
         let content_ = document.getElementById("app");
+        
+        
         content_.innerHTML = '';
-
-        if (this.active_path.startsWith("/dashboard")) {
-            content_.innerHTML = '<dashboard-page></dashboard-page>';
+        
+        let path = this.active_path.split("/");
+        // console.log("start");
+        if (path[1] == "dashboard") {
+            // if (!content_.innerHTML.includes('<dashboard-page></dashboard-page>')) {
+                // console.log("new one");
+                content_.innerHTML = '<dashboard-page></dashboard-page>';
+            // }
             content_ = document.getElementById("dashscripte");
+            // content_.innerHTML = '';
         }
+        // else
+        // {
+        //     console.log("fresh");
+        //     content_.innerHTML = '';
+        // }
 
         if (content_) {
             content_.appendChild(curr_page);
@@ -123,13 +137,9 @@ class Router {
     }
 
     async navigate(path) {
-        this.route = this.routes.find(route => route.path === "/loading");
-        this.render();
-
         const route = await this.loadDataForRoute(path);
-
-        
-        window.history.pushState({}, "", this.active_path);
+    
+        window.history.pushState({}, "", path);
         this.route = route;
         this.render();
     }
@@ -178,15 +188,8 @@ document.addEventListener("DOMContentLoaded", () => {
             e.preventDefault();
             router.navigate(aTag.getAttribute('href'));
         }
-        const btnSimple = e.target.closest('.btn-simple');
-        if (btnSimple) {
-            console.log("holla");
-            document.querySelectorAll('.btn-highlight').forEach(el => {
-                el.classList.remove('btn-highlight');
-            });
-
-            btnSimple.classList.add('btn-highlight');
-        }
+        
     });
     router.navigate(window.location.pathname);
 });
+

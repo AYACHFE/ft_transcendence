@@ -37,8 +37,8 @@ the-tournament .div9 { grid-area: 1 / 3 / 3 / 4; border: 5px solid #3DBDA7; bord
 the-tournament .div10 { grid-area: 3 / 3 / 5 / 4; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; }
 the-tournament .div11 { grid-area: 5 / 3 / 7 / 4; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; }
 the-tournament .div12 { grid-area: 7 / 3 / 9 / 4; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; }
-the-tournament .div13 { grid-area: 6 / 5 / 8 / 6; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; }
-the-tournament .div14 { grid-area: 2 / 5 / 4 / 6; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; }
+the-tournament .div14 { grid-area: 6 / 5 / 8 / 6; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; }
+the-tournament .div13 { grid-area: 2 / 5 / 4 / 6; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; }
 the-tournament .div15 { grid-area: 4 / 7 / 6 / 8; border: 5px solid #3DBDA7; border-radius: 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; }
 the-tournament .div16 { grid-area: 1 / 2 / 3 / 3; }
 the-tournament .div17 { grid-area: 3 / 2 / 5 / 3; }
@@ -53,12 +53,17 @@ the-tournament .parent img {
         height: auto;
         object-fit: cover;
     }
-the-tournament .parent h3 {
-        font-size: 1.5em;
+the-tournament .parent h5 {
+        font-size: 1.2em;
         display: flex;
         justify-content: center;
         align-items: center;
         text-align: center;
+    }
+	the-tournament .parent .round1{ 
+		font-size: 1.2rem;
+		font-weight: 400;
+		text-align: center;		
     }
 
     the-tournament .play_game {
@@ -70,10 +75,33 @@ the-tournament .parent h3 {
         padding: 25px;
         margin: 0 auto; /* Center the button */
     }
-the-tournament .winner {
-        background-color: green;
-    }
+the-tournament .finalwinnertour{
+	background-color: #00453F;
+	margin: 15% auto;
+	padding: 3%;
+	border-radius: 25px;
+	width: 40%;
+	height: 30%;
+	text-align: center;
+	z-index: 2;
+	color: #3DBDA7;
+	padding-bottom: 3%;
+}
+the-tournament .finalwinnertour button {
+	padding: 15px 40px;
+	border: none;
+	border-radius: 5px;
+	background-color: #00453F;
+	color: #3DBDA7;
+	font-size: 1.1rem;
+	cursor: pointer;
+	background-color: white;
+  }
 
+  the-tournament .finalwinnertour h3 {
+	padding: 10px;
+
+  }
 
     
 

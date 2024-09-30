@@ -3,6 +3,7 @@ online-game-online{
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	
 }
 
  .parent {
@@ -44,18 +45,18 @@ online-game-online{
 	align-items: center;
 }
 
- .user-1-name ,  .user-2-name{
+online-game-page .user-1-name , .user-2-name{
 	color: rgb(255, 255, 255);
 	font-size: 2vw;
 	padding: 1%;
 }
 
- .tb-user-1-logo ,  .tb-user-2-logo{
+online-game-page .tb-user-1-logo ,  .tb-user-2-logo{
 	width: 30%;
 	padding: 0px 10px;
 }
 
- .user-1-score ,  .user-2-score{
+online-game-page .user-1-score ,  .user-2-score{
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -86,7 +87,7 @@ online-game-online{
 	box-shadow: inset 0 0 20px 1px #000000;
 	/* position: relative; */
 }
- .left-racket,  .right-racket {
+online-game-page .left-racket, .right-racket {
     padding: 0.5%;
     position: relative; /* Add this line */
 }
