@@ -1,7 +1,6 @@
-  export default class Settings extends HTMLElement {
+export default class Settings extends HTMLElement {
   constructor() {
     super();
-   
   }
   connectedCallback() {
     this.innerHTML = `
@@ -210,112 +209,7 @@ class Settings_language extends HTMLElement {
 class Settings_default extends HTMLElement {
   constructor() {
     super();
-    // this.mydata = null;
-    // this.tcheckifdatachange = this.tcheckifdatachange.bind(this);
   }
-
-  // ensertdata() {
-  //   var firstnameInput = document.getElementById("firstname");
-  //   var lastnameInput = document.getElementById("lastname");
-  //   var usernameInput = document.getElementById("username");
-  //   if (this.mydata && this.mydata.first_name) {
-  //     firstnameInput.placeholder = this.mydata.first_name;
-  //   } else {
-  //     firstnameInput.placeholder = "Enter your firstname";
-  //   }
-  //   if (this.mydata && this.mydata.last_name) {
-  //     lastnameInput.placeholder = this.mydata.last_name;
-  //   } else {
-  //     lastnameInput.placeholder = "Enter your lastname";
-  //   }
-  //   if (this.mydata && this.mydata.username) {
-  //     usernameInput.placeholder = this.mydata.username;
-  //   } else {
-  //     usernameInput.placeholder = "Enter your username";
-  //   }
-  // }
-
-  // somethingchanged() {
-  //   var firstnameValue = document.getElementById("firstname").value;
-  //   var lastnameValue = document.getElementById("lastname").value;
-  //   var usernameValue = document.getElementById("username").value;
-  //   console.log(document.getElementById('avatar_url'));
-  //   var avatar = document.getElementById('avatar_url').value;
-
-  //   var data = {
-  //     myId: this.mydata.id,
-  //     first_name: firstnameValue,
-  //     last_name: lastnameValue,
-  //     user_name: usernameValue,
-  //     avatar: avatar,
-  //   };
-
-  //   var jsonString = JSON.stringify(data);
-
-  //   fetch(`http://localhost:8000/settings/?myId=${this.mydata.id}`, {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: jsonString,
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       var newElement = document.createElement("p");
-  //         newElement.textContent = "your changes is sucsses";
-  //         newElement.id = "tempElement"; // Assign an id to the new element
-  //         document.getElementById("submit_text").appendChild(newElement);
-
-  //         setTimeout(function() {
-  //             var element = document.getElementById("tempElement");
-  //             if (element) {
-  //                 element.parentNode.removeChild(element);
-  //             }
-  //         }, 2000);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error:", error);
-  //     });
-  // }
-
-  // tcheckifdatachange() {
-  //   const form = document.getElementById("submitdefault");
-  //   if (form) {
-  //     form.addEventListener("click", (event) => {
-  //       event.preventDefault();
-  
-  //       // Check for data changes
-  //       const firstnameValue = document.getElementById("firstname").value;
-  //       const lastnameValue = document.getElementById("lastname").value;
-  //       const usernameValue = document.getElementById("username").value;
-  //       // const  avatar = document.querySelector('.avatar-option.active input[type="radio"]').value;
-  
-  //       if (
-  //         (firstnameValue !== "" && firstnameValue !== firstnameValue.placeholder) ||
-  //         (lastnameValue !== "" && lastnameValue !== lastnameValue.placeholder) ||
-  //         (usernameValue !== "" && usernameValue !== usernameValue.placeholder) 
-  //         // || avatar !== null
-  //       ) {
-  //         // Data has changed, call `somethingchanged`
-  //         this.somethingchanged();
-  //       } else {
-  //         // No data changes, display a message
-  //         const newElement = document.createElement("p");
-  //         newElement.textContent = "Please make some changes to your data.";
-  //         newElement.id = "tempElement";
-  //         document.getElementById("submit_text").appendChild(newElement);
-  
-  //         setTimeout(() => {
-  //           const element = document.getElementById("tempElement");
-  //           if (element) {
-  //             element.parentNode.removeChild(element);
-  //           }
-  //         }, 2000);
-  //       }
-  //     });
-  //   }
-  // }
-
   connectedCallback() {
     this.innerHTML = /*html*/`
             <form id="registration-form">
@@ -340,7 +234,8 @@ class Settings_default extends HTMLElement {
             </form>
             
         `;
-var mydata;
+    var mydata;
+
     fetch("http://localhost:8000/main/data/", {
       method: "get",
       credentials: "include",
@@ -397,15 +292,22 @@ var mydata;
           ) {
             somethingchanged(mydata);
           }
-      
-          var avatar_images = images.map(generateHTML).join("\n");
-      
-          var avatarchose = document.querySelector(".svg-avatar-selection");
-          if (avatarchose) avatarchose.innerHTML = avatar_images;
-      });
-    }}
+          else{
+            var newElement = document.createElement("p");
+            newElement.textContent = "change some data";
+            newElement.id = "tempElement"; // Assign an id to the new element
+            document.getElementById("submit_text").appendChild(newElement);
 
-
+            setTimeout(function() {
+                var element = document.getElementById("tempElement");
+                if (element) {
+                    element.parentNode.removeChild(element);
+                }
+            }, 2000);
+          }
+        });
+      }
+    }
 
     function somethingchanged(mydata) {
       var firstnameValue = document.getElementById("firstname").value;
@@ -435,49 +337,43 @@ var mydata;
       })
         .then((response) => response.json())
         .then((data) => {
-          this.mydata = data;
-          var defaultpage = document.getElementById("submitdefault");
-          if (defaultpage && this.mydata) {
-            this.ensertdata();
-            this.tcheckifdatachange();
-          }
+          console.log("Success:", data);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
         });
+    }
 
+    var images = [
+      "1_men.svg",
+      "2_men.svg",
+      "3_men.svg",
+      "4_men.svg",
+      "5_men.svg",
+      "6_men.svg",
+      "happy-1.svg",
+      "happy-2.svg",
+      "happy-3.svg",
+      "happy-4.svg",
+      "happy-5.svg",
+      "happy-6.svg",
+    ];
 
+    function generateHTML(image, index) {
+      var id = "avatar" + (index + 1);
+      var alt = "Avatar " + (index + 1);
+      return `
+        <div class="avatar-option">
+          <input type="radio" id="${id}" name="avatar" value="${image}" hidden>
+          <label for="${id}"><img src="../images/users/${image}" alt="${alt}" class="avatar-image"></label>
+        </div>
+      `;
+    }
     
-
+    var avatar_images = images.map(generateHTML).join("\n");
     
-
-    // var images = [
-    //   "1_men.svg",
-    //   "2_men.svg",
-    //   "3_men.svg",
-    //   "4_men.svg",
-    //   "5_men.svg",
-    //   "6_men.svg",
-    //   "happy-1.svg",
-    //   "happy-2.svg",
-    //   "happy-3.svg",
-    //   "happy-4.svg",
-    //   "happy-5.svg",
-    //   "happy-6.svg",
-    // ];
-
-    // function generateHTML(image, index) {
-    //   var id = "avatar" + (index + 1);
-    //   var alt = "Avatar " + (index + 1);
-    //   return `
-    //     <div class="avatar-option">
-    //       <input type="radio" id="${id} avatar_url" name="avatar" value="${image}" hidden>
-    //       <label for="${id}"><img src="../images/users/${image}" alt="${alt}" class="avatar-image"></label>
-    //     </div>
-    //   `;
-    // }
-    
-    // var avatar_images = images.map(generateHTML).join("\n");
-    
-    // var avatarchose = document.querySelector(".svg-avatar-selection");
-    // if (avatarchose) avatarchose.innerHTML = avatar_images;
+    var avatarchose = document.querySelector(".svg-avatar-selection");
+    if (avatarchose) avatarchose.innerHTML = avatar_images;
     
     var avatars = document.querySelectorAll(".avatar-option");
     avatars.forEach(function(avatar) {
@@ -490,9 +386,12 @@ var mydata;
       });
     });
 }
-  }
 }
+
 customElements.define("settings-page", Settings);
 customElements.define("settings-default", Settings_default);
 customElements.define("settings-security", Settings_security);
 customElements.define("settings-language", Settings_language);
+
+
+

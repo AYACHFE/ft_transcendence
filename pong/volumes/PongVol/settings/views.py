@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from rest_framework.response import Response
 
@@ -49,6 +50,10 @@ class SettingsViewSet(viewsets.ViewSet):
         profileImg = request.FILES.get('profile-img')
         if profileImg:
             user = request.user
+            # return Response({"1":user.avatar.url, "2":settings.DEFUALT_PROFILE_IMG_ROOT})
+            if user.avatar and user.avatar.url != settings.DEFUALT_PROFILE_IMG_ROOT:
+                user.avatar.delete(save=False)
+            # toDelImg = user.avatar
             user.avatar = ImageFile(profileImg)
             # user.save()
             

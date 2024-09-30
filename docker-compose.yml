@@ -6,8 +6,6 @@ services:
     image: pong
     container_name: pong
     restart: always
-    depends_on:
-      - database
     volumes:
       - PongVol:/usr/src/app
     ports:
@@ -66,19 +64,19 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /Users/${USER}/Desktop/ayac/pong/volumes/PongVol
+      device: /Users/${USER}/Desktop/docker_trans/pong/volumes/PongVol
       o: bind
   DatabaseVol:
     driver: local
     driver_opts:
       type: none
-      device: /Users/${USER}/Desktop/ayac/pong/volumes/DatabaseVol
+      device: /Users/${USER}/Desktop/docker_trans/pong/volumes/DatabaseVol
       o: bind
   FrontVol:
     driver: local
     driver_opts: 
       type: none
-      device: /Users/${USER}/Desktop/ayac/frontend/FrontVol
+      device: /Users/${USER}/Desktop/docker_trans/frontend/FrontVol
       o: bind
 
 

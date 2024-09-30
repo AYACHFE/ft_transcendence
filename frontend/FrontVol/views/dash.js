@@ -3,7 +3,7 @@ import OnlinePopup from './online-popup.js';
 export default class Dash extends HTMLElement {
     constructor() {super()}
     connectedCallback() {
-        this.innerHTML = `
+        this.innerHTML = /*html*/ `
         <html lang="en">
         <head>
             <meta charset="UTF-8">
@@ -48,8 +48,28 @@ export default class Dash extends HTMLElement {
         <div class="div3"> 
 
         </div>
-        <div class="div4">
-
+        <div class="search-board">
+            <div class="search-bar">
+                <input  class="search-input" placeholder="Search" maxlength="30" >
+                <button class="friends-accept-list">Requests</button>
+            </div>
+            <div class="search-result-board">
+                <div class="search-result-board-overflow">
+                    <div class="search-result-user">
+                        <div class="search-user-name">mehdiboulhoujjat1</div>
+                        <button id="follow-btn" value="1"> Follow </button>
+                    </div>
+                    <div class="search-result-user">
+                        <div class="search-user-name">mehdiboulhoujjat2</div>
+                        <button id="follow-btn" value="2"> Follow </button>
+                    </div>
+                    <div class="search-result-user">
+                        <div class="search-user-name">mehdiboulhoujjat3</div>
+                        <button id="follow-btn" value="3"> Follow </button>
+                    </div>
+                </div>
+            </div>
+            
         </div>
         <div class="leader-board">
             <div class="leader-board_div">
@@ -136,6 +156,40 @@ export default class Dash extends HTMLElement {
         </html>
         `;
 
+        // - GET THE DATA NEEDED FOR THE DASHBOARD -//
+        // fetch('/api/')
+        function fetch_resquests(){
+
+
+        }
+        let searchResultBoard = document.querySelector('.search-result-board-overflow')
+
+        let searchInput = document.querySelector(".search-input");
+        let friendsRequests = document.querySelector(".friends-accept-list");
+        searchInput.addEventListener("click", ()=>{
+            friendsRequests.style.width = "30%";
+            searchInput.style.width = "70%";
+        })
+        friendsRequests.addEventListener("click", ()=>{
+            friendsRequests.style.width = "70%";
+            searchInput.style.width = "30%";
+            fetch('/api/get-requests/')
+            .then(response =>response.json())
+            .then(data =>{
+                searchResultBoard.innerHTML = '';
+                data.forEach((item) =>{
+                    console.log('hello');
+                    searchResultBoard.innerHTML += /*html*/`
+                    <div class="search-result-user">
+                    <div class="search-user-name">${item.sender.username}</div>
+                    <button id="accept-btn" value="${item.id}"> Accept </button>
+                    <button id="reject-btn" value="${item.id}"> Reject </button>
+                    </div>
+                    `
+                })
+            })
+        })
+
 		let picker = document.querySelector('.picker-3');
 
 		picker.addEventListener('click', () => {
@@ -144,6 +198,63 @@ export default class Dash extends HTMLElement {
 		    document.body.appendChild(popup);
 		    popup.openModal();
 		});
+
+
+        searchInput.addEventListener('input', (event) => {
+            // console.log(event.target.value);
+            let searchingString = event.target.value;
+
+            if (searchingString.trim() !== "")
+            {
+                fetch(`/api/search/${searchingString}`)
+                .then(response => response.json())
+                .then(data => {
+                    searchResultBoard.innerHTML = "";
+                    data.forEach((item) =>{
+                            searchResultBoard.innerHTML += /*html*/`
+                            <div class="search-result-user">
+                            <div class="search-user-name">${item.username}</div>
+                            <button id="follow-btn" value="${item.id}"> Follow </button>
+                            </div>
+                            `
+                    })
+                })
+            }else{
+                //make a functions that runs the first time to get users
+            }
+            
+            let followBtns = document.querySelectorAll('#follow-btn');
+            followBtns.forEach(function(btn){
+                btn.addEventListener('click', ()=>{
+                    fetch(`/api/relations/send-friendship/${btn.value}`)
+                    .then(response => response.json())
+                    .then(data =>{
+                        
+                    })
+                })
+            });
+            let accept_btns = document.querySelectorAll('#accept-btn');
+            accept_btns.forEach(function(btn){
+                btn.addEventListener('click', ()=>{
+                    fetch(`/api/relations/accept-friendship/${btn.value}`)
+                    .then(response => response.json())
+                    .then(data =>{
+                        
+                    })
+                })
+            });
+            let reject_btns = document.querySelectorAll('#reject-btn');
+            reject_btns.forEach(function(btn){
+                btn.addEventListener('click', ()=>{
+                    fetch(`/api/relations/accept-friendship/${btn.value}`)
+                    .then(response => response.json())
+                    .then(data =>{
+                        
+                    })
+                })
+            });
+        })
+        
     }
 }
 

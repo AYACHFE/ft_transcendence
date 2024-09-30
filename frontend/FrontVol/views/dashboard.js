@@ -42,7 +42,7 @@ export default class Dashboard extends HTMLElement {
         .catch(error => console.log("error", error));
     }
     connectedCallback() {
-        this.innerHTML = `
+        this.innerHTML = /*html*/`
                 <head>
                     <link rel="stylesheet" href="../style/dashboard.css">
                     <meta name="csrf-token" content="">
@@ -76,7 +76,7 @@ export default class Dashboard extends HTMLElement {
                     <div id="user_name" class="header-name">
                         
                     </div>
-                    <input class="header-search" type="text" placeholder="Search For Friends">
+                    
                     <div class="header-notifications">
                         <div class="notifications-widget"></div>
                         <div class="notifications-widget"></div>
@@ -189,8 +189,7 @@ export default class Dashboard extends HTMLElement {
             }).then(response => response.json())
             .then(data => {
                 document.getElementById("user_name").innerHTML = data.user_name;
-                document.getElementById("proPhoto").src = '';
-                document.getElementById("proPhoto").src = '/api/profile-img/';
+                document.getElementById("proPhoto").src = data.avatar_url;
                 
                 this.userData = data;
             })

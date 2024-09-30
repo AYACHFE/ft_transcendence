@@ -1,6 +1,12 @@
+from http.client import ImproperConnectionState
+import random
+from re import U
+import string
+from turtle import goto
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from django.conf import settings
+from users.functions import gen_token
 
 
 from django.http import JsonResponse
@@ -59,7 +65,7 @@ def google_auth(request):
 
 
 
-from users.functions import gen_token
+
 @api_view(['GET'])
 def google_dauth(request):
     code = request.GET.get('code')
@@ -90,27 +96,27 @@ def google_dauth(request):
         if not email:
             return JsonResponse({'error': 'Failed to retrieve email from Google'}, status=400)
         
-        user_name = user_info.get('email', email).split('@')[0] #Get the first part of the email to be the username
-
         user, created = User.objects.get_or_create(email=email, defaults={
-            'username': user_info.get('email', email),
-            'name': user_name,
-            # Set a random password, since they won't use it for OAuth login
-            'password': User.objects.make_random_password(),
+            'username': email,
         })
-
+        
         if created:
-            pass
+            user.set_password(User.objects.make_random_password())
+            mail_cut = user_info.get('email', email).split('@')[0]
+            user_name = mail_cut + "_" + ''.join(random.choices(string.digits, k=4))
+            for i in range(3):
+                if User.objects.filter(username = user_name).count() == 0:
+                    break
+                user_name = mail_cut + "_" + ''.join(random.choices(string.digits, k=4))
+
+            user.username = user_name
+            user.save()
 
         # Generate a JWT token for the user
         jwt_token = gen_token(user)
 
         # Return the JWT token in the response
         response =  HttpResponseRedirect('/dashboard')
-        response.data = {
-            'token': jwt_token,
-            'detail': 'OAuth login successful'
-        }
         response.set_cookie(key='jwt', value=jwt_token, httponly=True)
         return response
     else:

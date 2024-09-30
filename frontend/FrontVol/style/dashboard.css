@@ -84,6 +84,8 @@ dashboard-page .notifications-widget {
     background-color: #00453F;
 }
 
+
+/* ------ HEADER SEARCH------ */
 dashboard-page .header-search {
     width: 30%;
     height: 70%;
@@ -94,6 +96,9 @@ dashboard-page .header-search {
     padding: 0 1% 0;
     border-radius: 4vw;
 }
+
+
+/* ------ HEADER SEARCH END------ */
 
 dashboard-page .side-panel {
     flex: 1;

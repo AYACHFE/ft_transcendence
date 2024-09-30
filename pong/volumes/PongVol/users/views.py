@@ -124,58 +124,33 @@ def confirm_otp(request):
 
 
 from django.http import HttpResponse
-
+@auth_only
 def send_mail(request):
-    if request.method == 'POST':
+    email = Emailing(request.user.email)
+    if email.send_mail():
+        return render(request, "verify_email.html")
+    else:
+        return JsonResponse({"message":"error at sending"})
 
-        data = json.loads(request.body)
-        mail = data.get('email')
-        exist = User.objects.filter(email = mail).first()
-        if not exist:
-            return JsonResponse({"message":"email not found"})
-        else:
-            email = Emailing(mail)            
-            if (email.send_mail()):
-                return JsonResponse({"message":"sucess"})
-            else:
-                return JsonResponse({"message":"error at sending"})
-
-
-
-
-
-
+@auth_only
 def change_pass(request):
     data = json.loads(request.body)
-    if not data:
-        return JsonResponse({"message":"Invalid data"})
-    # return JsonResponse({"message":data})
-    ver_code = verification_code.objects.get(code = data.get('code'))
-    if not ver_code.is_valid():
-        return JsonResponse({"message":"Invalid code"})
-    
-    
-    userUpdate = User.objects.get(email = ver_code.email)
-    userUpdate.set_password(data.get('new_password'))
-    userUpdate.save()
-    ver_code.delete()
-    return JsonResponse({"message":"sucess"} )
-    # try:
-    #     ver_code = verification_code.objects.get(email = request.user.email, code = data['code'])
-    #     if not ver_code.is_valid():
-    #         raise Exception("verification code is not valid check timestaps and ")
+    try:
+        ver_code = verification_code.objects.get(email = request.user.email, code = data['code'])
+        if not ver_code.is_valid():
+            raise Exception("verification code is not valid check timestaps and ")
         
-    #     userUpdate = request.user
-    #     userUpdate.set_password(data['new_password'])
-    #     userUpdate.save()
-    #     ver_code.delete()
-    # except :
-    #     return JsonResponse({ "ok":False, "message":"Something went wrong!"} )
+        userUpdate = request.user
+        userUpdate.set_password(data['new_password'])
+        userUpdate.save()
+        ver_code.delete()
+    except :
+        return JsonResponse({ "ok":False, "message":"Something went wrong!"} )
 
-    # return JsonResponse({"ok": True, "message":"sucess!"} )
+    return JsonResponse({"ok": True, "message":"sucess!"} )
 
 @auth_only
 def profile_img(request):
     image_data = open('./'+request.user.avatar.url, "rb").read()
     return HttpResponse(image_data, content_type="image/jpeg")
-
+    pass
