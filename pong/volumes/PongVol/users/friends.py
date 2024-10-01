@@ -89,3 +89,22 @@ class RequestsOnWait(AuthRequired, generics.ListAPIView):
     serializer_class = friendsSerializer
     def get_queryset(self):
         return friends.objects.filter(receiver = self.request.user)
+
+
+@api_view(['GET'])
+def block_friendship(request, target_id):
+    user = User.objects.filter(id = target_id)
+    a = Q(sender=request.user)
+    b = Q(receiver=user)
+    c = Q(receiver=request.user)
+    d = Q(sender=user)
+    friendship = friends.objects.filter((a&b)|(c&d)).first()
+    if friendship:
+        if friendship.blocked == True:
+            return Response({"error":"Your'e not supposed to do that!"}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            friendship.blocked = True
+            friendship.save()
+    else:
+        friendship = friends.objects.create(sender = request.user, receiver = user)
+    return Response({"message":friendsSerializer(friendship).data})
