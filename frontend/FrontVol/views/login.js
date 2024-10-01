@@ -42,7 +42,7 @@ export default class Login extends HTMLElement {
 						<a href="https://accounts.google.com/o/oauth2/auth?client_id=36859905646-l3ad3gji2poscl1u0r2osg2qmnehq405.apps.googleusercontent.com&redirect_uri=http://localhost:8080/accounts/google/login/callback/&response_type=code&scope=profile email" >
 							<img src="../images/google.svg" >
 						</a>
-						<a href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-c3cfbbf364ffa0bc755768ee93cb825bfc1a1efa5d007ddaf280596f1c8faba1&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fapi%2F42%2Fcallback%2F&response_type=code">
+						<a href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-6f00f915a8502d3af9d46351766176e32619718d006f2088cc14307c7efbbb8e&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fapi%2F42%2Fcallback%2F&response_type=code">
 							<img src="../images/42.svg" >
 						</a>
 				</div>

@@ -84,6 +84,8 @@ dashboard-page .notifications-widget {
     background-color: #00453F;
 }
 
+
+/* ------ HEADER SEARCH------ */
 dashboard-page .header-search {
     width: 30%;
     height: 70%;
@@ -94,6 +96,9 @@ dashboard-page .header-search {
     padding: 0 1% 0;
     border-radius: 4vw;
 }
+
+
+/* ------ HEADER SEARCH END------ */
 
 dashboard-page .side-panel {
     flex: 1;
@@ -188,14 +193,14 @@ dashboard-page .upper-section {
 
 dashboard-page .profile-photo {
     width: 80%;
-    padding-top: 10%;
+    margin-top: 10%;
     border-radius: 50%;
     overflow: hidden;
+    aspect-ratio: 1/1;
 }
 
 dashboard-page .profile-photo img {
     width: 100%;
-    border-radius: 50%;
 }
 
 dashboard-page .upper-section-icone {
@@ -360,11 +365,6 @@ dashboard-page .center-console {
 }
 
 chat-page  {
-    width: 100%;
-    height: 100%;
-}
-
-game-page{
     width: 100%;
     height: 100%;
 }

@@ -64,7 +64,7 @@ export default class Dashboard extends HTMLElement {
                     <div id="user_name" class="header-name">
                         
                     </div>
-                    <input class="header-search" type="text" placeholder="Search For Friends">
+                    
                     <div class="header-notifications">
                         <div class="notifications-widget"></div>
                         <div class="notifications-widget"></div>
@@ -177,14 +177,25 @@ export default class Dashboard extends HTMLElement {
             }).then(response => response.json())
             .then(data => {
                 document.getElementById("user_name").innerHTML = data.user_name;
-                document.getElementById("proPhoto").src = '';
-                document.getElementById("proPhoto").src = '/api/profile-img/';
+                document.getElementById("proPhoto").src = data.avatar_url;
                 
                 this.userData = data;
             })
+            
+        
+        var buttons = document.querySelectorAll(".btn-option");
+        buttons.forEach(function(btn){
+            btn.addEventListener('click', function(){
+                buttons.forEach(function(btn_rem){
+                    btn_rem.classList.remove("btn-highlight");
+                    btn_rem.classList.add('btn-simple');
+                });
+                this.classList.remove('btn-simple')
+                this.classList.add("btn-highlight");
+            });
+        });
 
-
-        document.getElementById("logout_btn").addEventListener("click", this.logout_post);
+        document.getElementById("logout_btn").onclick =  (e) => this.logout_post(e);
         this.fetchCsrfToken().then(csrfToken => {
             document.querySelector('meta[name="csrf-token"]').setAttribute('content', csrfToken);
         });        

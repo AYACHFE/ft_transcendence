@@ -11,7 +11,7 @@ class NotAuthMixin(LoginRequiredMixin):
 class AuthRequired(LoginRequiredMixin):
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return HttpResponseRedirect("/dashboard/")
+            return HttpResponseRedirect("/login")
         return super().dispatch(request, *args, **kwargs)
 
 

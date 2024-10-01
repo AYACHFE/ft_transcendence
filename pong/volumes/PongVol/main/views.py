@@ -1,3 +1,4 @@
+from django.dispatch import receiver
 from django.shortcuts import render, redirect
 from django.http.response import JsonResponse
 from django.template.loader import render_to_string
@@ -5,6 +6,10 @@ from users.models import User
 from django.utils import timezone
 from users.serializers import UserSerializer
 from users.decorators import auth_only
+from users.friends import friends
+from rest_framework import generics
+from users.mixins import AuthRequired
+
 # Create your views here.
 
 
@@ -33,6 +38,7 @@ def GameView(request):
     css = 'static/css/game.css'
     js = 'static/js/game.js'
     return JsonResponse({'content':string, 'css': css, 'js': js})
+    
 
 
 @auth_only
@@ -43,8 +49,7 @@ def DataView(request):
     first_name = request.user.first_name
     last_name = request.user.last_name
     username = request.user.username
-
-    avatar = request.user.avatar
+    avatar_url = request.user.avatar.url
     data = JsonResponse({
         'message':'message from DataView',
         'user_name': username,
@@ -53,6 +58,8 @@ def DataView(request):
         'first_name': first_name,
         'last_name': last_name,
         'username': username,
-        # 'avatar': avatar_url,
+        'avatar_url': avatar_url,
     })
     return data
+
+

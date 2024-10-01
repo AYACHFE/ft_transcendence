@@ -99,15 +99,15 @@ export default class Online_Game extends HTMLElement {
 		// document.addEventListener('keypress', hideStartGameElements);
 		hideGameOver();
 		//---------------------------fetching-usernames-----------------------------------\\
-		fetch('http://localhost:8000/main/data/', 
-		{
-			method: "get",
-			credentials: "include"
-		})
-		.then(response => response.json())
-		.then(data => {
-			this.username = data.user_name;
-		})
+		// fetch('http://localhost:8000/main/data/', 
+		// {
+		// 	method: "get",
+		// 	credentials: "include"
+		// })
+		// .then(response => response.json())
+		// .then(data => {
+		// 	this.username = data.user_name;
+		// })
 		
 		
 
@@ -224,8 +224,6 @@ export default class Online_Game extends HTMLElement {
 		let newTopLeftUp;
 		let newTopLeftDown;
 		setInterval(function() {
-			// const leftRacket = document.querySelector('.left-racket img');
-			// const rightRacket = document.querySelector('.right-racket img');
 			const step = 10; // Change this value to make the rackets move faster or slower
 
 			if (role == 'guest') {
@@ -264,7 +262,7 @@ export default class Online_Game extends HTMLElement {
 				}
 			}
 
-		}, 20); // Change this value to make the rackets move smoother or choppier
+		}, 15); // Change this value to make the rackets move smoother or choppier
 
 		//--------------------------time-counter------------------------------------\\
 		
@@ -314,7 +312,7 @@ export default class Online_Game extends HTMLElement {
 			}
 			if (!newTime) {
 				newTime = true;
-				this.startCounter();
+				// this.startCounter();
 			}
 			// console.log('ballX', ballX, 'ballY', ballY);
 			scoreP1_html.innerHTML = scoreP1;
@@ -338,7 +336,13 @@ export default class Online_Game extends HTMLElement {
 					middle_line.style.display = 'none';
 					ball.style.display = 'none';
 					gameOverMessage.style.display = 'block';
-					gameEnded(scoreP1 == maxScore ? this.host_username : this.guest_username, scoreP1 == maxScore ? this.guest_username : this.host_username, 0, scoreP1 == maxScore ? 'win' : 'lose');
+					// gameEnded(
+					// 	scoreP1 == maxScore ? this.host_username : this.guest_username, // winner username
+					// 	scoreP1 == maxScore ? this.guest_username : this.host_username, // loser username
+					// 	new Date().toISOString(), // time
+					// 	scoreP1 == maxScore ? scoreP1 : scoreP2, // winner score
+					// 	scoreP1 == maxScore ? scoreP2 : scoreP1 // loser score
+					//   );
 					stopCounter();
 					
 					return;
@@ -445,7 +449,7 @@ export default class Online_Game extends HTMLElement {
 				}
 			}
 		}
-		this.gameSocket.onmessage = function(e) {
+		this.gameSocket.onmessage = (e) => {
 			const data = JSON.parse(e.data);
 			if (data.type === 'assign_role') {
 				role = data.role;
@@ -453,9 +457,10 @@ export default class Online_Game extends HTMLElement {
 			}
 			if (data.type === 'start_game') {
 				isMoving = true;
+				this.startCounter();
 				hideStartGameElements();
-				this.host_username = data.host;
-				this.guest_username = data.guest;
+				this.host_username = data.host.username;
+				this.guest_username = data.guest.username;
 				// console.log(`Host: ${this.host_username}, Guest: ${this.guest_username}`);
 				//check if the username length is greater than 5 characters if it is show 5 characters and add '...'
 				if (this.host_username.length > 5) {
@@ -468,9 +473,14 @@ export default class Online_Game extends HTMLElement {
 				} else {
 					document.getElementsByClassName('user-2-name')[0].innerHTML = this.guest_username;
 				}
-						
-				// document.getElementsByClassName('user-1-name')[0].innerHTML = this.host_username;
-				// document.getElementsByClassName('user-2-name')[0].innerHTML = this.guest_username;
+				
+				const host = data.host;
+        		const guest = data.guest;
+				const host_img_element = document.getElementsByClassName('tb-user-1-logo')[0];
+				
+				host_img_element.src = host.avatar;
+				const guest_img_element = document.getElementsByClassName('tb-user-2-logo')[0];
+				guest_img_element.src = guest.avatar;
 			}
 			if (data.type === 'player_disconnected') {
 				isMoving = false;
@@ -478,6 +488,7 @@ export default class Online_Game extends HTMLElement {
 				const middle_line = document.querySelector('.middle-line');
 				const ball = document.querySelector('.ball');
 				hideStartGameElements();
+				stopCounter();
 				gameOverMessage.innerHTML = 'Player disconnected!';
 				middle_line.style.display = 'none';
 				ball.style.display = 'none';
@@ -537,19 +548,20 @@ export default class Online_Game extends HTMLElement {
 
 		////////////////////////// Save game result to the server //////////////////////////
 
-		function gameEnded(winnerId, loserId, duration, result) {
+		function gameEnded(winnerusername, loserusername, time, winnerScore, loserScore) {
 			const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrf-token')).split('=')[1];
-			fetch('api/game/save_game_result/', {
+			fetch('/api/game/save_game_result/', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
 					'X-CSRFToken': csrftoken
 				},
 				body: new URLSearchParams({
-					'winner_id': winnerId,
-					'loser_id': loserId,
-					'duration': duration,
-					'result': result
+					'winner_username': winnerusername,
+					'loser_username': loserusername,
+					'time': time,
+					'winner_score': winnerScore,
+					'loser_score': loserScore,
 				})
 			})
 			.then(response => response.json())
@@ -568,7 +580,7 @@ export default class Online_Game extends HTMLElement {
 	async deleteRoom(roomId) {
 		this.deleted = true;
 		const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrf-token')).split('=')[1];
-		const response = await fetch(`api/game/delete-room/${roomId}/`, {
+		const response = await fetch(`/api/game/delete-room/${roomId}/`, {
 			method: 'DELETE',
 			headers: {
 				'X-CSRFToken':csrftoken, 

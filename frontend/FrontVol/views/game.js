@@ -1,7 +1,33 @@
 export default class Game extends HTMLElement {
     constructor() {super()
         this.innerHTML = `<loading-page></loading-page>`
+        this.counterInterval = null;
     }
+    startCounter() {
+        let counter = 0;
+        this.counterInterval = setInterval(function() {
+            counter++;
+
+            // Calculate the number of minutes and seconds
+            let minutes = Math.floor(counter / 60);
+            let seconds = counter % 60;
+
+            // Pad the minutes and seconds with leading zeros if they are less than 10
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+
+            // Update the time element
+            document.querySelector('.time h2').innerHTML = minutes + ':' + seconds;
+        }, 1000);
+    }
+    stopCounter() {
+		// Stop the counter
+		if (this.counterInterval) {
+			clearInterval(this.counterInterval);
+			this.counterInterval = null;
+		}
+	}
+
     btnhighlightfun(){
         document.querySelectorAll('.btn-highlight').forEach(el => {
           el.classList.remove('btn-highlight');
@@ -76,10 +102,14 @@ const rightRacket = document.querySelector('.right-racket img');
 var leftRacketRect;
 var rightRacketRect;
 
-var boardWidth = gameBoard.clientWidth;
-var boardHeight = gameBoard.clientHeight;
+let boardWidth = gameBoard.clientWidth;
+let boardHeight = gameBoard.clientHeight;
 var rect = gameBoard.getBoundingClientRect();
 //
+window.addEventListener('load', () => {
+    boardHeight = gameBoard.clientHeight;
+    boardWidth = gameBoard.clientWidth;
+});
 window.addEventListener('resize', function() {
     boardHeight = gameBoard.clientHeight;
     boardWidth = gameBoard.clientWidth;
@@ -202,14 +232,14 @@ const initrightRacketRect = rightRacket.getBoundingClientRect();
 var newChance;
 var newTime = false;
 var maxScore = 3;
-async function moveBall() {
+const moveBall = async () => {
 	if (!isMoving) {
 		requestAnimationFrame(moveBall);
         return;
     }
 	if (!newTime) {
 		newTime = true;
-		startCounter();
+		this.startCounter();
 	}
 	scoreP1_html.innerHTML = scoreP1;
 	scoreP2_html.innerHTML = scoreP2;
@@ -227,8 +257,7 @@ async function moveBall() {
 			middle_line.style.display = 'none';
 			ball.style.display = 'none';
 			gameOverMessage.style.display = 'block';
-			stopCounter();
-			gameEnded(scoreP1 == maxScore ? 1 : 2, scoreP1 == maxScore ? 2 : 1, 0, scoreP1 == maxScore ? 'win' : 'lose');
+			this.stopCounter();
 			return;
 		}
 		await sleep(700);
@@ -328,74 +357,18 @@ function sendGameState() {
     }));
 }
 
-
-
-////////////////////////// Save game result to the server //////////////////////////
-
-// Function to get the value of a cookie
-
-
-// function gameEnded(winnerId, loserId, duration, result) {
-// 	console.log('Game ended with result:', result);
-// 	const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrf-token')).split('=')[1];
-// 	fetch('/api/game/save_game_result/', {
-// 		method: 'POST',
-// 		headers: {
-// 			'Content-Type': 'application/x-www-form-urlencoded',
-// 			'X-CSRFToken': csrftoken
-// 		},
-// 		body: new URLSearchParams({
-// 			'winner_id': winnerId,
-// 			'loser_id': loserId,
-// 			'duration': duration,
-// 			'result': result
-// 		})
-// 	})
-// 	.then(response => response.json())
-// 	.then(data => {
-// 		if (data.status === 'success') {
-// 			console.log('Game result saved successfully');
-// 		} else {
-// 			console.log('Failed to save game result:', data.message);
-// 		}
-// 	});
-// }
-
 //--------------------------time-counter------------------------------------\\
-	let counter = 0;
-	let counterInterval = null;
 
-	function startCounter() {
-		counterInterval = setInterval(function() {
-			counter++;
 
-			// Calculate the number of minutes and seconds
-			let minutes = Math.floor(counter / 60);
-			let seconds = counter % 60;
 
-			// Pad the minutes and seconds with leading zeros if they are less than 10
-			minutes = minutes < 10 ? '0' + minutes : minutes;
-			seconds = seconds < 10 ? '0' + seconds : seconds;
-
-			// Update the time element
-			document.querySelector('.time h2').innerHTML = minutes + ':' + seconds;
-		}, 1000);
-	}
-
-	function stopCounter() {
-		// Stop the counter
-		if (counterInterval) {
-			clearInterval(counterInterval);
-			counterInterval = null;
-		}
-	}
 
 }
 
   disconnectedCallback() {
     console.log("dis connected Callback");
-    if (this.intervalID)
-        clearInterval(this.intervalID)
+    if (this.counterInterval)
+        clearInterval(this.counterInterval)
+    this.counterInterval = null;
   }
 }
 

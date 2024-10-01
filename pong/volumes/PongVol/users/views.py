@@ -160,19 +160,6 @@ def change_pass(request):
     userUpdate.save()
     ver_code.delete()
     return JsonResponse({"message":"sucess"} )
-    # try:
-    #     ver_code = verification_code.objects.get(email = request.user.email, code = data['code'])
-    #     if not ver_code.is_valid():
-    #         raise Exception("verification code is not valid check timestaps and ")
-        
-    #     userUpdate = request.user
-    #     userUpdate.set_password(data['new_password'])
-    #     userUpdate.save()
-    #     ver_code.delete()
-    # except :
-    #     return JsonResponse({ "ok":False, "message":"Something went wrong!"} )
-
-    # return JsonResponse({"ok": True, "message":"sucess!"} )
 
 @auth_only
 def profile_img(request):

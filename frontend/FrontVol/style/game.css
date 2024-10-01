@@ -30,7 +30,7 @@ game-page .top-bar {
 	justify-content: space-between;
 	background: linear-gradient(89.401deg, #3DBDA7 1%, #3DBDA7 33%, #3CBCA6 49%, #2AA795 67%, #0A8175 100%);
 	border-radius: 50px;
-	/* padding: 1%; */
+	padding: 0 1%;
 }
 online-game-page .time ,
 game-page .time {
@@ -62,8 +62,10 @@ game-page .user-1-name , game-page .user-2-name{
 
 online-game-page .tb-user-1-logo , online-game-page .tb-user-2-logo,
 game-page .tb-user-1-logo , game-page .tb-user-2-logo{
-	width: 30%;
-	padding: 0px 10px;
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	aspect-ratio: 1/1;
 }
 
 online-game-page .user-1-score , online-game-page .user-2-score,

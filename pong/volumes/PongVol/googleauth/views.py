@@ -60,6 +60,9 @@ def google_auth(request):
 
 
 from users.functions import gen_token
+import random
+import string
+from django.db.models import Q
 @api_view(['GET'])
 def google_dauth(request):
     code = request.GET.get('code')
@@ -91,9 +94,10 @@ def google_dauth(request):
             return JsonResponse({'error': 'Failed to retrieve email from Google'}, status=400)
         
         user_name = user_info.get('email', email).split('@')[0] #Get the first part of the email to be the username
-
+        # User.objects.filter(Q(username=user_name) & ~Q(email=email)).first()
+        # user_name = ''.join(random.choices(string.ascii_lowercase, k=10))//TODO: CHECK LATER
         user, created = User.objects.get_or_create(email=email, defaults={
-            'username': user_info.get('email', email),
+            'username': user_name,
             # 'name': user_name,
             # Set a random password, since they won't use it for OAuth login
             'password': User.objects.make_random_password(),

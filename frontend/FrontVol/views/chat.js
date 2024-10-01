@@ -340,7 +340,7 @@ export default class Chat extends HTMLElement {
       var usernameDiv = document.createElement("div");
       usernameDiv.className = "username";
       var h1 = document.createElement("h1");
-      h1.textContent = user.name;
+      h1.textContent = user.username;
       usernameDiv.appendChild(h1);
     
       // Add Dots and Delete Button logic
@@ -420,7 +420,7 @@ export default class Chat extends HTMLElement {
       console.log("prifile function");
       // document.querySelector("#chatid").innerHTML = `<profile-page user=${this.userdata}></profile-page>`;
       // document.querySelector("#chatid").style.display = "none";
-      var profilepage = document.createElement("profile-page");
+      var profilepage = new ProfilePage();
       profilepage.setAttribute("user", JSON.stringify(user));
       document.querySelector("chat-page").appendChild(profilepage);
     }
