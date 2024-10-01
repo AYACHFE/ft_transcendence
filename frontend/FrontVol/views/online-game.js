@@ -47,7 +47,7 @@ export default class Online_Game extends HTMLElement {
                 <div class="time"><h2>00:00</h2></div>
                 <div class="user-2-score"><h2>0</h2></div>
                 <div class="user-2">
-                    <h2 class="user-2-name">Aymane</h2>
+                    <h2 class="user-2-name">...</h2>
                     <img class="tb-user-2-logo" src="../images/users/1_men.svg" alt="#">
                 </div>
             </div>
@@ -106,14 +106,7 @@ export default class Online_Game extends HTMLElement {
 		})
 		.then(response => response.json())
 		.then(data => {
-			document.getElementsByClassName('user-1-name')[0].innerHTML = data.user_name;
-			this.username = data.user_name;	
-			// console.log('--+==+--', this.username);
-			// console.log('----', this.username);
-			this.gameSocket.send(JSON.stringify({
-				'type': 'set_username',
-				'username': this.username
-			}));
+			this.username = data.user_name;
 		})
 		
 		
@@ -461,6 +454,23 @@ export default class Online_Game extends HTMLElement {
 			if (data.type === 'start_game') {
 				isMoving = true;
 				hideStartGameElements();
+				this.host_username = data.host;
+				this.guest_username = data.guest;
+				// console.log(`Host: ${this.host_username}, Guest: ${this.guest_username}`);
+				//check if the username length is greater than 5 characters if it is show 5 characters and add '...'
+				if (this.host_username.length > 5) {
+					document.getElementsByClassName('user-1-name')[0].innerHTML = this.host_username.slice(0, 5) + '.';
+				} else {
+					document.getElementsByClassName('user-1-name')[0].innerHTML = this.host_username;
+				}
+				if (this.guest_username.length > 5) {
+					document.getElementsByClassName('user-2-name')[0].innerHTML = this.guest_username.slice(0, 5) + '.';
+				} else {
+					document.getElementsByClassName('user-2-name')[0].innerHTML = this.guest_username;
+				}
+						
+				// document.getElementsByClassName('user-1-name')[0].innerHTML = this.host_username;
+				// document.getElementsByClassName('user-2-name')[0].innerHTML = this.guest_username;
 			}
 			if (data.type === 'player_disconnected') {
 				isMoving = false;
@@ -474,16 +484,16 @@ export default class Online_Game extends HTMLElement {
 				gameOverMessage.style.display = 'block';
 				return;
 			}
-			if (data.type === 'username_set') {
-				console.log(`Your username is set: ${data.username}`);
-			}
-			if (data.type === 'both_usernames') {
-				this.host_username = data.host;
-				this.guest_username = data.guest;
-				document.getElementsByClassName('user-1-name')[0].innerHTML = this.host_username;
-				document.getElementsByClassName('user-2-name')[0].innerHTML = this.guest_username;
-				// console.log(`+=+Host: ${this.host_username}, Guest: ${this.guest_username}`);
-			}
+			// if (data.type === 'username_set') {
+			// 	console.log(`Your username is set: ${data.username}`);
+			// }
+			// if (data.type === 'both_usernames') {
+			// 	this.host_username = data.host;
+			// 	this.guest_username = data.guest;
+			// 	document.getElementsByClassName('user-1-name')[0].innerHTML = this.host_username;
+			// 	document.getElementsByClassName('user-2-name')[0].innerHTML = this.guest_username;
+			// 	// console.log(`+=+Host: ${this.host_username}, Guest: ${this.guest_username}`);
+			// }
 			
 			if (data.paddle_pos && data.ball_pos && data.score && role != data.role) {
 				paddlePos = {

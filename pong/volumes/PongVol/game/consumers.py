@@ -19,16 +19,20 @@ class PingPongConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
-        await self.accept()
+        if self.scope['user'].is_anonymous:
+            await self.close()
+        else:
+            await self.accept()
 
         # Assign roles based on the number of connected players in the room
         if len(self.rooms[self.room_name]) == 0:
             self.role = 'host'
-            self.rooms[self.room_name].append({'channel': self.channel_name, 'username': None, 'role': 'host'})
+            self.rooms[self.room_name].append({'channel': self.channel_name, 'username': self.scope['user'].username, 'role': 'host'})
         elif len(self.rooms[self.room_name]) == 1:
             self.role = 'guest'
-            self.rooms[self.room_name].append({'channel': self.channel_name, 'username': None, 'role': 'guest'})
-            
+            self.rooms[self.room_name].append({'channel': self.channel_name, 'username': self.scope['user'].username, 'role': 'guest'})
+            # print(f"{self.rooms[self.room_name][0]['username']}")
+            # print(f"{self.rooms[self.room_name][1]['username']}")
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
@@ -49,7 +53,9 @@ class PingPongConsumer(AsyncWebsocketConsumer):
         
     async def start_game(self, event):
         await self.send(text_data=json.dumps({
-            'type': 'start_game'
+            'type': 'start_game',
+            'host': self.rooms[self.room_name][0]['username'],
+            'guest': self.rooms[self.room_name][1]['username']
     }))
 
     async def disconnect(self, close_code):
@@ -105,47 +111,47 @@ class PingPongConsumer(AsyncWebsocketConsumer):
             }
         )
 
-        # Handle username setting
-        if 'type' not in data:
-            return
-        if 'type' in data and data['type'] == 'set_username':
-            self.username = data['username']  # Set the username
-            for player in self.rooms[self.room_name]:
-                if player['channel'] == self.channel_name:
-                    player['username'] = self.username
+    #     # Handle username setting
+    #     if 'type' not in data:
+    #         return
+    #     if 'type' in data and data['type'] == 'set_username':
+    #         self.username = data['username']  # Set the username
+    #         for player in self.rooms[self.room_name]:
+    #             if player['channel'] == self.channel_name:
+    #                 player['username'] = self.username
 
-            await self.send(text_data=json.dumps({
-                'type': 'username_set',
-                'username': self.username
-            }))
+    #         await self.send(text_data=json.dumps({
+    #             'type': 'username_set',
+    #             'username': self.username
+    #         }))
 
-            # Check if both players have set their usernames
-            if len(self.rooms[self.room_name]) == 2 and all(player['username'] for player in self.rooms[self.room_name]):
-                host = self.rooms[self.room_name][0]['username']
-                guest = self.rooms[self.room_name][1]['username']
+    #         # Check if both players have set their usernames
+    #         if len(self.rooms[self.room_name]) == 2 and all(player['username'] for player in self.rooms[self.room_name]):
+    #             host = self.rooms[self.room_name][0]['username']
+    #             guest = self.rooms[self.room_name][1]['username']
                 
-                # Broadcast the usernames of both players to the group
-                await self.channel_layer.group_send(
-                    self.room_group_name,
-                    {
-                        'type': 'both_usernames',
-                        'host': host,
-                        'guest': guest
-                    }
-                )
+    #             # Broadcast the usernames of both players to the group
+    #             await self.channel_layer.group_send(
+    #                 self.room_group_name,
+    #                 {
+    #                     'type': 'both_usernames',
+    #                     'host': host,
+    #                     'guest': guest
+    #                 }
+    #             )
 
 
 
-    async def both_usernames(self, event):
-        host = event['host']
-        guest = event['guest']
+    # async def both_usernames(self, event):
+    #     host = event['host']
+    #     guest = event['guest']
 
-        # Send both usernames to the WebSocket client
-        await self.send(text_data=json.dumps({
-            'type': 'both_usernames',
-            'host': host,
-            'guest': guest
-        }))
+    #     # Send both usernames to the WebSocket client
+    #     await self.send(text_data=json.dumps({
+    #         'type': 'both_usernames',
+    #         'host': host,
+    #         'guest': guest
+    #     }))
 
     async def game_state(self, event):
         paddle_pos = event['paddle_pos']

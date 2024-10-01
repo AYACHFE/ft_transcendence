@@ -145,7 +145,7 @@ export default class OnlinePopup extends HTMLElement {
 			
 				setTimeout(() => {
 					this.joinRoomById(this.roomId);
-				}, 3000);
+				}, 1000);
 			} else {
 				console.log("Error creating room");
 				const errorData = await response.json();
