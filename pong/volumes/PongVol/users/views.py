@@ -14,6 +14,7 @@ from .emailing import Emailing
 from .mixins import AuthRequired
 from django.shortcuts import render
 from django_otp.plugins.otp_totp.models import TOTPDevice
+import os
 
 
 class RegisterView(APIView):
@@ -50,9 +51,6 @@ class LoginView(APIView):
         
         # response = Response()
         response = HttpResponseRedirect('/dashboard')
-        response.data = {
-            'detail':'connected'
-        }
         response.set_cookie(key='jwt',value=token, httponly=True)
         return response
 
@@ -162,4 +160,9 @@ def change_pass(request):
     userUpdate.save()
     ver_code.delete()
     return JsonResponse({"message":"sucess"} )
+
+@auth_only
+def profile_img(request):
+    image_data = open('./'+request.user.avatar.url, "rb").read()
+    return HttpResponse(image_data, content_type="image/jpeg")
 

@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 from decouple import config
 from decimal import localcontext
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -46,7 +47,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_FROM = 'boulhoujjatmehdi@gmail.com'
 EMAIL_HOST_USER = 'boulhoujjatmehdi@gmail.com'    # Your SMTP email
-EMAIL_HOST_PASSWORD = 'ltqojbwulvmudhub' 
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587                       # For TLS use 587, for SSL use 465
 EMAIL_USE_TLS = True                   # True for TLS (recommended), False if using SSL
 
@@ -98,7 +99,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'users.middleware.JWTAuthenticationMiddleware',
-    'users.middleware.UpdateLastSeenMiddleware'
+    'users.middleware.UpdateLastSeenMiddleware',
 ]
 
 
@@ -188,7 +189,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR/'main/static']
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [BASE_DIR/'static/']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -209,3 +211,8 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
+
+DEFUALT_PROFILE_IMG = 'static/images/profiles/default.png'
+DEFUALT_PROFILE_IMG_ROOT = '/'+DEFUALT_PROFILE_IMG
+
+

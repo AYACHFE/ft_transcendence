@@ -110,48 +110,93 @@ export default class OnlinePopup extends HTMLElement {
 	  document.body.classList.remove('blurred-background'); // Remove blur
 	}
   
-	createRoom() {
-		if (!this.roomId) {
-		  this.roomId = this.generateRoomId();
-		  this.roomIdElement.textContent = `Room ID: ${this.roomId}`;
-		  this.roomIdElement.style.display = 'block';
-		  this.waitingMessage.style.display = 'block';
-
-		//   setTimeout(() => {
-			this.joinRoomById(this.roomId);
-		//   }, 3000);
+	// Check if the room exists using a REST API or WebSocket before joining
+	async checkRoomExists(roomId) {
+		const response = await fetch(`api/game/check-room/${roomId}`);
+		if (response.ok) {
+			const roomExists = await response.json();
+			return roomExists.exists; // assuming backend returns { exists: true/false }
 		}
-	  }
-	  
-
-// Generate a random room ID
-generateRoomId() {
-	return Math.random().toString(36).substring(2, 8).toUpperCase();
-}
-
-// Handle joining the room
-joinRoom() {
-	const roomId = this.joinRoomInput.value;
-	if (roomId) {
-		this.joinRoomById(roomId);
-	} else {
-		this.errorMessage.style.display = 'block';
-	  }
+		return false; // If request fails or room doesn't exist
 	}
-  
+
+	// Handle room creation
+	async createRoom() {
+		if (!this.roomId) {
+			this.roomId = this.generateRoomId();
+			this.roomIdElement.textContent = `Room ID: ${this.roomId}`;
+			this.roomIdElement.style.display = 'block';
+			this.waitingMessage.style.display = 'block';
+	
+			// Create room in the backend
+			const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrf-token')).split('=')[1];
+			const response = await fetch('/api/game/create-room/', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken':csrftoken, 
+				},
+				body: JSON.stringify({ room_id: this.roomId })
+			});
+	
+			if (response.ok) {
+				// Copy the room ID to the clipboard
+				navigator.clipboard.writeText(this.roomId)
+			
+				setTimeout(() => {
+					this.joinRoomById(this.roomId);
+				}, 1000);
+			} else {
+				console.log("Error creating room");
+				const errorData = await response.json();
+				this.errorMessage.textContent = errorData.error;
+				this.errorMessage.style.display = 'block';
+			}
+		}
+	}
+	
+
+	// Generate a random room ID
+	generateRoomId() {
+		return Math.random().toString(36).substring(2, 8).toUpperCase();
+	}
+
+	// Handle joining the room
+	joinRoom() {
+		const roomId = this.joinRoomInput.value;
+		if (roomId) {
+			this.checkRoomExistsAndJoin(roomId);
+		} else {
+			this.errorMessage.style.display = 'block';
+		}
+	}
+
+	// Check if the room exists before joining
+	async checkRoomExistsAndJoin(roomId) {
+		const roomExists = await this.checkRoomExists(roomId);
+
+		if (roomExists) {
+
+			this.joinRoomById(roomId);
+		} else {
+			this.errorMessage.textContent = 'Room does not exist!';
+			this.errorMessage.style.display = 'block';
+		}
+	}
+
+	// Function to join the room if it exists
 	joinRoomById(roomId) {
-	  this.closeModal();
-	  let game = document.createElement('online-game-page');
-	  game.setAttribute('roomid', roomId);
-	//   console.log(roomId);
-	  let parent = document.getElementsByClassName('center-console')[0];
-	  if (parent) {
-		parent.innerHTML = '';
-		parent.appendChild(game);
-	  }
+		this.closeModal();
+		let game = document.createElement('online-game-page');
+		game.setAttribute('roomid', roomId);
+
+		let parent = document.getElementsByClassName('center-console')[0];
+		if (parent) {
+			parent.innerHTML = '';
+			parent.appendChild(game);
+		}
 	}
-  }
-  
+}
   // Define the new element
   customElements.define('online-popup', OnlinePopup);
   

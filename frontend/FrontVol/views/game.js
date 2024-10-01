@@ -1,7 +1,33 @@
 export default class Game extends HTMLElement {
     constructor() {super()
         this.innerHTML = `<loading-page></loading-page>`
+        this.counterInterval = null;
     }
+    startCounter() {
+        let counter = 0;
+        this.counterInterval = setInterval(function() {
+            counter++;
+
+            // Calculate the number of minutes and seconds
+            let minutes = Math.floor(counter / 60);
+            let seconds = counter % 60;
+
+            // Pad the minutes and seconds with leading zeros if they are less than 10
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+
+            // Update the time element
+            document.querySelector('.time h2').innerHTML = minutes + ':' + seconds;
+        }, 1000);
+    }
+    stopCounter() {
+		// Stop the counter
+		if (this.counterInterval) {
+			clearInterval(this.counterInterval);
+			this.counterInterval = null;
+		}
+	}
+
     btnhighlightfun(){
         document.querySelectorAll('.btn-highlight').forEach(el => {
           el.classList.remove('btn-highlight');
@@ -20,13 +46,13 @@ export default class Game extends HTMLElement {
             <div class="top-bar">
                 <div class="user-1">
                     <img class="tb-user-1-logo" src="../images/users/happy-2.svg" alt="#"> 
-                    <h2 class="user-1-name">enna</h2>
+                    <h2 class="user-1-name">User1</h2>
                 </div>
                 <div class="user-1-score"><h2>0</h2></div>
                 <div class="time"><h2>00:00</h2></div>
                 <div class="user-2-score"><h2>0</h2></div>
                 <div class="user-2">
-                    <h2 class="user-2-name">Aymane</h2>
+                    <h2 class="user-2-name">User2</h2>
                     <img class="tb-user-2-logo" src="../images/users/1_men.svg" alt="#">
                 </div>
             </div>
@@ -76,10 +102,14 @@ const rightRacket = document.querySelector('.right-racket img');
 var leftRacketRect;
 var rightRacketRect;
 
-var boardWidth = gameBoard.clientWidth;
-var boardHeight = gameBoard.clientHeight;
+let boardWidth = gameBoard.clientWidth;
+let boardHeight = gameBoard.clientHeight;
 var rect = gameBoard.getBoundingClientRect();
 //
+window.addEventListener('load', () => {
+    boardHeight = gameBoard.clientHeight;
+    boardWidth = gameBoard.clientWidth;
+});
 window.addEventListener('resize', function() {
     boardHeight = gameBoard.clientHeight;
     boardWidth = gameBoard.clientWidth;
@@ -148,7 +178,7 @@ setInterval(function() {
     if (moveDownRight) {
         // Move the right racket down
         newTopRightDown = (parseInt(rightRacket.style.top) || 0) + step;
-        if (newTopRightDown <= boardHeight / 2 - 100) {
+        if (newTopRightDown <= boardHeight / 2 - 150) {
             rightRacket.style.top = newTopRightDown + 'px';
         }
     }
@@ -164,7 +194,7 @@ setInterval(function() {
     if (moveDownLeft) {
         // Move the left racket down
         newTopLeftDown = (parseInt(leftRacket.style.top) || 0) + step;
-        if (newTopLeftDown <= boardHeight / 2 - 100) {
+        if (newTopLeftDown <= boardHeight / 2 - 150) {
             leftRacket.style.top = newTopLeftDown + 'px';
         }
     }
@@ -201,14 +231,15 @@ const initleftRacketRect = leftRacket.getBoundingClientRect();
 const initrightRacketRect = rightRacket.getBoundingClientRect();
 var newChance;
 var newTime = false;
-async function moveBall() {
+var maxScore = 3;
+const moveBall = async () => {
 	if (!isMoving) {
 		requestAnimationFrame(moveBall);
         return;
     }
 	if (!newTime) {
 		newTime = true;
-		startCounter();
+		this.startCounter();
 	}
 	scoreP1_html.innerHTML = scoreP1;
 	scoreP2_html.innerHTML = scoreP2;
@@ -216,18 +247,17 @@ async function moveBall() {
 	if (newChance) {
 		ball.style.left = `${ballX}px`;
 		ball.style.top = `${ballY}px`;
-		if (scoreP1 == 3 || scoreP2 == 3) {
+		if (scoreP1 == maxScore || scoreP2 == maxScore) {
 			const gameOverMessage = document.querySelector('.game-over h2');
 			const middle_line = document.querySelector('.middle-line');
 			const ball = document.querySelector('.ball');
 			
 			// // Change the content of the div
-			gameOverMessage.innerHTML = 'Game Over!<br> Player ' + (scoreP1 == 3 ? '1' : '2') + ' wins!';
+			gameOverMessage.innerHTML = 'Game Over!<br> Player ' + (scoreP1 == maxScore ? '1' : '2') + ' wins!';
 			middle_line.style.display = 'none';
 			ball.style.display = 'none';
 			gameOverMessage.style.display = 'block';
-			stopCounter();
-			// gameEnded(scoreP1 == 3 ? 1 : 2, scoreP1 == 3 ? 2 : 1, 0, scoreP1 == 3 ? 'win' : 'lose');
+			this.stopCounter();
 			return;
 		}
 		await sleep(700);
@@ -319,7 +349,7 @@ gameSocket.onmessage = function(e) {
 };
 
 function sendGameState() {
-	console.log('Sending game state to the server:', paddlePos, ballPos, score);
+	// console.log('Sending game state to the server:', paddlePos, ballPos, score);
     gameSocket.send(JSON.stringify({
         'paddle_pos': paddlePos,
         'ball_pos': ballPos,
@@ -327,74 +357,18 @@ function sendGameState() {
     }));
 }
 
-
-
-////////////////////////// Save game result to the server //////////////////////////
-
-// Function to get the value of a cookie
-
-
-function gameEnded(winnerId, loserId, duration, result) {
-	console.log('Game ended with result:', result);
-	const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
-	fetch('http://localhost:8000/game/save_game_result/', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-			'X-CSRFToken': csrftoken
-		},
-		body: new URLSearchParams({
-			'winner_id': winnerId,
-			'loser_id': loserId,
-			'duration': duration,
-			'result': result
-		})
-	})
-	.then(response => response.json())
-	.then(data => {
-		if (data.status === 'success') {
-			console.log('Game result saved successfully');
-		} else {
-			console.log('Failed to save game result:', data.message);
-		}
-	});
-}
-
 //--------------------------time-counter------------------------------------\\
-	let counter = 0;
-	let counterInterval = null;
 
-	function startCounter() {
-		counterInterval = setInterval(function() {
-			counter++;
 
-			// Calculate the number of minutes and seconds
-			let minutes = Math.floor(counter / 60);
-			let seconds = counter % 60;
 
-			// Pad the minutes and seconds with leading zeros if they are less than 10
-			minutes = minutes < 10 ? '0' + minutes : minutes;
-			seconds = seconds < 10 ? '0' + seconds : seconds;
-
-			// Update the time element
-			document.querySelector('.time h2').innerHTML = minutes + ':' + seconds;
-		}, 1000);
-	}
-
-	function stopCounter() {
-		// Stop the counter
-		if (counterInterval) {
-			clearInterval(counterInterval);
-			counterInterval = null;
-		}
-	}
 
 }
 
   disconnectedCallback() {
     console.log("dis connected Callback");
-    if (this.intervalID)
-        clearInterval(this.intervalID)
+    if (this.counterInterval)
+        clearInterval(this.counterInterval)
+    this.counterInterval = null;
   }
 }
 

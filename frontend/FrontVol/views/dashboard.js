@@ -14,27 +14,14 @@ export default class Dashboard extends HTMLElement {
         return data.csrfToken;
     }
 
-    getCookie(name) {
-        var cookieArr = document.cookie.split(";");
-
-        for(var i = 0; i < cookieArr.length; i++) {
-            var cookiePair = cookieArr[i].split("=");
-
-            if(name == cookiePair[0].trim()) {
-                return decodeURIComponent(cookiePair[1]);
-            }
-        }
-
-        return null;
-    }
     logout_post()
     {
-        var csrfToken = this.getCookie("csrf-token");
+        const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
         fetch("http://localhost:8000/api/logout/", {
             method: 'post',
             credentials: 'include',
             headers:{
-                'X-CSRFToken':csrfToken
+                'X-CSRFToken':csrftoken
             }
         })
         .then(() =>{
@@ -77,7 +64,7 @@ export default class Dashboard extends HTMLElement {
                     <div id="user_name" class="header-name">
                         
                     </div>
-                    <input class="header-search" type="text" placeholder="Search For Friends">
+                    
                     <div class="header-notifications">
                         <div class="notifications-widget"></div>
                         <div class="notifications-widget"></div>
@@ -91,8 +78,8 @@ export default class Dashboard extends HTMLElement {
             </div>
             <div class="right-side-panel">
                  <div class="upper-section">
-                    <div class="profile-photo">
-                        <img src="../images/users/1_men.svg">
+                    <div  class="profile-photo">
+                        <img id="proPhoto" src="">
                     </div>
                     <img class="upper-section-icone" src="../images/Vector.svg">
                     <div class="users-display overflow-style flex-col">
@@ -190,13 +177,25 @@ export default class Dashboard extends HTMLElement {
             }).then(response => response.json())
             .then(data => {
                 document.getElementById("user_name").innerHTML = data.user_name;
-                document.querySelector("profile-photo").src = data.avatar;
+                document.getElementById("proPhoto").src = data.avatar_url;
                 
                 this.userData = data;
             })
+            
         
+        var buttons = document.querySelectorAll(".btn-option");
+        buttons.forEach(function(btn){
+            btn.addEventListener('click', function(){
+                buttons.forEach(function(btn_rem){
+                    btn_rem.classList.remove("btn-highlight");
+                    btn_rem.classList.add('btn-simple');
+                });
+                this.classList.remove('btn-simple')
+                this.classList.add("btn-highlight");
+            });
+        });
 
-        document.getElementById("logout_btn").addEventListener("click", this.logout_post);
+        document.getElementById("logout_btn").onclick =  (e) => this.logout_post(e);
         this.fetchCsrfToken().then(csrfToken => {
             document.querySelector('meta[name="csrf-token"]').setAttribute('content', csrfToken);
         });        

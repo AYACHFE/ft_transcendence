@@ -21,6 +21,7 @@ game-page .parent {
 	/* padding: 50px; */
 	flex-direction: column;
 	/* aspect-ratio: 1/1; */
+	/* aspect-ratio: 2 / 1; */
 }
 online-game-page .top-bar ,
 game-page .top-bar {
@@ -29,7 +30,7 @@ game-page .top-bar {
 	justify-content: space-between;
 	background: linear-gradient(89.401deg, #3DBDA7 1%, #3DBDA7 33%, #3CBCA6 49%, #2AA795 67%, #0A8175 100%);
 	border-radius: 50px;
-	/* padding: 1%; */
+	padding: 0 1%;
 }
 online-game-page .time ,
 game-page .time {
@@ -61,8 +62,10 @@ game-page .user-1-name , game-page .user-2-name{
 
 online-game-page .tb-user-1-logo , online-game-page .tb-user-2-logo,
 game-page .tb-user-1-logo , game-page .tb-user-2-logo{
-	width: 30%;
-	padding: 0px 10px;
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	aspect-ratio: 1/1;
 }
 
 online-game-page .user-1-score , online-game-page .user-2-score,
@@ -97,7 +100,6 @@ game-page .board {
 	border-radius: 50px;
 	/* padding: 25%; */
 	box-shadow: inset 0 0 20px 1px #000000;
-	/* position: relative; */
 }
 online-game-page .left-racket, online-game-page .right-racket ,
 game-page .left-racket, game-page .right-racket {
@@ -128,7 +130,7 @@ game-page .middle-line {
 }
 online-game-page .middle-line img ,
 game-page .middle-line img {
-	width: 100%;
+	/* width: 100%; */
 	height: 100%;
 }
 online-game-page .middle-part ,

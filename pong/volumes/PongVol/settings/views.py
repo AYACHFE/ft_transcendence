@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from rest_framework.response import Response
 
@@ -41,48 +42,42 @@ class ChangepassViewSet(viewsets.ViewSet):
         else:
             return JsonResponse({"error": "Missing myid parameter"}, status=status.HTTP_400_BAD_REQUEST)
     
-        
+from django.core.files.images import ImageFile 
 
 class SettingsViewSet(viewsets.ViewSet):
     def create(self, request):
-        myid = request.data.get('myId', None)
+        user = request.user
+        profileImg = request.FILES.get('profile-img')
+        if profileImg:
+            user = request.user
+            # return Response({"1":user.avatar.url, "2":settings.DEFUALT_PROFILE_IMG_ROOT})
+            if user.avatar and user.avatar.url != settings.DEFUALT_PROFILE_IMG_ROOT:
+                user.avatar.delete(save=False)
+            # toDelImg = user.avatar
+            user.avatar = ImageFile(profileImg)
+            # user.save()
+            
 
-        if myid:
-            user = User.objects.filter(id=myid).first()
-
-            if user:
-                new_username = request.data.get('user_name', None)
-                new_firstname = request.data.get('first_name', None)
-                new_lastname = request.data.get('last_name', None)
-                new_avatar = request.data.get('avatar', None)
-
-
-                if new_avatar and new_avatar.startswith('data:'):
-                    image_data = new_avatar.split(',')[1]
-                    decoded_image = decode_base64(image_data)
-
-                    with open(f'user_{user.id}_avatar.jpg', 'wb') as f:
-                        f.write(decoded_image)
-                else:
-                    user.avatar = new_avatar
+        data = json.loads(request.POST.get('data'))
+        new_username = data.get('user_name', None)
+        new_firstname = data.get('first_name', None)
+        new_lastname = data.get('last_name', None)
 
 
-                if new_username and user.username != new_username:
-                    user.username = new_username
-                if new_firstname and user.first_name != new_firstname:
-                    user.first_name = new_firstname
-                if new_lastname and user.last_name != new_lastname:
-                    user.last_name = new_lastname
-                
 
-                user.save()
+        if new_username and user.username != new_username:
+            user.username = new_username
+        if new_firstname and user.first_name != new_firstname:
+            user.first_name = new_firstname
+        if new_lastname and user.last_name != new_lastname:
+            user.last_name = new_lastname
+        
 
-                serializer = UserSerializer(user)
+        user.save()
 
-                return Response(serializer.data)
-            else:
-                return JsonResponse({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-        else:
-            return JsonResponse({"error": "Missing myid parameter"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = UserSerializer(user)
+
+        return Response(serializer.data)
+
     
         

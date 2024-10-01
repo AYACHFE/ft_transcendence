@@ -6,6 +6,7 @@ from users.views import send_mail
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/game/', include('game.urls')),
     path('api/', include('users.urls')),
     path('chat/', include('chat.urls')),
     path('settings/', include('settings.urls')),

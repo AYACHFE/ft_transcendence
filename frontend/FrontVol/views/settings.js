@@ -227,6 +227,66 @@ class Settings_default extends HTMLElement {
     this.tcheckifdatachange = this.tcheckifdatachange.bind(this);
   }
 
+  somethingchanged() {
+    var firstnameValue = document.getElementById("firstname").value;
+    var lastnameValue = document.getElementById("lastname").value;
+    var usernameValue = document.getElementById("username").value;
+    var profileImg = document.getElementById("profile-img");
+    // var avatar = document.querySelector('.avatar-option.active input[type="radio"]').value;
+    var data = {
+      myId: this.mydata.id,
+      first_name: firstnameValue,
+      last_name: lastnameValue,
+      user_name: usernameValue,
+      // avatar: avatar,
+    };
+    let formData = new FormData();
+    formData.append('profile-img', profileImg.files[0]);
+    formData.append('data', JSON.stringify(data));
+
+    // var jsonString = JSON.stringify(data);
+    const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
+    fetch(`/settings/`, {
+      method: "POST",
+      headers: {
+        'X-CSRFToken': csrftoken 
+      },
+      body: formData,
+    })
+      .then((response) => {
+        if(response.status === 200)
+        {
+          const newElement = document.createElement("p");
+          newElement.textContent = "Changes done";
+          newElement.id = "tempElement";
+          document.getElementById("submit_text").appendChild(newElement);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        this.mydata = data;
+        
+        var defaultpage = document.getElementById("submitdefault");
+        if (defaultpage && this.mydata) {
+          this.ensertdata();
+          this.tcheckifdatachange();
+        }
+      });
+
+
+  
+  var avatars = document.querySelectorAll(".avatar-option");
+  avatars.forEach(function(avatar) {
+    avatar.addEventListener('click', function() {
+      avatars.forEach(function(otherAvatar) {
+        otherAvatar.classList.remove('active');
+      });
+  
+      this.classList.add('active');
+    });
+  });
+}
+
   ensertdata() {
     var firstnameInput = document.getElementById("firstname");
     var lastnameInput = document.getElementById("lastname");
@@ -248,48 +308,7 @@ class Settings_default extends HTMLElement {
     }
   }
 
-  somethingchanged() {
-    var firstnameValue = document.getElementById("firstname").value;
-    var lastnameValue = document.getElementById("lastname").value;
-    var usernameValue = document.getElementById("username").value;
-    console.log(document.getElementById('avatar_url'));
-    var avatar = document.getElementById('avatar_url').value;
 
-    var data = {
-      myId: this.mydata.id,
-      first_name: firstnameValue,
-      last_name: lastnameValue,
-      user_name: usernameValue,
-      avatar: avatar,
-    };
-
-    var jsonString = JSON.stringify(data);
-
-    fetch(`http://localhost:8000/settings/?myId=${this.mydata.id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: jsonString,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        var newElement = document.createElement("p");
-          newElement.textContent = "your changes is sucsses";
-          newElement.id = "tempElement"; // Assign an id to the new element
-          document.getElementById("submit_text").appendChild(newElement);
-
-          setTimeout(function() {
-              var element = document.getElementById("tempElement");
-              if (element) {
-                  element.parentNode.removeChild(element);
-              }
-          }, 2000);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }
 
   tcheckifdatachange() {
     const form = document.getElementById("submitdefault");
@@ -301,15 +320,16 @@ class Settings_default extends HTMLElement {
         const firstnameValue = document.getElementById("firstname").value;
         const lastnameValue = document.getElementById("lastname").value;
         const usernameValue = document.getElementById("username").value;
+        const avatarValue = document.getElementById("profile-img").value;
+        
         // const  avatar = document.querySelector('.avatar-option.active input[type="radio"]').value;
-  
+  console.log(avatarValue);
         if (
           (firstnameValue !== "" && firstnameValue !== firstnameValue.placeholder) ||
           (lastnameValue !== "" && lastnameValue !== lastnameValue.placeholder) ||
-          (usernameValue !== "" && usernameValue !== usernameValue.placeholder) 
-          // || avatar !== null
+          (usernameValue !== "" && usernameValue !== usernameValue.placeholder) || 
+          (avatarValue !== "")
         ) {
-          // Data has changed, call `somethingchanged`
           this.somethingchanged();
         } else {
           // No data changes, display a message
@@ -331,7 +351,7 @@ class Settings_default extends HTMLElement {
 
   connectedCallback() {
     this.innerHTML = /*html*/`
-            <form id="registration-form" >
+            <form id="registration-form">
             <div id="submit_text"> </div>
                 <label class="general-form" for="first-name">First Name:</label><br>
                 <input class="general-form" type="text" id="firstname" name="first-name"><br>
@@ -340,114 +360,39 @@ class Settings_default extends HTMLElement {
                 <label class="general-form" for="last-name">User Name:</label><br>
                 <input class="general-form" type="text" id="username" name="last-name"><br>
                 
-                <label class="general-form" for="avatar">Select an Avatar:</label><br>
-                <div class="svg-avatar-selection">
+               
+                <input class="general-form"  type="file" id="profile-img" accept="image/*">
 
-                </div>
+                
                 
                 
                 <input id="submitdefault" class="general-form-submit" type="submit" value="Save Changes">
             </form>
             
         `;
-
-        // document.addEventListener("DOMContentLoaded", function() {
-          var images = [
-              "1_men.svg",
-              "2_men.svg",
-              "3_men.svg",
-              "4_men.svg",
-              "5_men.svg",
-              "6_men.svg",
-              "happy-1.svg",
-              "happy-2.svg",
-              "happy-3.svg",
-              "happy-4.svg",
-              "happy-5.svg",
-              "happy-6.svg",
-          ];
-      
-          function generateHTML(image, index) {
-              var id = "avatar" + (index + 1);
-              var alt = "Avatar " + (index + 1);
-              return `
-                  <div class="avatar-option">
-                      <input type="radio" id="${id} avatar_url" name="avatar" value="${image}" hidden>
-                      <label for="${id}"><img src="../images/users/${image}" alt="${alt}" class="avatar-image"></label>
-                  </div>
-              `;
-          }
-      
-          var avatar_images = images.map(generateHTML).join("\n");
-      
-          var avatarchose = document.querySelector(".svg-avatar-selection");
-          if (avatarchose) avatarchose.innerHTML = avatar_images;
-      // });
-
-
-      fetch("http://localhost:8000/main/data/", {
-        method: "get",
-        credentials: "include",
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          this.mydata = data;
-          var defaultpage = document.getElementById("submitdefault");
-          if (defaultpage && this.mydata) {
-            this.ensertdata();
-            this.tcheckifdatachange();
-          }
-        });
-
-
-    
-
-    
-
-    // var images = [
-    //   "1_men.svg",
-    //   "2_men.svg",
-    //   "3_men.svg",
-    //   "4_men.svg",
-    //   "5_men.svg",
-    //   "6_men.svg",
-    //   "happy-1.svg",
-    //   "happy-2.svg",
-    //   "happy-3.svg",
-    //   "happy-4.svg",
-    //   "happy-5.svg",
-    //   "happy-6.svg",
-    // ];
-
-    // function generateHTML(image, index) {
-    //   var id = "avatar" + (index + 1);
-    //   var alt = "Avatar " + (index + 1);
-    //   return `
-    //     <div class="avatar-option">
-    //       <input type="radio" id="${id} avatar_url" name="avatar" value="${image}" hidden>
-    //       <label for="${id}"><img src="../images/users/${image}" alt="${alt}" class="avatar-image"></label>
-    //     </div>
-    //   `;
-    // }
-    
-    // var avatar_images = images.map(generateHTML).join("\n");
-    
-    // var avatarchose = document.querySelector(".svg-avatar-selection");
-    // if (avatarchose) avatarchose.innerHTML = avatar_images;
-    
-    var avatars = document.querySelectorAll(".avatar-option");
-    avatars.forEach(function(avatar) {
-      avatar.addEventListener('click', function() {
-        avatars.forEach(function(otherAvatar) {
-          otherAvatar.classList.remove('active');
-        });
-    
-        this.classList.add('active');
+    fetch("http://localhost:8000/main/data/", {
+      method: "get",
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        this.mydata = data;
+        var defaultpage = document.getElementById("submitdefault");
+        if (defaultpage && this.mydata) {
+          this.ensertdata();
+          this.tcheckifdatachange();
+        }
       });
-    });
-}
-}
+    var firstnameInput = document.getElementById("firstname");
+    var lastnameInput = document.getElementById("lastname");
+    var usernameInput = document.getElementById("username");
 
+
+
+
+    
+  }
+}
 customElements.define("settings-page", Settings);
 customElements.define("settings-default", Settings_default);
 customElements.define("settings-security", Settings_security);

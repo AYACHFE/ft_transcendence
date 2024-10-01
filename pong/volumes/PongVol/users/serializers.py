@@ -5,16 +5,11 @@ from .models import User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'name', 'email', 'password', 'username', 'avatar']
+        fields = ['id', 'email', 'password', 'username', 'avatar']
         extra_kwargs = {
             'password': {'write_only': True}
         }
-    def get_avatar_url(self, obj):
-        if obj.avatar:
-            request = self.context.get('request')
-            return request.build_absolute_uri(obj.avatar.url)  # Build absolute URL
-        else:
-            return None
+ 
     def create(self, validated_data):
         password = validated_data.pop('password', None)
         instace = self.Meta.model(**validated_data)

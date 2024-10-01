@@ -2,27 +2,39 @@
 
 
 export default class Online_Game extends HTMLElement {
-    constructor() {super()
+    constructor() {
+		super();
+		this.gameSocket = null;
+		this.intervalID = null;
+		this.allSockets = [];
+		this.roomName = null;
 		this.counterInterval = null;
-		this.innerHTML = `<loading-page></loading-page>`;
+		this.role = null;
+		this.hostUsername = null;
+		this.guestUsername= null;
+		this.host_username = null;
+		this.guest_username = null;
+		this.username = null;
 	}
+	
 	startCounter() {
-		let counter = 0;
-		this.counterInterval = setInterval(function() {
-			counter++;
+			let counter = 0;
+			this.counterInterval = setInterval(function() {
+				counter++;
 
-			// Calculate the number of minutes and seconds
-			let minutes = Math.floor(counter / 60);
-			let seconds = counter % 60;
+				// Calculate the number of minutes and seconds
+				let minutes = Math.floor(counter / 60);
+				let seconds = counter % 60;
 
-			// Pad the minutes and seconds with leading zeros if they are less than 10
-			minutes = minutes < 10 ? '0' + minutes : minutes;
-			seconds = seconds < 10 ? '0' + seconds : seconds;
+				// Pad the minutes and seconds with leading zeros if they are less than 10
+				minutes = minutes < 10 ? '0' + minutes : minutes;
+				seconds = seconds < 10 ? '0' + seconds : seconds;
 
-			// Update the time element
-			document.querySelector('.time h2').innerHTML = minutes + ':' + seconds;
-		}, 1000);
-	}
+				// Update the time element
+				document.querySelector('.time h2').innerHTML = minutes + ':' + seconds;
+			}, 1000);
+		}
+
 	connectedCallback() {
 		this.innerHTML = `  
         <div class="parent">
@@ -35,7 +47,7 @@ export default class Online_Game extends HTMLElement {
                 <div class="time"><h2>00:00</h2></div>
                 <div class="user-2-score"><h2>0</h2></div>
                 <div class="user-2">
-                    <h2 class="user-2-name">Aymane</h2>
+                    <h2 class="user-2-name">...</h2>
                     <img class="tb-user-2-logo" src="../images/users/1_men.svg" alt="#">
                 </div>
             </div>
@@ -56,11 +68,15 @@ export default class Online_Game extends HTMLElement {
     `;
 		const roomIdElment = document.getElementsByTagName('online-game-page');
 		const roomName = roomIdElment[0].attributes[0].nodeValue;
+		this.roomName = roomName;
+		// this.role = roomIdElment[0].attributes[1].nodeValue;
+		// console.log("---> ",this.role);
 		// document.querySelector('.time h2').innerHTML = 'RoomID :' + roomName;
 		console.log(`Room name is : ${roomName}`);
-		const gameSocket = new WebSocket(
+		this.gameSocket = new WebSocket(
 			'ws://' + "localhost:8000" + '/ws/game/' + roomName + '/'
 		);
+		this.allSockets.push(this.gameSocket);
 		var startGameElements = document.querySelectorAll('.start-game h2');
 		var gameover = document.querySelectorAll('.game-over h2');
 		var ball_ = document.querySelectorAll('.ball');
@@ -80,8 +96,21 @@ export default class Online_Game extends HTMLElement {
 
 		// Add the function as an event listener for multiple events
 		// document.addEventListener('click', hideStartGameElements);
-		document.addEventListener('keypress', hideStartGameElements);
+		// document.addEventListener('keypress', hideStartGameElements);
 		hideGameOver();
+		//---------------------------fetching-usernames-----------------------------------\\
+		fetch('http://localhost:8000/main/data/', 
+		{
+			method: "get",
+			credentials: "include"
+		})
+		.then(response => response.json())
+		.then(data => {
+			this.username = data.user_name;
+		})
+		
+		
+
 		//---------------------------rackets-movemnt-----------------------------------\\
 		//ball data
 		const gameBoard = document.querySelector('.board');
@@ -101,6 +130,10 @@ export default class Online_Game extends HTMLElement {
 			boardWidth = gameBoard.clientWidth;
 			rect = gameBoard.getBoundingClientRect();
 		});
+		window.addEventListener('load', () => {
+			boardHeight = gameBoard.clientHeight;
+			boardWidth = gameBoard.clientWidth;
+		});
 
 
 		//---------------------- racket event listener to move up and down ----------------------\\
@@ -110,8 +143,46 @@ export default class Online_Game extends HTMLElement {
 		let moveDownLeft = false;
 
 		document.addEventListener('keydown', function(event) {
-			// if (role == 'host') {
+			if (role == 'host') {
 				// console.log(event.key, "role is :",role);
+			switch(event.key) {
+				case 'ArrowUp':
+					moveUpLeft = true;
+					break;
+				case 'ArrowDown':
+					moveDownLeft = true;
+					break;
+				case 'w':
+					moveUpLeft = true;
+					break;
+				case 's':
+					moveDownLeft = true;
+					break;
+			}
+			}
+		});
+
+		document.addEventListener('keyup', function(event) {
+			if (role == 'host') {
+				// console.log(event.key, "role is :",role);
+			switch(event.key) {
+				case 'ArrowUp':
+					moveUpLeft = false;
+					break;
+				case 'ArrowDown':
+					moveDownLeft = false;
+					break;
+				case 'w':
+					moveUpLeft = false;
+					break;
+				case 's':
+					moveDownLeft = false;
+					break;
+			}
+			}
+		});
+		document.addEventListener('keydown', function(event) {
+			if (role == 'guest') {
 			switch(event.key) {
 				case 'ArrowUp':
 					moveUpRight = true;
@@ -120,32 +191,32 @@ export default class Online_Game extends HTMLElement {
 					moveDownRight = true;
 					break;
 				case 'w':
-					moveUpLeft = true;
+					moveUpRight = true;
 					break;
 				case 's':
-					moveDownLeft = true;
+					moveDownRight = true;
 					break;
-			// }
+			}
 			}
 		});
 
 		document.addEventListener('keyup', function(event) {
-			// if (role == 'host') {
-			switch(event.key) {
-				case 'ArrowUp':
-					moveUpRight = false;
-					break;
-				case 'ArrowDown':
-					moveDownRight = false;
-					break;
-				case 'w':
-					moveUpLeft = false;
-					break;
-				case 's':
-					moveDownLeft = false;
-					break;
-			// }
-			}
+			if (role == 'guest') {
+				switch(event.key) {
+					case 'ArrowUp':
+						moveUpRight = false;
+						break;
+					case 'ArrowDown':
+						moveDownRight = false;
+						break;
+					case 'w':
+						moveUpRight = false;
+						break;
+					case 's':
+						moveDownRight = false;
+						break;
+				}
+				}
 		});
 
 		let newTopRightUp;
@@ -153,8 +224,6 @@ export default class Online_Game extends HTMLElement {
 		let newTopLeftUp;
 		let newTopLeftDown;
 		setInterval(function() {
-			// const leftRacket = document.querySelector('.left-racket img');
-			// const rightRacket = document.querySelector('.right-racket img');
 			const step = 10; // Change this value to make the rackets move faster or slower
 
 			if (role == 'guest') {
@@ -193,17 +262,15 @@ export default class Online_Game extends HTMLElement {
 				}
 			}
 
-		}, 20); // Change this value to make the rackets move smoother or choppier
+		}, 15); // Change this value to make the rackets move smoother or choppier
 
 		//--------------------------time-counter------------------------------------\\
 		
-		
 
-		function stopCounter() {
-			// Stop the counter
-			if (counterInterval) {
-				clearInterval(counterInterval);
-				counterInterval = null;
+		const stopCounter = () => {
+			if (this.counterInterval) {
+				clearInterval(this.counterInterval);
+				this.counterInterval = null;
 			}
 		}
 
@@ -216,9 +283,9 @@ export default class Online_Game extends HTMLElement {
 		let speedY = 5; // Vertical speed
 
 		let isMoving = false;
-		document.addEventListener('keydown', function() {
-			isMoving = true;
-		});
+		// document.addEventListener('keydown', function() {
+		// 	isMoving = true;
+		// });
 		// document.addEventListener('click', function() {
 		// 	isMoving = true;
 		// });
@@ -238,14 +305,14 @@ export default class Online_Game extends HTMLElement {
 		let newChance;
 		let newTime = false;
 
-		async function moveBall() {
+		const moveBall = async () => {
 			if (!isMoving) {
 				requestAnimationFrame(moveBall);
 				return;
 			}
 			if (!newTime) {
 				newTime = true;
-				this.startCounter();
+				// this.startCounter();
 			}
 			// console.log('ballX', ballX, 'ballY', ballY);
 			scoreP1_html.innerHTML = scoreP1;
@@ -253,11 +320,9 @@ export default class Online_Game extends HTMLElement {
 		
 			
 			if (newChance) {
-				// if (role == 'guest')
-					console.log('new chance');
 				ball.style.left = `${ballX}px`;
 				ball.style.top = `${ballY}px`;
-				if (scoreP1 == 10 || scoreP2 == 10) {
+				if (scoreP1 == maxScore || scoreP2 == maxScore) {
 					const gameOverMessage = document.querySelector('.game-over h2');
 					const middle_line = document.querySelector('.middle-line');
 					const ball = document.querySelector('.ball');
@@ -271,8 +336,15 @@ export default class Online_Game extends HTMLElement {
 					middle_line.style.display = 'none';
 					ball.style.display = 'none';
 					gameOverMessage.style.display = 'block';
-					// gameEnded(scoreP1 == 3 ? 1 : 2, scoreP1 == 3 ? 2 : 1, 0, scoreP1 == 3 ? 'win' : 'lose');
+					// gameEnded(
+					// 	scoreP1 == maxScore ? this.host_username : this.guest_username, // winner username
+					// 	scoreP1 == maxScore ? this.guest_username : this.host_username, // loser username
+					// 	new Date().toISOString(), // time
+					// 	scoreP1 == maxScore ? scoreP1 : scoreP2, // winner score
+					// 	scoreP1 == maxScore ? scoreP2 : scoreP1 // loser score
+					//   );
 					stopCounter();
+					
 					return;
 				}
 				// sendGameState();
@@ -287,19 +359,19 @@ export default class Online_Game extends HTMLElement {
 					const ballRect = ball.getBoundingClientRect();
 					const leftRacketRect = leftRacket.getBoundingClientRect();
 					const rightRacketRect = rightRacket.getBoundingClientRect();
-					if (ballX + ballDiameter + 10 > rect.right - ballDiameter) {
+					if (ballX + 10 + (ballDiameter*2)> rect.right ) {
 						if (ballRect.top + ballRect.height >= rightRacketRect.top && ballRect.top <= rightRacketRect.bottom)
 						{
 							speedX = -speedX;
 						}
 						else {
-							scoreP2++;
+							scoreP1++;
 							ballX = boardWidth / 2 - ballDiameter / 2 + rect.top;
 							ballY = boardHeight / 2 - ballDiameter / 2 + rect.left;
 							newChance = true;
 						}
 					}
-					if (ballX < rect.left) {
+					if (ballX < rect.left-(ballDiameter/2)) {
 						
 						if (ballRect.top + ballRect.height >= leftRacketRect.top && ballRect.top <= leftRacketRect.bottom)
 						{
@@ -307,7 +379,7 @@ export default class Online_Game extends HTMLElement {
 							ballX = rect.left;
 						}
 						else {
-							scoreP1++;
+							scoreP2++;
 							ballX = boardWidth / 2 - ballDiameter / 2 + rect.top;
 							ballY = boardHeight / 2 - ballDiameter / 2 + rect.left;
 							newChance = true;
@@ -337,6 +409,7 @@ export default class Online_Game extends HTMLElement {
 
 		////////////////////////// updates the variables for the online game //////////////////////////
 
+		var maxScore = 3;
 
 		var paddlePos = { player1: parseInt(leftRacket.style.top), player2: parseInt(rightRacket.style.top) };
 		var ballPos = { x: ballX, y: ballY };
@@ -361,7 +434,7 @@ export default class Online_Game extends HTMLElement {
 				scoreP2 = score.player2;
 			
 				// the end of the game
-				if (scoreP1 == 10 || scoreP2 == 10) {
+				if (scoreP1 == maxScore || scoreP2 == maxScore) {
 					const gameOverMessage = document.querySelector('.game-over h2');
 					const middle_line = document.querySelector('.middle-line');
 					const ball = document.querySelector('.ball');
@@ -376,80 +449,159 @@ export default class Online_Game extends HTMLElement {
 				}
 			}
 		}
-
-		gameSocket.onmessage = function(e) {
+		this.gameSocket.onmessage = (e) => {
 			const data = JSON.parse(e.data);
 			if (data.type === 'assign_role') {
 				role = data.role;
-				// const username = data.username;
 				console.log('Your role is:', role);
-				// console.log('Your username is:', username);
 			}
+			if (data.type === 'start_game') {
+				isMoving = true;
+				this.startCounter();
+				hideStartGameElements();
+				this.host_username = data.host.username;
+				this.guest_username = data.guest.username;
+				// console.log(`Host: ${this.host_username}, Guest: ${this.guest_username}`);
+				//check if the username length is greater than 5 characters if it is show 5 characters and add '...'
+				if (this.host_username.length > 5) {
+					document.getElementsByClassName('user-1-name')[0].innerHTML = this.host_username.slice(0, 5) + '.';
+				} else {
+					document.getElementsByClassName('user-1-name')[0].innerHTML = this.host_username;
+				}
+				if (this.guest_username.length > 5) {
+					document.getElementsByClassName('user-2-name')[0].innerHTML = this.guest_username.slice(0, 5) + '.';
+				} else {
+					document.getElementsByClassName('user-2-name')[0].innerHTML = this.guest_username;
+				}
+				
+				const host = data.host;
+        		const guest = data.guest;
+				const host_img_element = document.getElementsByClassName('tb-user-1-logo')[0];
+				
+				host_img_element.src = host.avatar;
+				const guest_img_element = document.getElementsByClassName('tb-user-2-logo')[0];
+				guest_img_element.src = guest.avatar;
+			}
+			if (data.type === 'player_disconnected') {
+				isMoving = false;
+				const gameOverMessage = document.querySelector('.game-over h2');
+				const middle_line = document.querySelector('.middle-line');
+				const ball = document.querySelector('.ball');
+				hideStartGameElements();
+				stopCounter();
+				gameOverMessage.innerHTML = 'Player disconnected!';
+				middle_line.style.display = 'none';
+				ball.style.display = 'none';
+				gameOverMessage.style.display = 'block';
+				return;
+			}
+			// if (data.type === 'username_set') {
+			// 	console.log(`Your username is set: ${data.username}`);
+			// }
+			// if (data.type === 'both_usernames') {
+			// 	this.host_username = data.host;
+			// 	this.guest_username = data.guest;
+			// 	document.getElementsByClassName('user-1-name')[0].innerHTML = this.host_username;
+			// 	document.getElementsByClassName('user-2-name')[0].innerHTML = this.guest_username;
+			// 	// console.log(`+=+Host: ${this.host_username}, Guest: ${this.guest_username}`);
+			// }
 			
 			if (data.paddle_pos && data.ball_pos && data.score && role != data.role) {
-				// console.log('Received message from the server:', data);
-				paddlePos = data.paddle_pos;
-				ballPos = data.ball_pos;
+				paddlePos = {
+				    player1: (data.paddle_pos.player1 / 100) * boardHeight,
+				    player2: (data.paddle_pos.player2 / 100) * boardHeight 
+				};
+
+				ballPos = {
+				    x: (data.ball_pos.x / 100) * boardWidth,
+				    y: (data.ball_pos.y / 100) * boardHeight
+				};
+				
 				score = data.score;
 				updateGameUI(paddlePos, ballPos, score);
 				hideStartGameElements();
 			}
 		};
 
-		function sendGameState() {
-			paddlePos = { player1: parseInt(leftRacket.style.top), player2: parseInt(rightRacket.style.top) };
-			ballPos = { x: ballX, y: ballY };
+		const sendGameState = () => {	
+			// Convert it ti percentage
+			const paddlePos = {
+			    player1: (parseInt(leftRacket.style.top) / boardHeight) * 100,
+			    player2: (parseInt(rightRacket.style.top) / boardHeight) * 100
+			};
+			
+			const ballPos = {
+			    x: (ballX / boardWidth) * 100,
+			    y: (ballY / boardHeight) * 100
+			};
+
 			score = { player1: scoreP1, player2: scoreP2 };
-			// console.log('Sending game state to the server:', paddlePos, ballPos, score);
-			gameSocket.send(JSON.stringify({
+			this.gameSocket.send(JSON.stringify({
 				'role': role,
 				'paddle_pos': paddlePos,
 				'ball_pos': ballPos,
 				'score': score,
 			}));
-		}
+		};
 
 
 
 		////////////////////////// Save game result to the server //////////////////////////
 
-		// Function to get the value of a cookie
-
-
-		// function gameEnded(winnerId, loserId, duration, result) {
-		// 	console.log('Game ended with result:', result);
-		// 	const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
-		// 	fetch('http://localhost:8000/game/save_game_result/', {
-		// 		method: 'POST',
-		// 		headers: {
-		// 			'Content-Type': 'application/x-www-form-urlencoded',
-		// 			'X-CSRFToken': csrftoken
-		// 		},
-		// 		body: new URLSearchParams({
-		// 			'winner_id': winnerId,
-		// 			'loser_id': loserId,
-		// 			'duration': duration,
-		// 			'result': result
-		// 		})
-		// 	})
-		// 	.then(response => response.json())
-		// 	.then(data => {
-		// 		if (data.status === 'success') {
-		// 			console.log('Game result saved successfully');
-		// 		} else {
-		// 			console.log('Failed to save game result:', data.message);
-		// 		}
-		// 	});
-		// }
-
-
+		function gameEnded(winnerusername, loserusername, time, winnerScore, loserScore) {
+			const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrf-token')).split('=')[1];
+			fetch('api/game/save_game_result/', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
+					'X-CSRFToken': csrftoken
+				},
+				body: new URLSearchParams({
+					'winner_username': winnerusername,
+					'loser_username': loserusername,
+					'time': time,
+					'winner_score': winnerScore,
+					'loser_score': loserScore,
+				})
+			})
+			.then(response => response.json())
+			.then(data => {
+				if (data.status === 'success') {
+					console.log('Game result saved successfully');
+				} else {
+					console.log('Failed to save game result:', data.message);
+				}
+			});
+		}
 
 	}
-	disconnetedCallback() {
-		console.log('disconnected');
-		if (this.counterInterval) {
-			clearInterval(this.counterInterval);
+
+	//--------------------------remove the room_id from the DB------------------------------------\\
+	async deleteRoom(roomId) {
+		this.deleted = true;
+		const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrf-token')).split('=')[1];
+		const response = await fetch(`api/game/delete-room/${roomId}/`, {
+			method: 'DELETE',
+			headers: {
+				'X-CSRFToken':csrftoken, 
+				'Content-Type': 'application/json',
+			},
+		});
+		
+		if (response.ok) {
+			console.log(`Room ${roomId} deleted successfully`);
+		} else {
+			console.error('Failed to delete room');
 		}
+	}
+	disconnectedCallback() {
+		console.log("dis connected Callback online game");
+		if (this.counterInterval) {
+			clearInterval(this.counterInterval)
+		}
+		if (this.gameSocket)
+			this.gameSocket.close();
+		this.deleteRoom(this.roomName);
 	}
 }
 

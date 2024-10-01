@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
@@ -6,14 +7,14 @@ from datetime import timedelta
 # Create your models here.
 
 class User(AbstractUser):
-    name = models.CharField(max_length=255)
+    # name = models.CharField(max_length=255)
     email = models.CharField(max_length=255, unique=True)
     password = models.CharField(max_length=255)
     username = models.CharField(max_length=255, unique=True, default='default_name')
     last_seen = models.DateTimeField(null=True, blank=True)
     twoFA = models.BooleanField(default=False)
 
-    avatar = models.ImageField(upload_to='avatars/', default="1_men.svg")
+    avatar = models.ImageField(upload_to='static/images/profiles/', default=settings.DEFUALT_PROFILE_IMG)
     
     
 
@@ -68,3 +69,4 @@ class verification_code(models.Model):
     def is_valid(self):
         return self.created_at >= timezone.now() - timedelta(minutes=10)
     
+    # from .friends import friends

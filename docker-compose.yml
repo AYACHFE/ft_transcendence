@@ -66,19 +66,19 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /Users/rennatiq/Desktop/back/pong/volumes/PongVol
+      device: /Users/${USER}/Desktop/back/pong/volumes/PongVol
       o: bind
   DatabaseVol:
     driver: local
     driver_opts:
       type: none
-      device: /Users/rennatiq/Desktop/back/pong/volumes/DatabaseVol
+      device: /Users/${USER}/Desktop/back/pong/volumes/DatabaseVol
       o: bind
   FrontVol:
     driver: local
-    driver_opts:
+    driver_opts: 
       type: none
-      device: /Users/rennatiq/Desktop/back/frontend/FrontVol
+      device: /Users/${USER}/Desktop/back/frontend/FrontVol
       o: bind
 
 

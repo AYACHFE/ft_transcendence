@@ -40,10 +40,9 @@ class oauth42(APIView):
             email = user_info.get('email')
             if not email:
                 raise AuthenticationFailed("Failed to retrieve email from 42API")
-            user_name = user_info.get('email', email).split('@')[0]
+            user_name = email.split('@')[0]
             user, created = User.objects.get_or_create(email=email, defaults={
-                'username': user_info.get('email', email),
-                'name': user_name,
+                'username': user_name,
                 'password': User.objects.make_random_password(),
             })
 

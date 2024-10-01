@@ -59,7 +59,6 @@ export default class Login extends HTMLElement {
 					<div id="errorContainerSignUp"></div>
 					<input type="email" placeholder="Email" name="email" required />
 					<input type="text" placeholder="Username" name="username" required />
-					<input type="text" placeholder="Name" name="name" />
 					<input type="password" placeholder="Password" name="password" required />
 					<input type="password" placeholder="Confirme Password" name="password" required />
 	
@@ -222,20 +221,6 @@ export default class Login extends HTMLElement {
 		}
 	  });
 
-
-
-	// function google_auth() {
-	//   const clientId =
-	// 	"36859905646-l3ad3gji2poscl1u0r2osg2qmnehq405.apps.googleusercontent.com";
-	//   const redirectUri =
-	// 	"http://localhost:8080/accounts/google/login/callback/";
-	//   const scope = "profile email";
-	//   const responseType = "code";
-
-	//   const googleAuthUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
-	//   console.log(googleAuthUrl);
-	//   // window.location.href = googleAuthUrl;
-	// }
 
 	const exchangeCodeForToken = async (authCode) => {
 	  try {
