@@ -112,7 +112,7 @@ export default class OnlinePopup extends HTMLElement {
   
 	// Check if the room exists using a REST API or WebSocket before joining
 	async checkRoomExists(roomId) {
-		const response = await fetch(`/api/game/check-room/${roomId}`);
+		const response = await fetch(`api/game/check-room/${roomId}`);
 		if (response.ok) {
 			const roomExists = await response.json();
 			return roomExists.exists; // assuming backend returns { exists: true/false }
@@ -130,7 +130,7 @@ export default class OnlinePopup extends HTMLElement {
 	
 			// Create room in the backend
 			const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrf-token')).split('=')[1];
-			const response = await fetch('/api/game/create-room/', {
+			const response = await fetch('api/game/create-room/', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

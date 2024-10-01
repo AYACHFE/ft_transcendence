@@ -99,15 +99,15 @@ export default class Online_Game extends HTMLElement {
 		// document.addEventListener('keypress', hideStartGameElements);
 		hideGameOver();
 		//---------------------------fetching-usernames-----------------------------------\\
-		// fetch('http://localhost:8000/main/data/', 
-		// {
-		// 	method: "get",
-		// 	credentials: "include"
-		// })
-		// .then(response => response.json())
-		// .then(data => {
-		// 	this.username = data.user_name;
-		// })
+		fetch('http://localhost:8000/main/data/', 
+		{
+			method: "get",
+			credentials: "include"
+		})
+		.then(response => response.json())
+		.then(data => {
+			this.username = data.user_name;
+		})
 		
 		
 
@@ -550,7 +550,7 @@ export default class Online_Game extends HTMLElement {
 
 		function gameEnded(winnerusername, loserusername, time, winnerScore, loserScore) {
 			const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrf-token')).split('=')[1];
-			fetch('/api/game/save_game_result/', {
+			fetch('api/game/save_game_result/', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
@@ -580,7 +580,7 @@ export default class Online_Game extends HTMLElement {
 	async deleteRoom(roomId) {
 		this.deleted = true;
 		const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrf-token')).split('=')[1];
-		const response = await fetch(`/api/game/delete-room/${roomId}/`, {
+		const response = await fetch(`api/game/delete-room/${roomId}/`, {
 			method: 'DELETE',
 			headers: {
 				'X-CSRFToken':csrftoken, 
