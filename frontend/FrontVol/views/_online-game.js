@@ -529,7 +529,7 @@ export default class Online_Game extends HTMLElement {
 
 		function gameEnded(winnerId, loserId, duration, result) {
 			const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrf-token')).split('=')[1];
-			fetch('api/game/save_game_result/', {
+			fetch('/api/game/save_game_result/', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',

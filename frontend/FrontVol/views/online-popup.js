@@ -130,7 +130,7 @@ export default class OnlinePopup extends HTMLElement {
 	
 			// Create room in the backend
 			const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrf-token')).split('=')[1];
-			const response = await fetch('api/game/create-room/', {
+			const response = await fetch('/api/game/create-room/', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

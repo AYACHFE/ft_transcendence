@@ -8,24 +8,25 @@ from datetime import timedelta
 from .models import Room
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
+from .models import GameResult
 
-# def save_game_result(request):
-#     winner_username = request.POST['winner_username']
-#     loser_username = request.POST['loser_username']
-#     time = datetime.strptime(request.POST['time'], "%Y-%m-%dT%H:%M:%S.%fZ")  # assuming time is sent in ISO 8601 format
-#     winner_score = int(request.POST['winner_score'])
-#     loser_score = int(request.POST['loser_score'])
+def save_game_result(request):
+    winner_username = request.POST['winner_username']
+    loser_username = request.POST['loser_username']
+    time = datetime.strptime(request.POST['time'], "%Y-%m-%dT%H:%M:%S.%fZ")  # assuming time is sent in ISO 8601 format
+    winner_score = int(request.POST['winner_score'])
+    loser_score = int(request.POST['loser_score'])
 
-#     try:
-#         get_user_model().objects.get(username=winner_username)
-#         get_user_model().objects.get(username=loser_username)
-#     except ObjectDoesNotExist:
-#         return JsonResponse({'status': 'failure', 'message': 'User does not exist'})
+    try:
+        get_user_model().objects.get(username=winner_username)
+        get_user_model().objects.get(username=loser_username)
+    except ObjectDoesNotExist:
+        return JsonResponse({'status': 'failure', 'message': 'User does not exist'})
 
-#     game_result = GameResult(winner_username=winner_username, loser_username=loser_username, time=time, winner_score=winner_score, loser_score=loser_score)
-#     game_result.save()
+    game_result = GameResult(winner_username=winner_username, loser_username=loser_username, time=time, winner_score=winner_score, loser_score=loser_score)
+    game_result.save()
 
-#     return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'success'})
 
 
 def check_room_exists(request, room_id):

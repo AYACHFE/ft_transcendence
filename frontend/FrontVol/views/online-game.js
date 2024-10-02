@@ -41,7 +41,7 @@ export default class Online_Game extends HTMLElement {
             <div class="top-bar">
                 <div class="user-1">
                     <img class="tb-user-1-logo" src="../images/users/happy-2.svg" alt="#"> 
-                    <h2 class="user-1-name">enna</h2>
+                    <h2 class="user-1-name">...</h2>
                 </div>
                 <div class="user-1-score"><h2>0</h2></div>
                 <div class="time"><h2>00:00</h2></div>
@@ -336,13 +336,13 @@ export default class Online_Game extends HTMLElement {
 					middle_line.style.display = 'none';
 					ball.style.display = 'none';
 					gameOverMessage.style.display = 'block';
-					// gameEnded(
-					// 	scoreP1 == maxScore ? this.host_username : this.guest_username, // winner username
-					// 	scoreP1 == maxScore ? this.guest_username : this.host_username, // loser username
-					// 	new Date().toISOString(), // time
-					// 	scoreP1 == maxScore ? scoreP1 : scoreP2, // winner score
-					// 	scoreP1 == maxScore ? scoreP2 : scoreP1 // loser score
-					//   );
+					gameEnded(
+						scoreP1 == maxScore ? this.host_username : this.guest_username, // winner username
+						scoreP1 == maxScore ? this.guest_username : this.host_username, // loser username
+						new Date().toISOString(), // time
+						scoreP1 == maxScore ? scoreP1 : scoreP2, // winner score
+						scoreP1 == maxScore ? scoreP2 : scoreP1 // loser score
+					  );
 					stopCounter();
 					
 					return;
@@ -549,8 +549,8 @@ export default class Online_Game extends HTMLElement {
 		////////////////////////// Save game result to the server //////////////////////////
 
 		function gameEnded(winnerusername, loserusername, time, winnerScore, loserScore) {
-			const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrf-token')).split('=')[1];
-			fetch('api/game/save_game_result/', {
+			const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
+			fetch('/api/game/save_game_result/', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
