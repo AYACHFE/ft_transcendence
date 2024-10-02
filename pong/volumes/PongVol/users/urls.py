@@ -16,7 +16,7 @@ urlpatterns = [
     path("send-mail/", send_mail),
     path('relations/send-friendship/<str:target_id>', send_friendship_request),
     path('relations/accept-friendship/<str:target_id>', accept_friendship_request),
-    path('relations/block-friendship/<str:target_id>', block_friendship),
+    path('relations/block-friendship/<int:target_id>', block_friendship),
     path('search/<str:search_string>', SearchForUser.as_view(), name='user_search'),
     path('get-requests/', RequestsOnWait.as_view(), name="requests"),
 
