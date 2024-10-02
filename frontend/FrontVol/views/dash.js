@@ -197,11 +197,33 @@ export default class Dash extends HTMLElement {
                     searchResultBoard.innerHTML += /*html*/`
                     <div class="search-result-user">
                     <div class="search-user-name">${item.sender.username}</div>
-                    <button id="accept-btn" value="${item.id}"> Accept </button>
-                    <button id="reject-btn" value="${item.id}"> Reject </button>
+                    <button id="accept-btn" value="${item.sender.id}"> Accept </button>
+                    <button id="reject-btn" value="${item.sender.id}"> Reject </button>
                     </div>
                     `
                 })
+            })
+            .finally(()=>{
+                let accept_btns = document.querySelectorAll('#accept-btn');
+                accept_btns.forEach(function(btn){
+                    btn.addEventListener('click', ()=>{
+                        fetch(`/api/relations/accept-friendship/${btn.value}`)
+                        .then(response => response.json())
+                        .then(data =>{
+                            
+                        })
+                    })
+                });
+                let reject_btns = document.querySelectorAll('#reject-btn');
+                reject_btns.forEach(function(btn){
+                    btn.addEventListener('click', ()=>{
+                        fetch(`/api/relations/reject-friendship/${btn.value}`)
+                        .then(response => response.json())
+                        .then(data =>{
+                            
+                        })
+                    })
+                });
             })
         })
 
@@ -262,26 +284,7 @@ export default class Dash extends HTMLElement {
                 //make a functions that runs the first time to get users
             }
 
-            let accept_btns = document.querySelectorAll('#accept-btn');
-            accept_btns.forEach(function(btn){
-                btn.addEventListener('click', ()=>{
-                    fetch(`/api/relations/accept-friendship/${btn.value}`)
-                    .then(response => response.json())
-                    .then(data =>{
-                        
-                    })
-                })
-            });
-            let reject_btns = document.querySelectorAll('#reject-btn');
-            reject_btns.forEach(function(btn){
-                btn.addEventListener('click', ()=>{
-                    fetch(`/api/relations/accept-friendship/${btn.value}`)
-                    .then(response => response.json())
-                    .then(data =>{
-                        
-                    })
-                })
-            });
+
         })
         
     }

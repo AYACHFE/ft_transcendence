@@ -63,10 +63,7 @@ def send_friendship_request(request, target_id):
 @api_view(['GET'])
 def accept_friendship_request(request, target_id):
     try:
-        target = User.objects.get(id = target_id)
-        if target == request.user :
-            raise Exception("not supposed to do that!")
-        friendship = friends.objects.get(sender=target, receiver=request.user, accepted=False, blocked=False)
+        friendship = friends.objects.get(sender__id=target_id, receiver=request.user, accepted=False, blocked=False)
         friendship.accepted = True
         friendship.save()
         serializer = friendsSerializer(friendship)
@@ -128,8 +125,8 @@ def block_friendship(request, target_id):
         else:
             friendship = friends.objects.create(sender = request.user, accepted=False, receiver = user, blocked=True)
     except:
-        return Response({"error":"You're not supposed to do that."})
-    return Response({"message":friendsSerializer(friendship).data})
+        return Response({"error":"You're not supposed to do that."}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({"message":friendsSerializer(friendship).data}, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 @auth_only
@@ -137,7 +134,8 @@ def reject_friendship(request, target_id):
     try:
         friendship = friends.objects.get(Q(sender__id = target_id) & Q(receiver=request.user) & Q(blocked=False))
         if friendship.accepted:
-            return Response({"error":"already accepted"})
+            return Response({"message":"already accepted"}, status=status.HTTP_208_ALREADY_REPORTED)
         friendship.delete()
+        return Response({"message":"rejected successfully"}, status=status.HTTP_202_ACCEPTED)
     except:
         return Response({"error":'you\'re not supposed to do that'}, status=status.HTTP_400_BAD_REQUEST)
