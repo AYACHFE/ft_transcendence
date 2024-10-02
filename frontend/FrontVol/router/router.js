@@ -45,11 +45,6 @@ export const Routes = [
         auth: true
     },
     {
-        path: '/dashboard/game',
-        component: Game,
-        auth: true
-    },
-    {
         path: '/dashboard/online-game',
         component: Online_Game,
         auth: true

@@ -213,9 +213,6 @@ var isMoving = false;
 	document.addEventListener('keydown', function() {
 		isMoving = true;
 	});
-	// document.addEventListener('click', function() {
-	// 	isMoving = true;
-	// });
 
 var scoreP1 = 0;
 var scoreP2 = 0;
@@ -263,7 +260,6 @@ const moveBall = async () => {
 		}
 		await sleep(700);
 		moveBall;
-		// sendGameState();
 	}
 	newChance = false;
 	
@@ -312,58 +308,10 @@ const moveBall = async () => {
     ball.style.top = `${ballY}px`;
 
     requestAnimationFrame(moveBall);
-	sendGameState();
 }
 moveBall();
 
-
-
-    // fetch('http://localhost:8000/main/data/',{
-    //     method:"get",
-    //     credentials:"include"
-    // })
-    // .then(response => response.json())
-    // .then(data => {
-    //         document.getElementById('user_name').innerHTML = data.user_name;
-    // })
-
-
-////////////////////////// updates the variables for the online game //////////////////////////
-
-// Assuming you have variables for paddle positions, ball position, and score
-var paddlePos = { player1: parseInt(leftRacket.style.top), player2: parseInt(rightRacket.style.top) };
-var ballPos = { x: ballX, y: ballY };
-var score = { player1: scoreP1, player2: scoreP2 };
-
-const roomName = 'test';  // This could be dynamically generated
-const gameSocket = new WebSocket(
-    'ws://' + "localhost:8000" + '/ws/game/' + roomName + '/'
-);
-
-gameSocket.onmessage = function(e) {
-    const data = JSON.parse(e.data);
-
-    paddlePos = data.paddle_pos;
-    ballPos = data.ball_pos;
-    score = data.score;
-    // updateGameUI(paddlePos, ballPos, score);
-};
-
-function sendGameState() {
-	// console.log('Sending game state to the server:', paddlePos, ballPos, score);
-    gameSocket.send(JSON.stringify({
-        'paddle_pos': paddlePos,
-        'ball_pos': ballPos,
-        'score': score,
-    }));
 }
-}
-
-//--------------------------time-counter------------------------------------\\
-
-
-
-
 
   disconnectedCallback() {
     console.log("dis connected Callback");
