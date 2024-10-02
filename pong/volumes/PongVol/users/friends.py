@@ -28,6 +28,7 @@ class friendsSerializer(serializers.ModelSerializer):
     class Meta:
         model = friends
         fields = ['id', 'sender', 'receiver', 'accepted', 'blocked']
+
     
 
 
@@ -95,6 +96,15 @@ class RequestsOnWait(AuthRequired, generics.ListAPIView):
     serializer_class = friendsSerializer
     def get_queryset(self):
         return friends.objects.filter(receiver = self.request.user)
+
+class MyFriends(AuthRequired, generics.ListAPIView):
+    serializer_class = UserSerializer
+    def get_queryset(self):
+        user = self.request.user
+        sender_friends   = friends.objects.filter(receiver = user, accepted=True).values_list('sender'  , flat=True)
+        receiver_friends = friends.objects.filter(sender   = user, accepted=True).values_list('receiver', flat=True)
+        friends_ids = set(sender_friends).union(set(receiver_friends))
+        return User.objects.filter(id__in=friends_ids)
 
 
 @api_view(['GET'])
