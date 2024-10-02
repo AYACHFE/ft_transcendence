@@ -11,8 +11,8 @@ from rest_framework import serializers
 from .serializers import UserSerializer
 
 class friends(models.Model):
-    sender = models.ForeignKey(User, on_delete=models.CASCADE)
-    receiver = models.ForeignKey(User, on_delete=models.CASCADE)
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender_user')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='receiver_user')
     accepted = models.BooleanField(default=False)
     blocked = models.BooleanField(default=False)
     class Meta:
@@ -40,13 +40,19 @@ from rest_framework import status
 @api_view(["GET"])
 def send_friendship_request(request, target_id):
     try:
-        receiver = User.objects.get(id=target_id)
+        receiver = User.objects.get(Q(id=target_id))
         if request.user == receiver:
             return Response({"error":"you can't send the request to yourself!"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        
+            # return Response({"error":"you can't send the request to yourself!"}, status=status.HTTP_400_BAD_REQUEST)
         friendship , created = friends.objects.get_or_create(sender = request.user, receiver=receiver)
         if created:
             serializer = friendsSerializer(friendship)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        if friendship.blocked == True:
+            return Response({"error":"frendship blocked"}, status=status.HTTP_400_BAD_REQUEST)
+
         return Response({"error":"friendship request already sent!"}, status=status.HTTP_400_BAD_REQUEST)
 
     except User.DoesNotExist:
@@ -59,7 +65,7 @@ def accept_friendship_request(request, target_id):
         target = User.objects.get(id = target_id)
         if target == request.user :
             raise Exception("not supposed to do that!")
-        friendship = friends.objects.get(sender=target, receiver=request.user, accepted=False)
+        friendship = friends.objects.get(sender=target, receiver=request.user, accepted=False, blocked=False)
         friendship.accepted = True
         friendship.save()
         serializer = friendsSerializer(friendship)
@@ -89,3 +95,28 @@ class RequestsOnWait(AuthRequired, generics.ListAPIView):
     serializer_class = friendsSerializer
     def get_queryset(self):
         return friends.objects.filter(receiver = self.request.user)
+
+
+@api_view(['GET'])
+@auth_only
+def block_friendship(request, target_id):
+    try:
+
+        user = User.objects.get(Q(id = target_id) & ~Q(id=request.user.id))
+        a = Q(sender=request.user)
+        b = Q(receiver=user)
+        c = Q(receiver=request.user)
+        d = Q(sender=user)
+        friendship = friends.objects.filter((a&b)|(c&d)).first()
+        if friendship:
+            if friendship.blocked == True:
+                raise Exception()
+            else:
+                friendship.blocked = True
+                friendship.accepted = False
+                friendship.save()
+        else:
+            friendship = friends.objects.create(sender = request.user, accepted=False, receiver = user, blocked=True)
+    except:
+        return Response({"error":"You're not supposed to do that."})
+    return Response({"message":friendsSerializer(friendship).data})
