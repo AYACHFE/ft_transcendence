@@ -1,5 +1,5 @@
 import OnlinePopup from './online-popup.js';
-
+import Game from "../views/game.js";
 export default class Dash extends HTMLElement {
     constructor() {super()}
     btnhighlightfun(){
@@ -51,7 +51,7 @@ export default class Dash extends HTMLElement {
                 <img src="./images/controller.svg" alt="">
                 <p>Tournament</p>
             </a>
-            <a href="/dashboard/game"class="picker-2" data-link>
+            <a class="picker-2">
                 <img src="./images/double-controller.svg" alt="">
                 <p>MULTIPLAYER</p>
             </a>                                
@@ -208,10 +208,16 @@ export default class Dash extends HTMLElement {
 		let picker = document.querySelector('.picker-3');
 
 		picker.addEventListener('click', () => {
-			console.log("clicked");
 		    let popup = new OnlinePopup();
 		    document.body.appendChild(popup);
 		    popup.openModal();
+		});
+		let picker2 = document.querySelector('.picker-2');
+
+		picker2.addEventListener('click', () => {
+		    let popup = new Game();
+			document.querySelector(".center-console").innerHTML = "";
+		    document.querySelector(".center-console").appendChild(popup);
 		});
 
 
