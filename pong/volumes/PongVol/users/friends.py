@@ -130,3 +130,14 @@ def block_friendship(request, target_id):
     except:
         return Response({"error":"You're not supposed to do that."})
     return Response({"message":friendsSerializer(friendship).data})
+
+@api_view(['GET'])
+@auth_only
+def reject_friendship(request, target_id):
+    try:
+        friendship = friends.objects.get(Q(sender__id = target_id) & Q(receiver=request.user) & Q(blocked=False))
+        if friendship.accepted:
+            return Response({"error":"already accepted"})
+        friendship.delete()
+    except:
+        return Response({"error":'you\'re not supposed to do that'}, status=status.HTTP_400_BAD_REQUEST)
