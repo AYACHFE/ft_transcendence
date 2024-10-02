@@ -28,9 +28,7 @@ class PingPongConsumer(AsyncWebsocketConsumer):
         elif len(self.rooms[self.room_name]) == 1:
             self.role = 'guest'
             self.rooms[self.room_name].append({'channel': self.channel_name, 'username': self.scope['user'].username, 'role': 'guest'})
-            #checks if the account is the
-            print(f"blab",self.rooms[self.room_name][0]['username'])
-            print(f"blaba->",self.rooms[self.room_name][1]['username'])
+            #checks if the account is the same
             if self.rooms[self.room_name][0]['username'] == self.rooms[self.room_name][1]['username']:
                 await self.channel_layer.group_send(
                     self.room_group_name,

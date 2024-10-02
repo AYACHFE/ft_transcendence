@@ -19,7 +19,6 @@ urlpatterns = [
     path('relations/block-friendship/<int:target_id>', block_friendship),
     path('search/<str:search_string>', SearchForUser.as_view(), name='user_search'),
     path('get-requests/', RequestsOnWait.as_view(), name="requests"),
-
     # friendships
 
 ]

@@ -15,6 +15,7 @@ class User(AbstractUser):
     twoFA = models.BooleanField(default=False)
 
     avatar = models.ImageField(upload_to='static/images/profiles/', default=settings.DEFUALT_PROFILE_IMG)
+    user_wins = models.IntegerField(default=0)
     
     
 

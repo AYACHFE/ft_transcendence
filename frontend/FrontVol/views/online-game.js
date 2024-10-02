@@ -327,12 +327,12 @@ export default class Online_Game extends HTMLElement {
 					const middle_line = document.querySelector('.middle-line');
 					const ball = document.querySelector('.ball');
 					
-					// // Change the content of the div
-					if (role == 'host')
-						gameOverMessage.innerHTML = 'You Win!';
-					else
-						gameOverMessage.innerHTML = 'You Loose!';
-						
+					if (role == 'host') {
+						if (scoreP1 == maxScore)
+							gameOverMessage.innerHTML = 'You Win!';
+						else
+							gameOverMessage.innerHTML = 'You Loose!';
+					}
 					middle_line.style.display = 'none';
 					ball.style.display = 'none';
 					gameOverMessage.style.display = 'block';
@@ -409,14 +409,11 @@ export default class Online_Game extends HTMLElement {
 
 		////////////////////////// updates the variables for the online game //////////////////////////
 
-		var maxScore = 20;
+		var maxScore = 3;
 
 		var paddlePos = { player1: parseInt(leftRacket.style.top), player2: parseInt(rightRacket.style.top) };
 		var ballPos = { x: ballX, y: ballY };
 		var score = { player1: scoreP1, player2: scoreP2 };
-
-
-
 
 		function updateGameUI(paddlePos, ballPos, score) {
 			// Update paddles' positions
@@ -439,7 +436,10 @@ export default class Online_Game extends HTMLElement {
 					const middle_line = document.querySelector('.middle-line');
 					const ball = document.querySelector('.ball');
 					
-					gameOverMessage.innerHTML = 'You Loose!';
+					if (scoreP2 == maxScore)
+						gameOverMessage.innerHTML = 'You Win!';
+					else
+						gameOverMessage.innerHTML = 'You Loose!';
 						
 					middle_line.style.display = 'none';
 					ball.style.display = 'none';
@@ -498,17 +498,6 @@ export default class Online_Game extends HTMLElement {
 				gameOverMessage.style.display = 'block';
 				return;
 			}
-			// if (data.type === 'username_set') {
-			// 	console.log(`Your username is set: ${data.username}`);
-			// }
-			// if (data.type === 'both_usernames') {
-			// 	this.host_username = data.host;
-			// 	this.guest_username = data.guest;
-			// 	document.getElementsByClassName('user-1-name')[0].innerHTML = this.host_username;
-			// 	document.getElementsByClassName('user-2-name')[0].innerHTML = this.guest_username;
-			// 	// console.log(`+=+Host: ${this.host_username}, Guest: ${this.guest_username}`);
-			// }
-			
 			if (data.paddle_pos && data.ball_pos && data.score && role != data.role) {
 				paddlePos = {
 				    player1: (data.paddle_pos.player1 / 100) * boardHeight,
@@ -576,9 +565,7 @@ export default class Online_Game extends HTMLElement {
 				}
 			});
 		}
-
 	}
-
 	//--------------------------remove the room_id from the DB------------------------------------\\
 	async deleteRoom(roomId) {
 		this.deleted = true;
