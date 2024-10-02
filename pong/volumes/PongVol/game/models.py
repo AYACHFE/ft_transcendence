@@ -1,12 +1,12 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
-# class GameResult(models.Model):
-#     winner_username = models.CharField(max_length=255)
-#     loser_username = models.CharField(max_length=255)
-#     time = models.DateTimeField()
-#     winner_score = models.IntegerField()
-#     loser_score = models.IntegerField()
+class GameResult(models.Model):
+    winner_username = models.CharField(max_length=255)
+    loser_username = models.CharField(max_length=255)
+    time = models.DateTimeField()
+    winner_score = models.IntegerField()
+    loser_score = models.IntegerField()
 
 class Room(models.Model):
 

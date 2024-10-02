@@ -109,6 +109,7 @@ var rect = gameBoard.getBoundingClientRect();
 window.addEventListener('load', () => {
     boardHeight = gameBoard.clientHeight;
     boardWidth = gameBoard.clientWidth;
+	rect = gameBoard.getBoundingClientRect();
 });
 window.addEventListener('resize', function() {
     boardHeight = gameBoard.clientHeight;
@@ -356,13 +357,13 @@ function sendGameState() {
         'score': score,
     }));
 }
+}
 
 //--------------------------time-counter------------------------------------\\
 
 
 
 
-}
 
   disconnectedCallback() {
     console.log("dis connected Callback");

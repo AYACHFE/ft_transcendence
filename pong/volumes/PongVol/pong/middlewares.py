@@ -17,15 +17,15 @@ class CustomTokenAuthMiddleware(BaseMiddleware):
 
             # Check for JWT cookie
             token = cookies.get('jwt')
-            print(f'token:', token.value)
+            # print(f'token:', token.value)
             if(token.value):
-                print(f'entred1:')
+                # print(f'entred1:')
                 payload = jwt.decode(token.value, settings.JWT_SECRET, algorithms=['HS256'])
-                print(f'entred2:')
+                # print(f'entred2:')
                 uid = payload.get('id')
-                print(f'entred3:')
-                print(f'uid:', uid)
-                print(f'entred4:')
+                # print(f'entred3:')
+                # print(f'uid:', uid)
+                # print(f'entred4:')
                 user = await self.get_user(uid)
                 scope['user'] = user
             else:

@@ -310,6 +310,7 @@ class Settings_default extends HTMLElement {
 
 
 
+
   tcheckifdatachange() {
     const form = document.getElementById("submitdefault");
     if (form) {
@@ -322,11 +323,16 @@ class Settings_default extends HTMLElement {
         const usernameValue = document.getElementById("username").value;
         const avatarValue = document.getElementById("profile-img").value;
         
+        const avatarValue = document.getElementById("profile-img").value;
+        
         // const  avatar = document.querySelector('.avatar-option.active input[type="radio"]').value;
+  console.log(avatarValue);
   console.log(avatarValue);
         if (
           (firstnameValue !== "" && firstnameValue !== firstnameValue.placeholder) ||
           (lastnameValue !== "" && lastnameValue !== lastnameValue.placeholder) ||
+          (usernameValue !== "" && usernameValue !== usernameValue.placeholder) || 
+          (avatarValue !== "")
           (usernameValue !== "" && usernameValue !== usernameValue.placeholder) || 
           (avatarValue !== "")
         ) {
@@ -352,6 +358,7 @@ class Settings_default extends HTMLElement {
   connectedCallback() {
     this.innerHTML = /*html*/`
             <form id="registration-form">
+            <form id="registration-form">
             <div id="submit_text"> </div>
                 <label class="general-form" for="first-name">First Name:</label><br>
                 <input class="general-form" type="text" id="firstname" name="first-name"><br>
@@ -364,12 +371,39 @@ class Settings_default extends HTMLElement {
                 <input class="general-form"  type="file" id="profile-img" accept="image/*">
 
                 
+               
+                <input class="general-form"  type="file" id="profile-img" accept="image/*">
+
+                
                 
                 
                 <input id="submitdefault" class="general-form-submit" type="submit" value="Save Changes">
             </form>
             
         `;
+    fetch("http://localhost:8000/main/data/", {
+      method: "get",
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        this.mydata = data;
+        var defaultpage = document.getElementById("submitdefault");
+        if (defaultpage && this.mydata) {
+          this.ensertdata();
+          this.tcheckifdatachange();
+        }
+      });
+    var firstnameInput = document.getElementById("firstname");
+    var lastnameInput = document.getElementById("lastname");
+    var usernameInput = document.getElementById("username");
+
+
+
+
+    
+  }
+}
     fetch("http://localhost:8000/main/data/", {
       method: "get",
       credentials: "include",
