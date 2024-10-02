@@ -3,9 +3,10 @@ from .models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
+    avatar_url = serializers.SerializerMethodField()
     class Meta:
         model = User
-        fields = ['id', 'email', 'password', 'username', 'avatar']
+        fields = ['id', 'email', 'password', 'username', 'avatar_url']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -17,3 +18,9 @@ class UserSerializer(serializers.ModelSerializer):
             instace.set_password(password)
         instace.save()
         return instace
+    
+    def get_avatar_url(self, obj):
+    # Ensure the avatar exists, otherwise return None
+        if obj.avatar:
+            return obj.avatar.url
+        return None
