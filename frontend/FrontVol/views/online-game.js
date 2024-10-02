@@ -483,6 +483,9 @@ export default class Online_Game extends HTMLElement {
 				guest_img_element.src = guest.avatar;
 			}
 			if (data.type === 'player_disconnected') {
+				if (this.gameSocket)
+					this.gameSocket.close();
+				this.deleteRoom(this.roomName);
 				isMoving = false;
 				const gameOverMessage = document.querySelector('.game-over h2');
 				const middle_line = document.querySelector('.middle-line');
@@ -580,19 +583,29 @@ export default class Online_Game extends HTMLElement {
 	async deleteRoom(roomId) {
 		this.deleted = true;
 		const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrf-token')).split('=')[1];
-		const response = await fetch(`api/game/delete-room/${roomId}/`, {
+		fetch(`/api/game/delete-room/${roomId}/`, {
 			method: 'DELETE',
 			headers: {
-				'X-CSRFToken':csrftoken, 
+				'X-CSRFToken': csrftoken,
 				'Content-Type': 'application/json',
 			},
+		})
+		.then(response => {
+			if (!response.ok) {
+				throw new Error('Network response was not ok');
+			}
+			return response.json();
+		})
+		.then(data => {
+			if (data.success === true) {
+				console.log(`Room ${roomId} deleted successfully`);
+			} else {
+				console.log(`Room ${roomId} already deleted`);
+			}
+		})
+		.catch(error => {
+			console.error('Failed to delete room:', error);
 		});
-		
-		if (response.ok) {
-			console.log(`Room ${roomId} deleted successfully`);
-		} else {
-			console.error('Failed to delete room');
-		}
 	}
 	disconnectedCallback() {
 		console.log("dis connected Callback online game");

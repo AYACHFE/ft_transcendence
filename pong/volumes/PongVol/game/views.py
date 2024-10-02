@@ -54,4 +54,4 @@ def delete_room(request, room_id):
         room.delete()
         return JsonResponse({'success': True})
     except Room.DoesNotExist:
-        return JsonResponse({'error': 'Room not found'}, status=404)
+        return JsonResponse({'error': 'Room not found'})

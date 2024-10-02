@@ -21,11 +21,6 @@ class PingPongConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
-        if self.scope['user'].is_anonymous:
-            await self.close()
-        else:
-            await self.accept()
-
         # Assign roles based on the number of connected players in the room
         if len(self.rooms[self.room_name]) == 0:
             self.role = 'host'
@@ -34,8 +29,16 @@ class PingPongConsumer(AsyncWebsocketConsumer):
             self.role = 'guest'
             self.rooms[self.room_name].append({'channel': self.channel_name, 'username': self.scope['user'].username, 'role': 'guest'})
             #checks if the account is the
-            # if self.rooms[self.room_name][0]['username'] == self.rooms[self.room_name][1]['username']:
-            #     self.close()
+            print(f"blab",self.rooms[self.room_name][0]['username'])
+            print(f"blaba->",self.rooms[self.room_name][1]['username'])
+            if self.rooms[self.room_name][0]['username'] == self.rooms[self.room_name][1]['username']:
+                await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {
+                        'type': 'player_disconnected',
+                        'channel_name': self.channel_name,
+                    }
+                )
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
@@ -47,6 +50,10 @@ class PingPongConsumer(AsyncWebsocketConsumer):
             await self.close()
             return
 
+        if self.scope['user'].is_anonymous:
+            await self.close()
+        else:
+            await self.accept()
         # Send the assigned role to the connected player
         await self.send(text_data=json.dumps({
             'type': 'assign_role',
