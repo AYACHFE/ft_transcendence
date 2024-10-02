@@ -1,9 +1,9 @@
 
 
 all: 
-	sudo docker-compose up --build
+	docker-compose up --build
 down: 
-	sudo docker-compose down 
+	docker-compose down 
 re:  down all
 
 volclean: down
@@ -14,16 +14,16 @@ volclean: down
 
 
 db:
-	sudo docker exec -it database sh
+	docker exec -it database sh
 dj:
-	sudo docker exec -it pong sh
+	docker exec -it pong sh
 user_api_sh:
-	sudo docker exec -it userapi sh
+	docker exec -it userapi sh
 auth:
-	sudo docker exec -it authapi sh
+	docker exec -it authapi sh
 pongg:
-	sudo docker exec -it pong sh
+	docker exec -it pong sh
 fronten:
-	sudo docker exec -it frontend sh
+	docker exec -it frontend sh
 
 PHONY: all down re db dj user_api pong frontend
