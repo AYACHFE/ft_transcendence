@@ -44,7 +44,9 @@ def send_friendship_request(request, target_id):
         receiver = User.objects.get(Q(id=target_id))
         if request.user == receiver:
             return Response({"error":"you can't send the request to yourself!"}, status=status.HTTP_400_BAD_REQUEST)
-        
+        friendship_blocked = friends.objects.filter(Q(receiver=request.user) & Q(sender=receiver) & Q(blocked=True)).filter()
+        if friendship_blocked:
+            return Response({"error":"user blocked you"}, status=status.HTTP_400_BAD_REQUEST)
         
             # return Response({"error":"you can't send the request to yourself!"}, status=status.HTTP_400_BAD_REQUEST)
         friendship , created = friends.objects.get_or_create(sender = request.user, receiver=receiver)
@@ -92,7 +94,7 @@ from users.friends import friendsSerializer
 class RequestsOnWait(AuthRequired, generics.ListAPIView):
     serializer_class = friendsSerializer
     def get_queryset(self):
-        return friends.objects.filter(receiver = self.request.user)
+        return friends.objects.filter(Q(receiver = self.request.user)& Q(blocked=False))
 
 class MyFriends(AuthRequired, generics.ListAPIView):
     serializer_class = UserSerializer
