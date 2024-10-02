@@ -6,7 +6,7 @@ export default class Chat extends HTMLElement {
     this.socket;
     this.users = [];
     this.originalUsers = [];
-    
+    this.roomId = null;
     this.innerHTML = "<loading-page></loading-page>";
   }
   async fetchData() {
@@ -130,6 +130,44 @@ export default class Chat extends HTMLElement {
     }
   }
   
+  async createRoom() {
+		if (!this.roomId) {
+			this.roomId = this.generateRoomId();
+	
+			// Create room in the backend
+			const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrf-token')).split('=')[1];
+			const response = await fetch('/api/game/create-room/', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken':csrftoken, 
+				},
+				body: JSON.stringify({ room_id: this.roomId })
+			});
+	
+			if (response.ok) {
+					this.joinRoomById(this.roomId);
+			} else {
+				console.log("Error creating room");
+			}
+		}
+	}
+	
+
+	// Generate a random room ID
+	generateRoomId() {
+		return Math.random().toString(36).substring(2, 8).toUpperCase();
+	}
+  joinRoomById(roomId) {
+		let game = document.createElement('online-game-page');
+		game.setAttribute('roomid', roomId);
+
+		let parent = document.getElementsByClassName('center-console')[0];
+		if (parent) {
+			parent.innerHTML = '';
+			parent.appendChild(game);
+		}
+	}
 
   async connectedCallback() {
 
@@ -157,6 +195,9 @@ export default class Chat extends HTMLElement {
 					<button type="submit" class="message-submit">
 						<img src="../images/send-2.svg" alt="">
 					</button>
+          <button type="submit" class="send_to_play">
+						<img src="../images/online-controller.svg" alt="">
+					</button>
 				</div>
 			</div>
 		</div>
@@ -173,11 +214,12 @@ export default class Chat extends HTMLElement {
 
       if (searchInput.value) {
         this.users = this.originalUsers.filter((user) =>
-          user.name.startsWith(searchInput.value)
+          user.username.startsWith(searchInput.value)
         );
       } else {
         this.users = [...this.originalUsers];
       }
+      this.userdata = null;
 
       this.users.forEach((user) => {
         let userComponent = createUserComponent(user, this.mydata.id, user.id);
@@ -259,6 +301,31 @@ export default class Chat extends HTMLElement {
       this.insertMessage();
       document.querySelector(".message-input").value = "";
     });
+    document.querySelector(".send_to_play").addEventListener("click", () => {
+      console.log("send to play");
+
+
+      this.createRoom();
+      
+
+      let datasend = {
+        sender: this.mydata.id,
+        receiver: this.userdata,
+        content: this.roomId,
+        time: new Date().toISOString(),
+      };
+
+      if (this.socket.readyState === WebSocket.OPEN) {
+        this.socket.send(JSON.stringify(datasend));
+      }
+
+
+
+
+
+
+    });
+    
 
     document.querySelector(".message-input").addEventListener("keypress", (event) => {
         if (event.key === "Enter") {
@@ -307,12 +374,8 @@ export default class Chat extends HTMLElement {
       img.alt = "";
       userDiv.appendChild(img);
     
-      var userInGameDiv = document.createElement("div");
-      userInGameDiv.className = "user-ingame active";
       var p = document.createElement("p");
-      p.textContent = "in Game";
-      userInGameDiv.appendChild(p);
-      userDiv.appendChild(userInGameDiv);
+
     
       // Handle WebSocket for last message
       var lastsocket;
@@ -430,6 +493,10 @@ export default class Chat extends HTMLElement {
     }
     
     
+  }
+  disconnectedCallback()  {
+    console.log("disconnect");
+    this.socket.close();
   }
 }
 

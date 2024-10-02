@@ -11,6 +11,9 @@ settings-page #submit_text{
 	font-size: 16px;
     text-align: center;
 }
+settings-page #seccuss{
+	color: rgb(7, 184, 25);
+}
 
 settings-page .message{
 	color: rgb(135, 6, 6);
