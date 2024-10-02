@@ -409,7 +409,7 @@ export default class Online_Game extends HTMLElement {
 
 		////////////////////////// updates the variables for the online game //////////////////////////
 
-		var maxScore = 3;
+		var maxScore = 20;
 
 		var paddlePos = { player1: parseInt(leftRacket.style.top), player2: parseInt(rightRacket.style.top) };
 		var ballPos = { x: ballX, y: ballY };

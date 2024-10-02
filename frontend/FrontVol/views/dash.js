@@ -37,7 +37,7 @@ export default class Dash extends HTMLElement {
             
             <div class="start-game">
                 <div class="playnow">PLAY Now</div>
-                <a class="play-button" href="/dashboard/game">
+                <a class="play-button">
                     <img src="./images/Add.svg">
                 </a>
             </div>
@@ -212,9 +212,15 @@ export default class Dash extends HTMLElement {
 		    document.body.appendChild(popup);
 		    popup.openModal();
 		});
-		let picker2 = document.querySelector('.picker-2');
-
-		picker2.addEventListener('click', () => {
+		let picker2_2 = document.querySelector('.picker-2');
+		let picker2_1 = document.querySelector('.play-button');
+		
+		picker2_2.addEventListener('click', () => {
+		    let popup = new Game();
+			document.querySelector(".center-console").innerHTML = "";
+		    document.querySelector(".center-console").appendChild(popup);
+		});
+		picker2_1.addEventListener('click', () => {
 		    let popup = new Game();
 			document.querySelector(".center-console").innerHTML = "";
 		    document.querySelector(".center-console").appendChild(popup);
