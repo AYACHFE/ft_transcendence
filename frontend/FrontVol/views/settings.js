@@ -323,10 +323,8 @@ class Settings_default extends HTMLElement {
         const usernameValue = document.getElementById("username").value;
         const avatarValue = document.getElementById("profile-img").value;
         
-        const avatarValue = document.getElementById("profile-img").value;
         
         // const  avatar = document.querySelector('.avatar-option.active input[type="radio"]').value;
-  console.log(avatarValue);
   console.log(avatarValue);
         if (
           (firstnameValue !== "" && firstnameValue !== firstnameValue.placeholder) ||
@@ -401,9 +399,6 @@ class Settings_default extends HTMLElement {
 
 
 
-    
-  }
-}
     fetch("http://localhost:8000/main/data/", {
       method: "get",
       credentials: "include",
@@ -423,7 +418,7 @@ class Settings_default extends HTMLElement {
 
 
 
-
+  
     
   }
 }
