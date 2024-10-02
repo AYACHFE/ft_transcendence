@@ -219,6 +219,7 @@ export default class Chat extends HTMLElement {
       } else {
         this.users = [...this.originalUsers];
       }
+      this.userdata = null;
 
       this.users.forEach((user) => {
         let userComponent = createUserComponent(user, this.mydata.id, user.id);
@@ -373,12 +374,8 @@ export default class Chat extends HTMLElement {
       img.alt = "";
       userDiv.appendChild(img);
     
-      var userInGameDiv = document.createElement("div");
-      userInGameDiv.className = "user-ingame active";
       var p = document.createElement("p");
-      p.textContent = "in Game";
-      userInGameDiv.appendChild(p);
-      userDiv.appendChild(userInGameDiv);
+
     
       // Handle WebSocket for last message
       var lastsocket;

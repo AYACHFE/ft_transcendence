@@ -258,7 +258,7 @@ class Settings_default extends HTMLElement {
         {
           const newElement = document.createElement("p");
           newElement.textContent = "Changes done";
-          newElement.id = "tempElement";
+          newElement.id = "seccuss";
           document.getElementById("submit_text").appendChild(newElement);
         }
         return response.json();
