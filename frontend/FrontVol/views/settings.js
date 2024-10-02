@@ -228,6 +228,7 @@ class Settings_default extends HTMLElement {
   }
 
   somethingchanged() {
+	
     var firstnameValue = document.getElementById("firstname").value;
     var lastnameValue = document.getElementById("lastname").value;
     var usernameValue = document.getElementById("username").value;
@@ -256,21 +257,24 @@ class Settings_default extends HTMLElement {
       .then((response) => {
         if(response.status === 200)
         {
-          const newElement = document.createElement("p");
-          newElement.textContent = "Changes done";
-          newElement.id = "seccuss";
-          document.getElementById("submit_text").appendChild(newElement);
-        }
+		}
         return response.json();
-      })
-      .then((data) => {
-        this.mydata = data;
+	})
+	.then((data) => {
+		this.mydata = data;
         
         var defaultpage = document.getElementById("submitdefault");
-        if (defaultpage && this.mydata) {
-          this.ensertdata();
-          this.tcheckifdatachange();
-        }
+
+		const newElement = document.createElement("p");
+		newElement.textContent = "Changes done";
+		newElement.id = "seccuss";
+		document.getElementById("submit_text").appendChild(newElement);
+		setTimeout(() => {
+		  const element = document.getElementById("seccuss");
+		  if (element) {
+			element.parentNode.removeChild(element);
+		  }
+		}, 2000);
       });
 
 
@@ -322,15 +326,13 @@ class Settings_default extends HTMLElement {
         const lastnameValue = document.getElementById("lastname").value;
         const usernameValue = document.getElementById("username").value;
         const avatarValue = document.getElementById("profile-img").value;
+
+
         
-        
-        // const  avatar = document.querySelector('.avatar-option.active input[type="radio"]').value;
-  console.log(avatarValue);
+
         if (
           (firstnameValue !== "" && firstnameValue !== firstnameValue.placeholder) ||
           (lastnameValue !== "" && lastnameValue !== lastnameValue.placeholder) ||
-          (usernameValue !== "" && usernameValue !== usernameValue.placeholder) || 
-          (avatarValue !== "")
           (usernameValue !== "" && usernameValue !== usernameValue.placeholder) || 
           (avatarValue !== "")
         ) {
@@ -368,13 +370,6 @@ class Settings_default extends HTMLElement {
                
                 <input class="general-form"  type="file" id="profile-img" accept="image/*">
 
-                
-               
-                <input class="general-form"  type="file" id="profile-img" accept="image/*">
-
-                
-                
-                
                 <input id="submitdefault" class="general-form-submit" type="submit" value="Save Changes">
             </form>
             
@@ -392,29 +387,8 @@ class Settings_default extends HTMLElement {
           this.tcheckifdatachange();
         }
       });
-    var firstnameInput = document.getElementById("firstname");
-    var lastnameInput = document.getElementById("lastname");
-    var usernameInput = document.getElementById("username");
+ 
 
-
-
-
-    fetch("http://localhost:8000/main/data/", {
-      method: "get",
-      credentials: "include",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        this.mydata = data;
-        var defaultpage = document.getElementById("submitdefault");
-        if (defaultpage && this.mydata) {
-          this.ensertdata();
-          this.tcheckifdatachange();
-        }
-      });
-    var firstnameInput = document.getElementById("firstname");
-    var lastnameInput = document.getElementById("lastname");
-    var usernameInput = document.getElementById("username");
 
 
 

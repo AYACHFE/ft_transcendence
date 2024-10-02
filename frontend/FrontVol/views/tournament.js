@@ -102,10 +102,10 @@ export default class Tournament extends HTMLElement {
 			textElements.forEach((element) => {
 				element.textContent = "";
 			});
-			const rond1 = document.querySelectorAll(".round1[contenteditable]");
+			const rond1 = document.querySelectorAll(".round1 input");
 
 			rond1.forEach((element) => {
-				element.textContent = "";
+				element.value = "";
 			});
 			
 
@@ -121,7 +121,7 @@ export default class Tournament extends HTMLElement {
 			this.currentRound = 1;
 
 			this.playButton = document.querySelector(".play_game");
-			this.elements = document.querySelectorAll(".round1[contenteditable]");
+			this.elements = document.querySelectorAll(".round1 input");
 
 			this.updateButtonState();
 
@@ -152,7 +152,7 @@ export default class Tournament extends HTMLElement {
 
 	areAllFilled() {
 		for (let i = 0; i < this.elements.length; i++) {
-			if (this.elements[i].textContent.trim() === "") {
+			if (this.elements[i].value.trim() === "") {
 				return false;
 			}
 		}
@@ -161,7 +161,7 @@ export default class Tournament extends HTMLElement {
 
 	createPlayerArray() {
 		for (let i = 0; i < this.elements.length; i++) {
-			this.players.push(this.elements[i].textContent.trim());
+			this.players.push(this.elements[i].value.trim());
 		}
 	}
 
@@ -186,14 +186,14 @@ export default class Tournament extends HTMLElement {
 		this.innerHTML = /*html*/ `
 
 			<div class="parent">
-				<div class="div1 round1" contenteditable="true"></div>
-				<div class="div2 round1" contenteditable="true"></div>
-				<div class="div3 round1" contenteditable="true"></div>
-				<div class="div4 round1" contenteditable="true"></div>
-				<div class="div5 round1" contenteditable="true"></div>
-				<div class="div6 round1" contenteditable="true"></div>
-				<div class="div7 round1" contenteditable="true"></div>
-				<div class="div8 round1" contenteditable="true"></div>
+				<div class="div1 round1" ><input></input></div>
+				<div class="div2 round1" ><input></input></div>
+				<div class="div3 round1" ><input></input></div>
+				<div class="div4 round1" ><input></input></div>
+				<div class="div5 round1" ><input></input></div>
+				<div class="div6 round1" ><input></input></div>
+				<div class="div7 round1" ><input></input></div>
+				<div class="div8 round1" ><input></input></div>
 				<div class="div9 round2"><h5 id="winner"></h5></div>
 				<div class="div10 round2"><h5 id="winner"></h5></div>
 				<div class="div11 round2"><h5 id="winner"></h5></div>
@@ -214,15 +214,12 @@ export default class Tournament extends HTMLElement {
 		`;
 
 		this.playButton = document.querySelector(".play_game");
-		this.elements = document.querySelectorAll(".round1[contenteditable]");
-
+		this.elements = document.querySelectorAll(".round1 input"); // Removed [input] to correctly select input elements
 		this.updateButtonState();
 		this.elements.forEach(element => {
 			element.addEventListener('input', function() {
-				if (this.innerText.length > 10) {
-					element.innerText = this.innerText.substring(0, 10);
-				} else {
-					element.innerText = this.innerText;
+				if (this.value.length > 10) {
+					this.value = this.value.substring(0, 10);
 				}
 			});
 		});
