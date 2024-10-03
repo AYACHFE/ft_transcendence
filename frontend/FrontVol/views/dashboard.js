@@ -29,8 +29,9 @@ export default class Dashboard extends HTMLElement {
         })
         .catch(error => console.log("error", error));
     }
+
     connectedCallback() {
-        this.innerHTML = `
+        this.innerHTML = /*html*/`
                 <head>
                     <link rel="stylesheet" href="../style/dashboard.css">
                     <meta name="csrf-token" content="">
@@ -83,53 +84,7 @@ export default class Dashboard extends HTMLElement {
                     </div>
                     <img class="upper-section-icone" src="../images/Vector.svg">
                     <div class="users-display overflow-style flex-col">
-                        <div class="side-user" style="background-color:#D9D9D9;">
-                            <img src="../images/users/happy-1.svg" alt="">
-                            <div class="user-status-side active "></div>
-                            <div class="user-ingame-side active"><p>in Game</p></div>
-                        </div>
-                        <div class="side-user" style="background-color:#F7C5BF;">
-                            <img src="../images/users/happy-2.svg" alt="">
-                            <div class="user-status-side active "></div>
-                            <div class="user-ingame-side active"><p>in Game</p></div>
-                            
-                        </div>
-                        <div class="side-user" style="background-color:#FF8A8A;">
-                            <img src="../images/users/happy-3.svg" alt="">
-                            <div class="user-status-side active "></div>
-                            <div class="user-ingame-side "><p>in Game</p></div>
-                            
-                        </div>
-                        <div class="side-user" style="background-color:#FFBEB8;">
-                            <img src="../images/users/happy-6.svg" alt="">
-                            <div class="user-status-side active "></div>
-                            <div class="user-ingame-side "><p>in Game</p></div>
-                        </div>
-                        <div class="side-user" style="background-color:#C5C6C6;">
-                            <img src="../images/users/happy-5.svg" alt="">
-                            <div class="user-status-side "></div>
-                            <div class="user-ingame-side "><p>in Game</p></div>
-                        </div>
-                        <div class="side-user" style="background-color:#CEC3FF;">
-                            <img src="../images/users/happy-4.svg" alt="">
-                            <div class="user-status-side "></div>
-                            <div class="user-ingame-side "><p>in Game</p></div>
-                        </div>
-                        <div class="side-user" style="background-color:#D9D9D9;">
-                            <img src="../images/users/happy-1.svg" alt="">
-                            <div class="user-status-side "></div>
-                            <div class="user-ingame-side "><p>in Game</p></div>
-                        </div>
-                        <div class="side-user" style="background-color:#F7C5BF;">
-                            <img src="../images/users/happy-2.svg" alt="">
-                            <div class="user-status-side "></div>
-                            <div class="user-ingame-side "><p>in Game</p></div>
-                        </div>
-                        <div class="side-user" style="background-color:#D9D9D9;">
-                            <img src="../images/users/happy-1.svg" alt="">
-                            <div class="user-status-side "></div>
-                            <div class="user-ingame-side "><p>in Game</p></div>
-                        </div>
+                        
                     </div>
 
                 </div>
@@ -171,6 +126,26 @@ export default class Dashboard extends HTMLElement {
         }
         </script>
         `;
+
+        
+
+
+        let cadre = document.querySelector(".users-display");
+        cadre.innerHTML = '';
+        fetch("/api/relations/friends-list/")
+        .then(response => response.json())
+        .then(data => {
+            data.forEach((elem)=>{
+                cadre.innerHTML += /*html*/`
+                <div class="side-user" style="background-color:#D9D9D9;">
+                    <img src="${elem.avatar_url}" alt="">
+                    <div class="user-status-side active "></div>
+                    <div class="user-ingame-side active"><p>in Game</p></div>
+                </div>
+                `
+            })
+        })
+
         fetch('http://localhost:8000/main/data/',{
             method:"get",
             credentials:"include"
