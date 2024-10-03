@@ -29,9 +29,9 @@
                     <img src="../images/settings/security.svg" alt="General" class="settings-icon">
                     Security
                 </a>
-                <a class="settings-btn language">
+                <a class="settings-btn otp">
                     <img src="../images/settings/language.svg" alt="General" class="settings-icon">
-                    Languages
+                    OneTimePassword
                 </a>
             </div>
             <div class="settings-main">
@@ -200,23 +200,54 @@ class Settings_security extends HTMLElement {
   disconnectedCallback() {}
 }
 
-class Settings_language extends HTMLElement {
+class Settings_otp extends HTMLElement {
   constructor() {
     super();
   }
-  connectedCallback() {
-    this.innerHTML = `
-            <form id="language-form">
-                <label for="language-select">Choose a language:</label>
-                <select class="language-select" name="language">
-                    <option value="en">English</option>
-                    <option value="fr">French</option>
-                </select>
-                <button class="language-submit" type="submit">Change Language</button>
-            </form>
-        `;
+  get_qrcode()
+  {
+    let div = document.querySelector(".otp-qrcode");
+    div.innerHTML = `
+      <img src="/api/otp/qrcode/">
+      `;
+  }
+  otp_submit(confirmation){
+    console.log("opt_submit");
+    const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrf-token')).split('=')[1];
+    fetch("/api/otp/setup-confirmation/",{
+      method: 'POST',
+      headers:{
+          'X-CSRFToken':csrftoken,
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({confirmation:confirmation})
+    })
+    .then(response => response.json())
+    .then(data =>{
+      console.log("returned suceessfully")
+    })
+  }
 
-        
+  connectedCallback() {
+    this.innerHTML = /*html*/ `
+            <div class="qr-code-div">
+              <img class="qr-code-img" src="/api/otp/qrcode/">
+              <input type="text" class="otp-confirm-input" placeholder="OTP CONFIRMATION">
+              <button class="otp-confirm-button">submit</button>
+            </div>
+        `;
+      
+      let enable = document.querySelector(".otp-enable-btn");
+      let confimation = document.querySelector(".otp-confirm-input");
+      enable.addEventListener("click", ()=>{
+        this.get_qrcode()
+        // confimation.hidden = false;
+        // otpSubmit.hidden = false;
+      })    
+      let otpSubmit = document.querySelector(".otp-confirm-button");
+      otpSubmit.addEventListener("click",()=>{
+        this.otp_submit(confimation.value)
+      })
   }
 }
 
@@ -399,4 +430,4 @@ class Settings_default extends HTMLElement {
 customElements.define("settings-page", Settings);
 customElements.define("settings-default", Settings_default);
 customElements.define("settings-security", Settings_security);
-customElements.define("settings-language", Settings_language);
+customElements.define("settings-otp", Settings_otp);

@@ -80,8 +80,8 @@ def generate_qr_code(totp_device):
     qr_image = qrcode.make(qr_url)
     buffer = BytesIO()
     qr_image.save(buffer, "PNG")
-    qr_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
-    return qr_base64
+    buffer.seek(0)  # Rewind the buffer
+    return buffer
 
 import urllib.parse
 from django_otp.plugins.otp_totp.models import TOTPDevice

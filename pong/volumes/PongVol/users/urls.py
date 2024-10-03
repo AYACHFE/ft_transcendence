@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RegisterView , LoginView, UserView, LogoutView, csrf_token_view, enable_otp, confirm_otp, change_pass, profile_img, send_mail
+from .views import RegisterView , LoginView, UserView, LogoutView, csrf_token_view, enable_otp, confirm_otp, change_pass, profile_img, send_mail, enable_otp_confirmation
 from .oauth import oauth42
 from .friends import send_friendship_request, accept_friendship_request, SearchForUser, RequestsOnWait, block_friendship, MyFriends, reject_friendship
 urlpatterns = [
@@ -11,6 +11,7 @@ urlpatterns = [
     path("42/callback/", oauth42.as_view()),
     path("otp/qrcode/", enable_otp),
     path("otp/confirm", confirm_otp),
+    path("otp/setup-confirmation/", enable_otp_confirmation),
     path("change-pass/", change_pass),
     path('profile-img/', profile_img),
     path("send-mail/", send_mail),

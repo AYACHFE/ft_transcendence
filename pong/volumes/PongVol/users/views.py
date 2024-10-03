@@ -91,14 +91,34 @@ def csrf_token_view(request):
 
 
 
+
+
 def enable_otp(request):
     totp_device = create_totp_device(request.user)
-    qr_code = generate_qr_code(totp_device)
-    return render(request, 'enable_otp.html', {'qr_code': qr_code})
+    qr_code_buffer = generate_qr_code(totp_device)
+    return HttpResponse(qr_code_buffer, content_type="image/png")
+
+from rest_framework.decorators import api_view
 
 
+@auth_only
+@api_view(['POST'])
+def enable_otp_confirmation(request):
+    # data = json.loads(request.body)
+    otp = request.data.get('confirmation')
+    if otp:
+        totp_device = TOTPDevice.objects.get(user = request.user)
+        if totp_device.verify_token(otp):
+            totp_device.confirmed = True
+            totp_device.save()
+            request.user.twoFA = True
+            request.user.save()
+            return Response({"message":"success"})
+    return Response({"messge":"please try again"}, status=status.HTTP_400_BAD_REQUEST)
 
 
+from rest_framework import status
+@api_view(["POST"])
 def confirm_otp(request):
     if request.method == 'POST':
         otp = request.POST['otp']
@@ -110,16 +130,14 @@ def confirm_otp(request):
             totp_device = TOTPDevice.objects.get(user = user)
         
             if totp_device.verify_token(otp):
-                response = HttpResponseRedirect('/dashboard')
                 token = gen_token(user)
+                response = HttpResponse()
                 response.set_cookie('jwt', value=token, httponly=True)
                 return response
             else:
-                return JsonResponse({"message": 'Invalid OTP, please try again.'})
+                raise Exception()
         except Exception as e:
-            return JsonResponse({"message":"Please try again"})
-    
-    return render(request, 'confirm_otp.html')
+            return Response({"message":"Please try again"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 

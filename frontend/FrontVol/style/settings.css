@@ -195,3 +195,37 @@ settings-page .settings-icon {
 	width: auto;
 	margin: 0% 4%;
 }
+
+/* ------------- OTP ------------- */
+
+settings-page .qr-code-div{
+	height: 150%;
+	width: 70%;
+	margin:auto;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-direction: column;
+}
+settings-page .qr-code-img{
+	border-radius: 1.5rem;
+	margin: 5%;
+}
+settings-page .otp-confirm-input{
+	border-radius: 1.5rem;
+	font-size: 1vw;
+	text-align: center;
+	width: 50%;
+	padding: 5%;
+}
+
+settings-page .otp-confirm-button{
+	border-radius: 1.5rem;
+	font-size: 1vw;
+	width: 50%;
+	padding: 5%;
+	margin: 5%;
+}
+
+
+/* ------------- OTP ------------- */
