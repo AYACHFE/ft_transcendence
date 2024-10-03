@@ -77,7 +77,7 @@ var ball_ = document.querySelectorAll('.ball');
 
 // Create a function to handle the event
 function hideStartGameElements() {
-    // Loop through each start game text element and hide it
+
     startGameElements.forEach(function(element) {
         element.style.display = 'none';
     });
@@ -88,9 +88,15 @@ function hideGameOver() {
     });
 }
 
-// Add the function as an event listener for multiple events
-// document.addEventListener('click', hideStartGameElements);
-document.addEventListener('keypress', hideStartGameElements);
+document.addEventListener('keydown', function(event) {
+    const key = event.key;
+
+    if (key === "ArrowUp" || key === "ArrowDown" || key === "w" || key === "s") {
+		isMoving = true;
+        hideStartGameElements();
+    }
+});
+
 hideGameOver();
 //---------------------------rackets-movemnt-----------------------------------\\
 //ball data
@@ -210,9 +216,6 @@ var speedX = 10; // Horizontal speed
 var speedY = 10; // Vertical speed
 
 var isMoving = false;
-	document.addEventListener('keydown', function() {
-		isMoving = true;
-	});
 
 var scoreP1 = 0;
 var scoreP2 = 0;
@@ -251,7 +254,7 @@ const moveBall = async () => {
 			const ball = document.querySelector('.ball');
 			
 			// // Change the content of the div
-			gameOverMessage.innerHTML = 'Game Over!<br> Player ' + (scoreP1 == maxScore ? '1' : '2') + ' wins!';
+			gameOverMessage.innerHTML = 'Game Over!<br> User ' + (scoreP1 == maxScore ? '2' : '1') + ' wins!';
 			middle_line.style.display = 'none';
 			ball.style.display = 'none';
 			gameOverMessage.style.display = 'block';

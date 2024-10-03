@@ -165,4 +165,3 @@ def change_pass(request):
 def profile_img(request):
     image_data = open('./'+request.user.avatar.url, "rb").read()
     return HttpResponse(image_data, content_type="image/jpeg")
-

@@ -18,13 +18,19 @@ def save_game_result(request):
     loser_score = int(request.POST['loser_score'])
 
     try:
-        get_user_model().objects.get(username=winner_username)
-        get_user_model().objects.get(username=loser_username)
+        winner_user = get_user_model().objects.get(username=winner_username)
+        loser_user  = get_user_model().objects.get(username=loser_username)
     except ObjectDoesNotExist:
         return JsonResponse({'status': 'failure', 'message': 'User does not exist'})
 
-    game_result = GameResult(winner_username=winner_username, loser_username=loser_username, time=time, winner_score=winner_score, loser_score=loser_score)
+    game_result = GameResult(winner_user=winner_user, loser_user=loser_user, time=time, winner_score=winner_score, loser_score=loser_score)
     game_result.save()
+    if(winner_user == request.user):
+        request.user.user_wins += 1
+        request.user.save()
+    else:
+        winner_user.user_wins += 1
+        winner_user.save()
 
     return JsonResponse({'status': 'success'})
 

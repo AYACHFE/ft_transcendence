@@ -96,6 +96,13 @@ export default class OnlinePopup extends HTMLElement {
 	  this.closeBtn.addEventListener('click', this.closeModal.bind(this));
 	  this.createRoomBtn.addEventListener('click', this.createRoom.bind(this));
 	  this.joinRoomBtn.addEventListener('click', this.joinRoom.bind(this));
+	  document.addEventListener('keydown', (event) => {
+		const key = event.key;
+	
+		if (key === "Esc" || key === "Escape") {
+			this.closeModal();
+		}
+	});
 	}
   
 	// Show the modal and add blur effect to background

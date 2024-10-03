@@ -391,7 +391,7 @@ class GamePage extends HTMLElement {
 			if (moveDownRight) {
 				// Move the right racket down
 				newTopRightDown = (parseInt(rightRacket.style.top) || 0) + step;
-				if (newTopRightDown <= boardHeight / 2 - 100) {
+				if (newTopRightDown <= boardHeight / 2 - 150) {
 					rightRacket.style.top = newTopRightDown + "px";
 				}
 			}
@@ -407,7 +407,7 @@ class GamePage extends HTMLElement {
 			if (moveDownLeft) {
 				// Move the left racket down
 				newTopLeftDown = (parseInt(leftRacket.style.top) || 0) + step;
-				if (newTopLeftDown <= boardHeight / 2 - 100) {
+				if (newTopLeftDown <= boardHeight / 2 - 150) {
 					leftRacket.style.top = newTopLeftDown + "px";
 				}
 			}
