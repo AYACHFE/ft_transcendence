@@ -1,7 +1,11 @@
 import OnlinePopup from './online-popup.js';
 import Game from "../views/game.js";
 export default class Dash extends HTMLElement {
-    constructor() {super()}
+    constructor() {
+        super()
+        this.users = [];
+        this.mydata = {};
+    }
     btnhighlightfun(){
         document.querySelectorAll('.btn-highlight').forEach(el => {
           el.classList.remove('btn-highlight');
@@ -13,11 +17,75 @@ export default class Dash extends HTMLElement {
           chatButton.classList.add('btn-highlight');
       }
     }
+
+    insertdatatoscores  = async () => {
+        console.log(this.users);
+        //get my data from fetch /main/data
+        try {
+            const response = await fetch("http://localhost:8000/main/data/", {
+              method: "get",
+              credentials: "include",
+            });
+            this.mydata = await response.json();
+          } catch (error) {
+            console.error("Error:", error);
+          }
+
+
+        let firstuser = document.getElementById('name_first');
+        let seconduser = document.getElementById('name_second');
+        let thirduser = document.getElementById('name_thred');
+        let fourthuser = document.getElementById('name_for');
+        let fourthscore = document.getElementById('score_for');
+        let firstscore = document.getElementById('score_first');
+        let secondscore = document.getElementById('score_second');
+        let thirdscore = document.getElementById('score_thred');
+
+
+    this.users.sort((a, b) => b.user_wins - a.user_wins);
+
+    let topUsers = this.users.slice(0, 4);
+    let isInTopUsers = topUsers.some(user => user.id === this.mydata.id);
+
+    if (!isInTopUsers) {
+        topUsers[3] = this.mydata;
+    }
+
+    if (topUsers[0])
+        firstuser.innerText = topUsers[0]?.username.substring(0, 10);
+    if (topUsers[1])
+        seconduser.innerText = topUsers[1]?.username.substring(0, 10);
+    if (topUsers[2])
+        thirduser.innerText = topUsers[2]?.username.substring(0, 10);
+    if (topUsers[3])
+        fourthuser.innerText = topUsers[3]?.username.substring(0, 10);
+
+    if (topUsers[0])
+        firstscore.innerText = topUsers[0]?.user_wins;
+    if (topUsers[1])
+        secondscore.innerText = topUsers[1]?.user_wins;
+    if (topUsers[2])
+        thirdscore.innerText = topUsers[2]?.user_wins;
+    if (topUsers[3])
+        fourthscore.innerText = topUsers[3]?.user_wins;
+
+
+
+
+    }
+    getusers = async ()  => {
+        await fetch('/api/chat/users/')
+        .then(response => response.json())
+        .then(data => {
+            this.users = data;
+        })
+    }
     
   
   
-    connectedCallback() {
+    async connectedCallback() {
         this.btnhighlightfun();
+        await this.getusers();
         this.innerHTML = /*html*/ `
         <html lang="en">
         <head>
@@ -104,8 +172,8 @@ export default class Dash extends HTMLElement {
                             </div>
                         </div>
                         <div class="leader-name-rank">
-                            <div>Rachid</div>
-                            <div>1</div>
+                            <div id="name_first">...</div>
+                            <div id="score_first">...</div>
                         </div>
                     </div>
                     <div class="leader-board-users1">
@@ -116,8 +184,8 @@ export default class Dash extends HTMLElement {
                             </div>
                         </div>
                         <div class="leader-name-rank">
-                            <div>Ayman</div>
-                            <div>2</div>
+                            <div id="name_second">...</div>
+                            <div id="score_second">...</div>
                         </div>
                     </div>
                     <div class="leader-board-users2">
@@ -129,8 +197,8 @@ export default class Dash extends HTMLElement {
                             
                         </div>
                         <div class="leader-name-rank">
-                            <div>Mehdi</div>
-                            <div>3</div>
+                            <div id="name_thred">...</div>
+                            <div id="score_thred">...</div>
                         </div>
                     </div>
                     <div class="leader-board-users3">
@@ -142,8 +210,8 @@ export default class Dash extends HTMLElement {
 
                         </div>
                         <div class="leader-name-rank">
-                            <div>Rachid</div>
-                            <div>999</div>
+                            <div id="name_for">...</div>
+                            <div id="score_for">...</div>
                         </div>
                     </div>
                 </div>
@@ -170,13 +238,8 @@ export default class Dash extends HTMLElement {
         </body>
         </html>
         `;
-
-        // - GET THE DATA NEEDED FOR THE DASHBOARD -//
-        // fetch('/api/')
-        function fetch_resquests(){
-
-
-        }
+        this.insertdatatoscores();
+        
         let searchResultBoard = document.querySelector('.search-result-board-overflow')
 
         let searchInput = document.querySelector(".search-input");

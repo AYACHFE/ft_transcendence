@@ -8,7 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/game/', include('game.urls')),
     path('api/', include('users.urls')),
-    path('chat/', include('chat.urls')),
+    path('api/chat/', include('chat.urls')),
     path('settings/', include('settings.urls')),
     path('', include('main.urls')),
     path('accounts/google/login/callback/', google_dauth),

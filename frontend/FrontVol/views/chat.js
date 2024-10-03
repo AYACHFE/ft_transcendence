@@ -37,7 +37,7 @@ export default class Chat extends HTMLElement {
         `ws://localhost:8000/ws/chat/${this.userdata}/${this.mydata.id}/`
       );
     this.socket.onopen = function (e) {
-      console.log("socket open");
+
     };
 
     this.socket.onmessage = (event) => {
@@ -150,7 +150,7 @@ export default class Chat extends HTMLElement {
 			if (response.ok) {
 					this.joinRoomById(this.roomId);
 			} else {
-				console.log("Error creating room");
+
 			}
 		}
 	}
@@ -171,17 +171,12 @@ export default class Chat extends HTMLElement {
 		}
 	}
    showprofileuser(user) {
-    console.log("prifile function");
-    // document.querySelector("#chatid").innerHTML = `<profile-page user=${this.userdata}></profile-page>`;
-    // document.querySelector("#chatid").style.display = "none";
     var profilepage = new ProfilePage();
     profilepage.setAttribute("user", JSON.stringify(user));
     document.querySelector("chat-page").appendChild(profilepage);
   }
     
    blockusersfun(user, userDiv) {
-    console.log("block function");
-    // /
     fetch(`/api/relations/block-friendship/${user.id}`)
     .then(response => {
       if (!response.ok) {
@@ -190,7 +185,7 @@ export default class Chat extends HTMLElement {
       return response.json();
     })
     .then(data => {
-      console.log(data);
+
       const userIndexInUsers = this.users.findIndex(u => u.id === user.id);
       if (userIndexInUsers !== -1) {
         this.users.splice(userIndexInUsers, 1);
@@ -207,7 +202,7 @@ export default class Chat extends HTMLElement {
         }
 
     })
-      .catch(error => console.log('There was a problem with the fetch operation: ' + error.message));
+
 
   }
 
@@ -278,7 +273,7 @@ export default class Chat extends HTMLElement {
         this.block_profile_fun(user, userComponent);
         userComponent.addEventListener("click", async () => {
           if (this.userdata == user.id) {
-            console.log("already active");
+
             return;
           }
           this.userdata = user.id;
@@ -323,7 +318,7 @@ export default class Chat extends HTMLElement {
 
           userComponent.addEventListener("click", async () => {
             if (this.userdata == user.id) {
-              console.log("already active");
+
               return;
             }
             this.userdata = user.id;
@@ -338,9 +333,6 @@ export default class Chat extends HTMLElement {
 
         });
       } catch (err) {
-        console.log(
-          "There was a problem with the fetch operation: " + err.message
-        );
       }
     };
 
@@ -359,7 +351,7 @@ export default class Chat extends HTMLElement {
       document.querySelector(".message-input").value = "";
     });
     document.querySelector(".send_to_play").addEventListener("click", () => {
-      console.log("send to play");
+
 
 
       this.createRoom();
@@ -429,7 +421,7 @@ export default class Chat extends HTMLElement {
       var img = document.createElement("img");
       img.src = user.avatar_url;
       userDiv.appendChild(img);
-      console.log(img);
+
     
       var p = document.createElement("p");
 
@@ -446,7 +438,7 @@ export default class Chat extends HTMLElement {
         );
     
       lastsocket.onopen = function (e) {
-        console.log("lastsocket open");
+      
       };
       lastsocket.onmessage = function (event) {
         var data = JSON.parse(event.data);
@@ -454,7 +446,7 @@ export default class Chat extends HTMLElement {
       };
     
       lastsocket.onerror = function (error) {
-        console.error("Error:", error);
+        
       };
     
       var usernameDiv = document.createElement("div");
@@ -463,7 +455,7 @@ export default class Chat extends HTMLElement {
       h1.textContent = user.username;
       usernameDiv.appendChild(h1);
     
-      // Add Dots and Delete Button logic
+
       let dotsDiv, deleteButton;
     
       dotsDiv = document.createElement("div");
@@ -536,8 +528,9 @@ export default class Chat extends HTMLElement {
     
   }
   disconnectedCallback()  {
-    console.log("disconnect");
-    this.socket.close();
+    if (this.socket)
+      this.socket.close();
+    
   }
 }
 
@@ -553,7 +546,7 @@ class ProfilePage extends HTMLElement {
 	}
   openModal() {
 	  this.modal.style.display = 'block';
-    console.log("openmodal");
+
 	//   document.body.classList.add('blurred-background');
 	}
   
