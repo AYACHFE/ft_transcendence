@@ -7,7 +7,9 @@ export default class Chat extends HTMLElement {
     this.users = [];
     this.originalUsers = [];
     this.roomId = null;
+
     this.innerHTML = "<loading-page></loading-page>";
+    this.blockusersfun = this.blockusersfun.bind(this);
   }
   async fetchData() {
     try {
@@ -168,7 +170,57 @@ export default class Chat extends HTMLElement {
 			parent.appendChild(game);
 		}
 	}
+   showprofileuser(user) {
+    console.log("prifile function");
+    // document.querySelector("#chatid").innerHTML = `<profile-page user=${this.userdata}></profile-page>`;
+    // document.querySelector("#chatid").style.display = "none";
+    var profilepage = new ProfilePage();
+    profilepage.setAttribute("user", JSON.stringify(user));
+    document.querySelector("chat-page").appendChild(profilepage);
+  }
+    
+   blockusersfun(user, userDiv) {
+    console.log("block function");
+    // /
+    fetch(`/api/relations/block-friendship/${user.id}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log(data);
+      const userIndexInUsers = this.users.findIndex(u => u.id === user.id);
+      if (userIndexInUsers !== -1) {
+        this.users.splice(userIndexInUsers, 1);
+      }
+      
+      const userIndexInUserOriginal = this.originalUsers.findIndex(u => u.id === user.id);
+      if (userIndexInUserOriginal !== -1) {
+        this.originalUsers.splice(userIndexInUserOriginal, 1);
+      }
+      
+        const userDiv2 = document.querySelector(".users-display");
+        if (userDiv2, userDiv) {
+          userDiv2.removeChild(userDiv);
+        }
 
+    })
+      .catch(error => console.log('There was a problem with the fetch operation: ' + error.message));
+
+  }
+
+  block_profile_fun = (user, userComponent) => {
+    let block_button = userComponent.querySelector(".block_button");
+    block_button.onclick = () => {
+      this.blockusersfun(user, userComponent);
+    };
+    let profileButton = userComponent.querySelector(".profile_button");
+    profileButton.onclick = () => {
+      this.showprofileuser(user);
+    };
+  }
   async connectedCallback() {
 
  this.btnhighlightfun();
@@ -223,7 +275,7 @@ export default class Chat extends HTMLElement {
 
       this.users.forEach((user) => {
         let userComponent = createUserComponent(user, this.mydata.id, user.id);
-        
+        this.block_profile_fun(user, userComponent);
         userComponent.addEventListener("click", async () => {
           if (this.userdata == user.id) {
             console.log("already active");
@@ -242,14 +294,16 @@ export default class Chat extends HTMLElement {
 
     const getUsers = async () => {
       try {
-        const res = await fetch("http://localhost:8000/chat/users/");
+        const res = await fetch("/api/relations/friends-list/");
         if (!res.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await res.json();
+
 
         data.forEach(
           (user) => user.id != this.mydata.id && this.originalUsers.push(user)
         );
         this.users = [...this.originalUsers];
+
         // if (this.users[0]?.id) {
         //   // this.userdata = this.users[0].id;
         //   // this.socketopenfun();
@@ -258,6 +312,7 @@ export default class Chat extends HTMLElement {
         
         this.users.forEach((user) => {
           let userComponent = createUserComponent(user,this.mydata.id,user.id);
+          this.block_profile_fun(user, userComponent);
             if (user == this.users[0]) {
               userComponent.classList.add("activeuser");
               userComponent.querySelector(".dots_block").style.display = "block";
@@ -279,6 +334,8 @@ export default class Chat extends HTMLElement {
 
           if (usersDisplay) 
             usersDisplay.appendChild(userComponent);
+
+
         });
       } catch (err) {
         console.log(
@@ -370,9 +427,9 @@ export default class Chat extends HTMLElement {
       });
     
       var img = document.createElement("img");
-      img.src = "../images/users/happy-1.svg";
-      img.alt = "";
+      img.src = user.avatar_url;
       userDiv.appendChild(img);
+      console.log(img);
     
       var p = document.createElement("p");
 
@@ -436,12 +493,7 @@ export default class Chat extends HTMLElement {
       buttonDiv.appendChild(profileButton);
       // deleteButton.style.display = "none"; 
     
-      deleteButton.onclick = function () {
-        blockusersfun();
-      };
-      profileButton.onclick = function () {
-        showprofileuser(user);
-      };
+      
     
       // Add an event listener to the dots div to toggle the delete button
       dotsDiv.addEventListener("click", function (event) {
@@ -479,18 +531,7 @@ export default class Chat extends HTMLElement {
       return userDiv;
     }
     
-    function showprofileuser(user) {
-      console.log("prifile function");
-      // document.querySelector("#chatid").innerHTML = `<profile-page user=${this.userdata}></profile-page>`;
-      // document.querySelector("#chatid").style.display = "none";
-      var profilepage = new ProfilePage();
-      profilepage.setAttribute("user", JSON.stringify(user));
-      document.querySelector("chat-page").appendChild(profilepage);
-    }
-      
-    function blockusersfun() {
-      console.log("block function");
-    }
+    
     
     
   }
@@ -553,6 +594,7 @@ class ProfilePage extends HTMLElement {
                   <h2 id="user-lastname">${lastname}</h2>
               </div>
               <p id="username">@${username}</p>
+              <p>score: ${this.user.user_wins}</p>
           </div>
           </div>
       </div>
