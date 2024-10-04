@@ -32,7 +32,8 @@ export default class Dashboard extends HTMLElement {
 
     connectedCallback() {
         this.innerHTML = /*html*/`
-        <link rel="stylesheet" href="../style/dashboard.css">
+            <link rel="stylesheet" href="../style/dashboard.css">
+
         <div class="container" id="dashboardid">
             <div class="side-panel">
                 <a href="/dashboard" class="logo" data-link>

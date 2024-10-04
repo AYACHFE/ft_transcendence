@@ -106,6 +106,7 @@ export default class Chat extends HTMLElement {
   insertMessage() {
     var container = document.querySelector(".message-input");
 
+
     if (!container.value.trim()) return;
 
     let datasend = {
@@ -200,6 +201,15 @@ export default class Chat extends HTMLElement {
         if (userDiv2, userDiv) {
           userDiv2.removeChild(userDiv);
         }
+        const firstUserDiv = userDiv2.querySelector(".user");
+          if (firstUserDiv) {
+            firstUserDiv.click();
+          }
+          else{
+            var messagesContent = document.querySelector(".messages-content");
+            messagesContent.innerHTML = "";
+            this.userdata = null;
+          }
 
     })
 
@@ -272,10 +282,8 @@ export default class Chat extends HTMLElement {
         let userComponent = createUserComponent(user, this.mydata.id, user.id);
         this.block_profile_fun(user, userComponent);
         userComponent.addEventListener("click", async () => {
-          if (this.userdata == user.id) {
-
+          if (this.userdata == user.id) 
             return;
-          }
           this.userdata = user.id;
           this.socketopenfun();
           await this.getChatData();
@@ -292,19 +300,16 @@ export default class Chat extends HTMLElement {
         const res = await fetch("/api/relations/friends-list/");
         if (!res.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await res.json();
-
+        console.log(data);
+        if (data.length == 0) {
+          return
+        }
 
         data.forEach(
           (user) => user.id != this.mydata.id && this.originalUsers.push(user)
         );
         this.users = [...this.originalUsers];
 
-        // if (this.users[0]?.id) {
-        //   // this.userdata = this.users[0].id;
-        //   // this.socketopenfun();
-        //   // await this.getChatData();
-        // }
-        
         this.users.forEach((user) => {
           let userComponent = createUserComponent(user,this.mydata.id,user.id);
           this.block_profile_fun(user, userComponent);
@@ -318,7 +323,6 @@ export default class Chat extends HTMLElement {
 
           userComponent.addEventListener("click", async () => {
             if (this.userdata == user.id) {
-
               return;
             }
             this.userdata = user.id;
@@ -347,11 +351,18 @@ export default class Chat extends HTMLElement {
     });
 
     document.querySelector(".message-submit").addEventListener("click", () => {
+      if (!this.userdata) {
+        document.querySelector(".message-input").value = "";
+        return;
+      }
       this.insertMessage();
       document.querySelector(".message-input").value = "";
     });
     document.querySelector(".send_to_play").addEventListener("click", () => {
-
+      if (!this.userdata) {
+        document.querySelector(".message-input").value = "";
+        return;
+      }
 
 
       this.createRoom();
@@ -377,7 +388,11 @@ export default class Chat extends HTMLElement {
     
 
     document.querySelector(".message-input").addEventListener("keypress", (event) => {
-        if (event.key === "Enter") {
+      if (event.key === "Enter") {
+        if (!this.userdata) {
+          event.target.value = "";
+          return;
+        }  
           this.insertMessage();
           event.target.value = "";
         }
