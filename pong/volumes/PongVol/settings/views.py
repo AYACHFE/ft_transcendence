@@ -46,38 +46,38 @@ from django.core.files.images import ImageFile
 
 class SettingsViewSet(viewsets.ViewSet):
     def create(self, request):
-        user = request.user
-        profileImg = request.FILES.get('profile-img')
-        if profileImg:
+        try:
             user = request.user
-            # return Response({"1":user.avatar.url, "2":settings.DEFUALT_PROFILE_IMG_ROOT})
-            if user.avatar and user.avatar.url != settings.DEFUALT_PROFILE_IMG_ROOT:
-                user.avatar.delete(save=False)
-            # toDelImg = user.avatar
-            user.avatar = ImageFile(profileImg)
-            # user.save()
-            
+            profileImg = request.FILES.get('profile-img')
+            if profileImg:
+                user = request.user
 
-        data = json.loads(request.POST.get('data'))
-        new_username = data.get('user_name', None)
-        new_firstname = data.get('first_name', None)
-        new_lastname = data.get('last_name', None)
+                if user.avatar and user.avatar.url != settings.DEFUALT_PROFILE_IMG_ROOT:
+                    user.avatar.delete(save=False)
 
+                user.avatar = ImageFile(profileImg)
 
+            data = json.loads(request.POST.get('data'))
+            new_username = data.get('user_name', None)
+            new_firstname = data.get('first_name', None)
+            new_lastname = data.get('last_name', None)
 
-        if new_username and user.username != new_username:
-            user.username = new_username
-        if new_firstname and user.first_name != new_firstname:
-            user.first_name = new_firstname
-        if new_lastname and user.last_name != new_lastname:
-            user.last_name = new_lastname
-        
+            if new_username and user.username != new_username:
+                if User.objects.filter(username=new_username).exists():
+                    return Response({"error": "Username already exists"})
+                user.username = new_username
+            if new_firstname and user.first_name != new_firstname:
+                user.first_name = new_firstname
+            if new_lastname and user.last_name != new_lastname:
+                user.last_name = new_lastname
 
-        user.save()
+            user.save()
 
-        serializer = UserSerializer(user)
+            serializer = UserSerializer(user)
 
-        return Response(serializer.data)
+            return Response(serializer.data)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     
         

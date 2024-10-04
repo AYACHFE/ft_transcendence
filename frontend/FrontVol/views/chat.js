@@ -226,7 +226,7 @@ export default class Chat extends HTMLElement {
 			<div class="chat">
 				<h1 class="chattext">Chat</h1>
 				<div id="search" style="display: flex;">
-					<input class="search" type="text" placeholder="Search For Friend">
+					<input class="search"  type="text" placeholder="Search For Friend">
 				</div>
 				<div class="users-display overflow-style">
 				</div>
@@ -562,6 +562,7 @@ class ProfilePage extends HTMLElement {
       let firstname = this.user.firstname;
       let lastname = this.user.lastname;
       let username = this.user.username;
+      let img = this.user.avatar_url;
 
       if (!firstname) {
         firstname = "firstname";
@@ -572,6 +573,10 @@ class ProfilePage extends HTMLElement {
       if (!username) {
         username = "username";
       }
+
+      if (!img) {
+        img = "../images/users/happy-1.svg";
+      }
     this.innerHTML = /*html*/`
     
     
@@ -579,7 +584,7 @@ class ProfilePage extends HTMLElement {
         <div class="modal-content">
           <span id="closeBtn">&times;</span>
           <div class="profile-image">
-              <img src="../images/users/happy-1.svg" alt="Profile Photo" />
+              <img src="${img}" alt="Profile Photo" />
           </div>
           <div class="profile-details">
               <div class="name">

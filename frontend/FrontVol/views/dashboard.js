@@ -80,25 +80,7 @@ export default class Dashboard extends HTMLElement {
                     </div>
 
                 </div>
-                <div class="lower-section">
-                        <div class="lower-section-header-img flex-center">
-                            <img  src="../images/Chat.svg">
-                        </div>
-                        <div class="friends-list overflow-style">
-                            <div class="friend" style="background-color: #D9D9D9;">
-                                <img src="../images/users/1_men.svg">
-                                <div class="user-status-side active"></div>
-                            </div>
-                            <div class="friend" style="background-color: #D9D9D9;">
-                                <img src="../images/users/2_men.svg">
-                                <div class="user-status-side"></div>
-                            </div>
-                            <div class="friend" style="background-color: #D9D9D9;">
-                                <img src="../images/users/3_men.svg">
-                                <div class="user-status-side"></div>
-                            </div>
-                        </div>
-                </div> 
+                
             </div>
         </div>
         <script>

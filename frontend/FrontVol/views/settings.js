@@ -280,20 +280,33 @@ class Settings_default extends HTMLElement {
 	})
 	.then((data) => {
 		this.mydata = data;
-        
-        var defaultpage = document.getElementById("submitdefault");
+        if (data.error) {
+          const newElement = document.createElement("p");
+          newElement.textContent = data.error;
+          newElement.id = "error";
+          document.getElementById("submit_text").appendChild(newElement);
+          setTimeout(() => {
+            const element = document.getElementById("error");
+            if (element) {
+              element.parentNode.removeChild(element);
+            }
+          }, 2000);
+        }
+        else{
+      var defaultpage = document.getElementById("submitdefault");
 
-		const newElement = document.createElement("p");
-		newElement.textContent = "Changes done";
-		newElement.id = "seccuss";
-		document.getElementById("submit_text").appendChild(newElement);
-		setTimeout(() => {
-		  const element = document.getElementById("seccuss");
-		  if (element) {
-			element.parentNode.removeChild(element);
-		  }
-		}, 2000);
-      });
+      const newElement = document.createElement("p");
+      newElement.textContent = "Changes done";
+      newElement.id = "seccuss";
+      document.getElementById("submit_text").appendChild(newElement);
+      setTimeout(() => {
+        const element = document.getElementById("seccuss");
+        if (element) {
+        element.parentNode.removeChild(element);
+        }
+      }, 2000);
+    }
+        });
 
 
   

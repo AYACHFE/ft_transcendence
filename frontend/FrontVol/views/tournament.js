@@ -15,10 +15,6 @@ export default class Tournament extends HTMLElement {
 			this.players = [];
 			this.createPlayerArray();
 		}
-
-		console.log(
-			`Playing match ${this.currentMatch + 1} in round ${this.currentRound}`
-		);
 		this.loadGamePage();
 	}
 
@@ -37,7 +33,6 @@ export default class Tournament extends HTMLElement {
 
 		gamePage.addEventListener("game-finished", (event) => {
 			const winner = event.detail.winner;
-			console.log(`Winner of the game: ${winner}`);
 
 			gamePage.remove();
 
@@ -60,9 +55,7 @@ export default class Tournament extends HTMLElement {
 		} else if (this.currentRound === 3) {
 			document.querySelectorAll(".round4 h5")[0].textContent = winner;
 
-			setTimeout(() => {
 				this.showFinalWinner(winner);
-			}, 3000);
 			return;
 		}
 
@@ -307,9 +300,6 @@ class GamePage extends HTMLElement {
 			});
 		}
 
-		// Add the function as an event listener for multiple events
-		// document.addEventListener('click', hideStartGameElements);
-		document.addEventListener("keypress", hideStartGameElements);
 		hideGameOver();
 		//---------------------------rackets-movemnt-----------------------------------\\
 		//ball data
@@ -422,12 +412,24 @@ class GamePage extends HTMLElement {
 		var speedY = 10; // Vertical speed
 
 		var isMoving = false;
-		document.addEventListener("keydown", function () {
-			isMoving = true;
+		document.addEventListener('keydown', function(event) {
+			const key = event.key;
+
+			if (key === "ArrowUp" || key === "ArrowDown" || key === "w" || key === "s") {
+				isMoving = true;
+				hideStartGameElements();
+			}
 		});
-		// document.addEventListener('click', function() {
-		// 	isMoving = true;
-		// });
+		window.addEventListener('load', () => {
+			boardHeight = gameBoard.clientHeight;
+			boardWidth = gameBoard.clientWidth;
+			rect = gameBoard.getBoundingClientRect();
+		});
+		window.addEventListener('resize', function() {
+			boardHeight = gameBoard.clientHeight;
+			boardWidth = gameBoard.clientWidth;
+			rect = gameBoard.getBoundingClientRect();
+		});
 
 		var scoreP1 = 0;
 		var scoreP2 = 0;
@@ -554,7 +556,6 @@ class GamePage extends HTMLElement {
 	}
 
 	disconnectedCallback() {
-		console.log("Disconnected Callback");
 
 		// Clear interval for the counter
 		if (this.counterInterval) {

@@ -19,7 +19,6 @@ export default class Dash extends HTMLElement {
     }
 
     insertdatatoscores  = async () => {
-        console.log(this.users);
         //get my data from fetch /main/data
         try {
             const response = await fetch("http://localhost:8000/main/data/", {
@@ -97,7 +96,7 @@ export default class Dash extends HTMLElement {
                 let aadow_score = document.getElementById('aadow_score');
                 let data = await response.json();
                 if (data.message == "No data") {
-                    
+                    user_image.src = this.mydata.avatar_url;
                 }
                 else{
                    
@@ -182,17 +181,10 @@ export default class Dash extends HTMLElement {
             <div class="search-result-board">
                 <div class="search-result-board-overflow overflow-style">
                     <div class="search-result-user">
-                        <div class="search-user-name">mehdiboulhoujjat1</div>
-                        <button id="follow-btn" value="1"> Follow </button>
+                        <div class="search-user-name">.......</div>
                     </div>
-                    <div class="search-result-user">
-                        <div class="search-user-name">mehdiboulhoujjat2</div>
-                        <button id="follow-btn" value="2"> Follow </button>
-                    </div>
-                    <div class="search-result-user">
-                        <div class="search-user-name">mehdiboulhoujjat3</div>
-                        <button id="follow-btn" value="3"> Follow </button>
-                    </div>
+                    
+                   
                 </div>
             </div>
             
@@ -268,11 +260,11 @@ export default class Dash extends HTMLElement {
                 <div class="bmatch-ellipse-2"></div>
                 <div class="bmatch-ellipse-1"></div>
                 <div class="bmatch-score">
-                    <img id="user_image" src="./images/char.png" class="bmatch-player-one-pic">
+                    <img id="user_image" src="../images/leader-bg/bakhsous.jpg" class="bmatch-player-one-pic">
                     <div id="user_score" class="bmatch-score-one"> 0</div>
                     <div  class="bmatch-score-vs"> VS</div>
                     <div id="aadow_score" class="bmatch-score-two"> 0</div>
-                    <img id="aadow_image" src="./images/char.png" class="bmatch-player-two-pic">
+                    <img id="aadow_image" src="../images/leader-bg/bakhsous.jpg" class="bmatch-player-two-pic">
                 </div>
             </div>
         </div>
@@ -299,7 +291,6 @@ export default class Dash extends HTMLElement {
             .then(data =>{
                 searchResultBoard.innerHTML = '';
                 data.forEach((item) =>{
-                    console.log('hello');
                     searchResultBoard.innerHTML += /*html*/`
                     <div class="search-result-user">
                     <div class="search-user-name">${item.sender.username}</div>
@@ -356,7 +347,6 @@ export default class Dash extends HTMLElement {
 
 
         searchInput.addEventListener('input', (event) => {
-            // console.log(event.target.value);
             let searchingString = event.target.value;
 
             if (searchingString.trim() !== "")
