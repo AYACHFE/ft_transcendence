@@ -49,6 +49,7 @@ def DataView(request):
     first_name = request.user.first_name
     last_name = request.user.last_name
     username = request.user.username
+    user_wins = request.user.user_wins
     avatar_url = request.user.avatar.url
     data = JsonResponse({
         'message':'message from DataView',
@@ -58,6 +59,7 @@ def DataView(request):
         'first_name': first_name,
         'last_name': last_name,
         'username': username,
+        'user_wins': user_wins,
         'avatar_url': avatar_url,
     })
     return data

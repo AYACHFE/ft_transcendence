@@ -68,6 +68,7 @@ chat-page .user img {
     margin-right: 20px;
     background-color: #F7C5BF;
     border-radius: 50%;
+    aspect-ratio: 1/1;
 }
 
 chat-page .user-status {

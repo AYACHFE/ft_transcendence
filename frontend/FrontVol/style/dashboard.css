@@ -43,18 +43,15 @@ dashboard-page .main {
 }
 
 dashboard-page .header-bar {
-    flex: 1;
-    width: 95%;
-    /* border: 1px solid #000000; */
+
     display: flex;
-    align-items: start;
-    justify-content: space-between;
-    /* position: relative; */
+    margin-left: 30px;
+
 }
 
 dashboard-page .header-name{
     display: flex;
-    justify-content: center;
+    justify-content: start;
     place-items: center;
     width: 10%;
     height: 50%;

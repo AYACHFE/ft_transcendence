@@ -32,10 +32,7 @@ export default class Dashboard extends HTMLElement {
 
     connectedCallback() {
         this.innerHTML = /*html*/`
-                <head>
-                    <link rel="stylesheet" href="../style/dashboard.css">
-                    <meta name="csrf-token" content="">
-                </head>
+        <link rel="stylesheet" href="../style/dashboard.css">
         <div class="container" id="dashboardid">
             <div class="side-panel">
                 <a href="/dashboard" class="logo" data-link>
@@ -64,11 +61,6 @@ export default class Dashboard extends HTMLElement {
                 <div class="header-bar">
                     <div id="user_name" class="header-name">
                         
-                    </div>
-                    
-                    <div class="header-notifications">
-                        <div class="notifications-widget"></div>
-                        <div class="notifications-widget"></div>
                     </div>
                 </div>
                 <div class="center-console" id="dashscripte">

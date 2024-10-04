@@ -7,7 +7,9 @@ export default class Chat extends HTMLElement {
     this.users = [];
     this.originalUsers = [];
     this.roomId = null;
+
     this.innerHTML = "<loading-page></loading-page>";
+    this.blockusersfun = this.blockusersfun.bind(this);
   }
   async fetchData() {
     try {
@@ -35,7 +37,7 @@ export default class Chat extends HTMLElement {
         `ws://localhost:8000/ws/chat/${this.userdata}/${this.mydata.id}/`
       );
     this.socket.onopen = function (e) {
-      console.log("socket open");
+
     };
 
     this.socket.onmessage = (event) => {
@@ -82,7 +84,7 @@ export default class Chat extends HTMLElement {
   }
   async getChatData() {
     const res = await fetch(
-      `http://localhost:8000/chat/chat/?myId=${this.mydata.id}&clickedId=${this.userdata}`
+      `/api/chat/chat/?myId=${this.mydata.id}&clickedId=${this.userdata}`
     );
     const data = await res.json();
     var messagesContent = document.querySelector(".messages-content");
@@ -148,7 +150,7 @@ export default class Chat extends HTMLElement {
 			if (response.ok) {
 					this.joinRoomById(this.roomId);
 			} else {
-				console.log("Error creating room");
+
 			}
 		}
 	}
@@ -168,7 +170,52 @@ export default class Chat extends HTMLElement {
 			parent.appendChild(game);
 		}
 	}
+   showprofileuser(user) {
+    var profilepage = new ProfilePage();
+    profilepage.setAttribute("user", JSON.stringify(user));
+    document.querySelector("chat-page").appendChild(profilepage);
+  }
+    
+   blockusersfun(user, userDiv) {
+    fetch(`/api/relations/block-friendship/${user.id}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
 
+      const userIndexInUsers = this.users.findIndex(u => u.id === user.id);
+      if (userIndexInUsers !== -1) {
+        this.users.splice(userIndexInUsers, 1);
+      }
+      
+      const userIndexInUserOriginal = this.originalUsers.findIndex(u => u.id === user.id);
+      if (userIndexInUserOriginal !== -1) {
+        this.originalUsers.splice(userIndexInUserOriginal, 1);
+      }
+      
+        const userDiv2 = document.querySelector(".users-display");
+        if (userDiv2, userDiv) {
+          userDiv2.removeChild(userDiv);
+        }
+
+    })
+
+
+  }
+
+  block_profile_fun = (user, userComponent) => {
+    let block_button = userComponent.querySelector(".block_button");
+    block_button.onclick = () => {
+      this.blockusersfun(user, userComponent);
+    };
+    let profileButton = userComponent.querySelector(".profile_button");
+    profileButton.onclick = () => {
+      this.showprofileuser(user);
+    };
+  }
   async connectedCallback() {
 
  this.btnhighlightfun();
@@ -223,10 +270,10 @@ export default class Chat extends HTMLElement {
 
       this.users.forEach((user) => {
         let userComponent = createUserComponent(user, this.mydata.id, user.id);
-        
+        this.block_profile_fun(user, userComponent);
         userComponent.addEventListener("click", async () => {
           if (this.userdata == user.id) {
-            console.log("already active");
+
             return;
           }
           this.userdata = user.id;
@@ -242,14 +289,16 @@ export default class Chat extends HTMLElement {
 
     const getUsers = async () => {
       try {
-        const res = await fetch("http://localhost:8000/chat/users/");
+        const res = await fetch("/api/relations/friends-list/");
         if (!res.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await res.json();
+
 
         data.forEach(
           (user) => user.id != this.mydata.id && this.originalUsers.push(user)
         );
         this.users = [...this.originalUsers];
+
         // if (this.users[0]?.id) {
         //   // this.userdata = this.users[0].id;
         //   // this.socketopenfun();
@@ -258,6 +307,7 @@ export default class Chat extends HTMLElement {
         
         this.users.forEach((user) => {
           let userComponent = createUserComponent(user,this.mydata.id,user.id);
+          this.block_profile_fun(user, userComponent);
             if (user == this.users[0]) {
               userComponent.classList.add("activeuser");
               userComponent.querySelector(".dots_block").style.display = "block";
@@ -268,7 +318,7 @@ export default class Chat extends HTMLElement {
 
           userComponent.addEventListener("click", async () => {
             if (this.userdata == user.id) {
-              console.log("already active");
+
               return;
             }
             this.userdata = user.id;
@@ -279,11 +329,10 @@ export default class Chat extends HTMLElement {
 
           if (usersDisplay) 
             usersDisplay.appendChild(userComponent);
+
+
         });
       } catch (err) {
-        console.log(
-          "There was a problem with the fetch operation: " + err.message
-        );
       }
     };
 
@@ -302,7 +351,7 @@ export default class Chat extends HTMLElement {
       document.querySelector(".message-input").value = "";
     });
     document.querySelector(".send_to_play").addEventListener("click", () => {
-      console.log("send to play");
+
 
 
       this.createRoom();
@@ -370,9 +419,9 @@ export default class Chat extends HTMLElement {
       });
     
       var img = document.createElement("img");
-      img.src = "../images/users/happy-1.svg";
-      img.alt = "";
+      img.src = user.avatar_url;
       userDiv.appendChild(img);
+
     
       var p = document.createElement("p");
 
@@ -389,7 +438,7 @@ export default class Chat extends HTMLElement {
         );
     
       lastsocket.onopen = function (e) {
-        console.log("lastsocket open");
+      
       };
       lastsocket.onmessage = function (event) {
         var data = JSON.parse(event.data);
@@ -397,7 +446,7 @@ export default class Chat extends HTMLElement {
       };
     
       lastsocket.onerror = function (error) {
-        console.error("Error:", error);
+        
       };
     
       var usernameDiv = document.createElement("div");
@@ -406,7 +455,7 @@ export default class Chat extends HTMLElement {
       h1.textContent = user.username;
       usernameDiv.appendChild(h1);
     
-      // Add Dots and Delete Button logic
+
       let dotsDiv, deleteButton;
     
       dotsDiv = document.createElement("div");
@@ -436,12 +485,7 @@ export default class Chat extends HTMLElement {
       buttonDiv.appendChild(profileButton);
       // deleteButton.style.display = "none"; 
     
-      deleteButton.onclick = function () {
-        blockusersfun();
-      };
-      profileButton.onclick = function () {
-        showprofileuser(user);
-      };
+      
     
       // Add an event listener to the dots div to toggle the delete button
       dotsDiv.addEventListener("click", function (event) {
@@ -479,24 +523,14 @@ export default class Chat extends HTMLElement {
       return userDiv;
     }
     
-    function showprofileuser(user) {
-      console.log("prifile function");
-      // document.querySelector("#chatid").innerHTML = `<profile-page user=${this.userdata}></profile-page>`;
-      // document.querySelector("#chatid").style.display = "none";
-      var profilepage = new ProfilePage();
-      profilepage.setAttribute("user", JSON.stringify(user));
-      document.querySelector("chat-page").appendChild(profilepage);
-    }
-      
-    function blockusersfun() {
-      console.log("block function");
-    }
+    
     
     
   }
   disconnectedCallback()  {
-    console.log("disconnect");
-    this.socket.close();
+    if (this.socket)
+      this.socket.close();
+    
   }
 }
 
@@ -512,7 +546,7 @@ class ProfilePage extends HTMLElement {
 	}
   openModal() {
 	  this.modal.style.display = 'block';
-    console.log("openmodal");
+
 	//   document.body.classList.add('blurred-background');
 	}
   
@@ -553,6 +587,7 @@ class ProfilePage extends HTMLElement {
                   <h2 id="user-lastname">${lastname}</h2>
               </div>
               <p id="username">@${username}</p>
+              <p>score: ${this.user.user_wins}</p>
           </div>
           </div>
       </div>

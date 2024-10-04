@@ -1,7 +1,11 @@
 import OnlinePopup from './online-popup.js';
 import Game from "../views/game.js";
 export default class Dash extends HTMLElement {
-    constructor() {super()}
+    constructor() {
+        super()
+        this.users = [];
+        this.mydata = {};
+    }
     btnhighlightfun(){
         document.querySelectorAll('.btn-highlight').forEach(el => {
           el.classList.remove('btn-highlight');
@@ -13,11 +17,118 @@ export default class Dash extends HTMLElement {
           chatButton.classList.add('btn-highlight');
       }
     }
+
+    insertdatatoscores  = async () => {
+        console.log(this.users);
+        //get my data from fetch /main/data
+        try {
+            const response = await fetch("http://localhost:8000/main/data/", {
+              method: "get",
+              credentials: "include",
+            });
+            this.mydata = await response.json();
+          } catch (error) {
+            console.error("Error:", error);
+          }
+
+
+        let firstuser = document.getElementById('name_first');
+        let seconduser = document.getElementById('name_second');
+        let thirduser = document.getElementById('name_thred');
+        let fourthuser = document.getElementById('name_for');
+        let fourthscore = document.getElementById('score_for');
+        let firstscore = document.getElementById('score_first');
+        let secondscore = document.getElementById('score_second');
+        let thirdscore = document.getElementById('score_thred');
+        let firstimg = document.getElementById('img_first');
+        let secondimg = document.getElementById('img_second');
+        let thirdimg = document.getElementById('img_thred');
+        let fourthimg = document.getElementById('img_for');
+
+
+    this.users.sort((a, b) => b.user_wins - a.user_wins);
+
+    let topUsers = this.users.slice(0, 4);
+    let isInTopUsers = topUsers.some(user => user.id === this.mydata.id);
+
+    if (!isInTopUsers) {
+        topUsers[3] = this.mydata;
+    }
+
+    if (topUsers[0]){
+        firstuser.innerText = topUsers[0]?.username.substring(0, 10);
+        firstscore.innerText = topUsers[0]?.user_wins;
+        firstimg.src = topUsers[0]?.avatar_url;
+    }
+    if (topUsers[1]){
+        seconduser.innerText = topUsers[1]?.username.substring(0, 10);
+        secondscore.innerText = topUsers[1]?.user_wins;
+        secondimg.src = topUsers[1]?.avatar_url;
+    }
+    if (topUsers[2]){
+        thirduser.innerText = topUsers[2]?.username.substring(0, 10);
+        thirdscore.innerText = topUsers[2]?.user_wins;
+        thirdimg.src = topUsers[2]?.avatar_url;
+    }
+    if (topUsers[3]){
+
+        fourthuser.innerText = topUsers[3]?.username.substring(0, 10);
+        fourthscore.innerText = topUsers[3]?.user_wins;
+        fourthimg.src = topUsers[3]?.avatar_url;
+    }
+
+
+
+
+
+    }
+
+    insertlastuserscore = async () => {
+
+
+        try {
+            const response = await fetch('/api/game/get-last-score', {
+                method: "get",
+                credentials: "include",
+            });
+                let user_image = document.getElementById('user_image');
+                let aadow_image = document.getElementById('aadow_image');
+                let user_score = document.getElementById('user_score');
+                let aadow_score = document.getElementById('aadow_score');
+                let data = await response.json();
+                if (data.message == "No data") {
+                    
+                }
+                else{
+                   
+                    user_image.src = data.last_game.winner;
+                    aadow_image.src = data.last_game.loser;
+                    user_score.innerText = data.last_game.score_winner;
+                    aadow_score.innerText = data.last_game.score_loser;
+                }
+
+            } catch (error) {
+                console.error("Error:", error);
+            }
+
+
+
+
+    }
+
+    getusers = async ()  => {
+        await fetch('/api/chat/users/')
+        .then(response => response.json())
+        .then(data => {
+            this.users = data;
+        })
+    }
     
   
   
-    connectedCallback() {
+    async connectedCallback() {
         this.btnhighlightfun();
+        await this.getusers();
         this.innerHTML = /*html*/ `
         <html lang="en">
         <head>
@@ -100,50 +211,50 @@ export default class Dash extends HTMLElement {
                         <p>1</p>
                         <div class="leader-board-img gold-bg">
                             <div class="leader-img-div">
-                                <img class="leader-img-profile" src="./images/leader-bg/bakhsous.jpg" alt="">
+                                <img id="img_first" class="leader-img-profile" src="./images/leader-bg/bakhsous.jpg" alt="">
                             </div>
                         </div>
                         <div class="leader-name-rank">
-                            <div>Rachid</div>
-                            <div>1</div>
+                            <div id="name_first">...</div>
+                            <div id="score_first">...</div>
                         </div>
                     </div>
                     <div class="leader-board-users1">
                         <p>2</p>
                         <div class="leader-board-img silver-bg">
                             <div class="leader-img-div">
-                                <img class="leader-img-profile" src="./images/leader-bg/bakhsous.jpg" alt="">
+                                <img id="img_second" class="leader-img-profile" src="./images/leader-bg/bakhsous.jpg" alt="">
                             </div>
                         </div>
                         <div class="leader-name-rank">
-                            <div>Ayman</div>
-                            <div>2</div>
+                            <div id="name_second">...</div>
+                            <div id="score_second">...</div>
                         </div>
                     </div>
                     <div class="leader-board-users2">
                         <p>3</p>
                         <div class="leader-board-img bronz-bg">
                             <div class="leader-img-div">
-                                <img class="leader-img-profile" src="./images/leader-bg/bakhsous.jpg" alt="">
+                                <img id="img_thred" class="leader-img-profile" src="./images/leader-bg/bakhsous.jpg" alt="">
                             </div>
                             
                         </div>
                         <div class="leader-name-rank">
-                            <div>Mehdi</div>
-                            <div>3</div>
+                            <div id="name_thred">...</div>
+                            <div id="score_thred">...</div>
                         </div>
                     </div>
                     <div class="leader-board-users3">
                         <p>4</p>
                         <div class="leader-board-img iron-bg">
                             <div class="leader-img-div">
-                                <img class="leader-img-profile" src="./images/leader-bg/bakhsous.jpg" alt="">
+                                <img id="img_for" class="leader-img-profile" src="./images/leader-bg/bakhsous.jpg" alt="">
                             </div>
 
                         </div>
                         <div class="leader-name-rank">
-                            <div>Rachid</div>
-                            <div>999</div>
+                            <div id="name_for">...</div>
+                            <div id="score_for">...</div>
                         </div>
                     </div>
                 </div>
@@ -157,12 +268,11 @@ export default class Dash extends HTMLElement {
                 <div class="bmatch-ellipse-2"></div>
                 <div class="bmatch-ellipse-1"></div>
                 <div class="bmatch-score">
-                    <img src="./images/char.png" class="bmatch-player-one-pic">
-                    <div class="bmatch-score-one"> 40</div>
-                    <div class="bmatch-score-vs"> VS</div>
-                    <div class="bmatch-score-two"> 22</div>
-                    <img src="./images/char.png" class="bmatch-player-two-pic">
-                    <!-- <div class="bmatch-player-two-pic"></div> -->
+                    <img id="user_image" src="./images/char.png" class="bmatch-player-one-pic">
+                    <div id="user_score" class="bmatch-score-one"> 0</div>
+                    <div  class="bmatch-score-vs"> VS</div>
+                    <div id="aadow_score" class="bmatch-score-two"> 0</div>
+                    <img id="aadow_image" src="./images/char.png" class="bmatch-player-two-pic">
                 </div>
             </div>
         </div>
@@ -170,13 +280,9 @@ export default class Dash extends HTMLElement {
         </body>
         </html>
         `;
-
-        // - GET THE DATA NEEDED FOR THE DASHBOARD -//
-        // fetch('/api/')
-        function fetch_resquests(){
-
-
-        }
+        this.insertdatatoscores();
+        this.insertlastuserscore();
+        
         let searchResultBoard = document.querySelector('.search-result-board-overflow')
 
         let searchInput = document.querySelector(".search-input");
