@@ -84,13 +84,21 @@ export default class Chat extends HTMLElement {
   }
   async getChatData() {
     const res = await fetch(
-      `/api/chat/chat/?myId=${this.mydata.id}&clickedId=${this.userdata}`
+      `/api/chat/chat/?clickedId=${this.userdata}`
     );
     const data = await res.json();
     var messagesContent = document.querySelector(".messages-content");
+    
     data.forEach((message) => {
+      if (message.content.length > 40) {
+          let chunks = [];
+          for (let i = 0; i < message.content.length; i += 40) {
+              chunks.push(message.content.substring(i, i + 40));
+          }
+          message.content = chunks.join('<br>');
+      }
       var newMessage = document.createElement("div");
-      newMessage.textContent = message.content;
+      newMessage.innerHTML = message.content; // Changed this line
 
       if (message.sender === this.mydata.id) {
         newMessage.classList.add("message", "my-messages", "new");
@@ -101,8 +109,7 @@ export default class Chat extends HTMLElement {
       this.insertTime(message.time);
     });
     messagesContent.scrollTop = messagesContent.scrollHeight;
-  }
-
+}
   insertMessage() {
     var container = document.querySelector(".message-input");
 
@@ -457,7 +464,8 @@ export default class Chat extends HTMLElement {
       };
       lastsocket.onmessage = function (event) {
         var data = JSON.parse(event.data);
-        p.textContent = data.content;
+        
+        p.textContent = data.content.substring(0, 15);
       };
     
       lastsocket.onerror = function (error) {
@@ -545,6 +553,8 @@ export default class Chat extends HTMLElement {
   disconnectedCallback()  {
     if (this.socket)
       this.socket.close();
+
+
     
   }
 }
