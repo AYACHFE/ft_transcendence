@@ -68,7 +68,7 @@ from django_otp.plugins.otp_totp.models import TOTPDevice
 
 
 def create_totp_device(user):
-    totp_device , created = TOTPDevice.objects.get_or_create(user=user, confirmed=False)
+    totp_device , created = TOTPDevice.objects.get_or_create(user=user)
     if created:
         totp_device.generate_challenge()
     return totp_device
