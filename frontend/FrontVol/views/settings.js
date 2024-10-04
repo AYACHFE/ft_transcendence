@@ -204,13 +204,7 @@ class Settings_otp extends HTMLElement {
   constructor() {
     super();
   }
-  get_qrcode()
-  {
-    let div = document.querySelector(".otp-qrcode");
-    div.innerHTML = `
-      <img src="/api/otp/qrcode/">
-      `;
-  }
+
   otp_submit(confirmation){
     console.log("opt_submit");
     const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrf-token')).split('=')[1];
@@ -236,14 +230,7 @@ class Settings_otp extends HTMLElement {
               <button class="otp-confirm-button">submit</button>
             </div>
         `;
-      
-      let enable = document.querySelector(".otp-enable-btn");
       let confimation = document.querySelector(".otp-confirm-input");
-      enable.addEventListener("click", ()=>{
-        this.get_qrcode()
-        // confimation.hidden = false;
-        // otpSubmit.hidden = false;
-      })    
       let otpSubmit = document.querySelector(".otp-confirm-button");
       otpSubmit.addEventListener("click",()=>{
         this.otp_submit(confimation.value)
