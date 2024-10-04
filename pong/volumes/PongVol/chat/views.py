@@ -19,7 +19,7 @@ import json
 from django.db.models import Q
 class MessageViewSet(viewsets.ViewSet):
     def list(self, request):
-        senderId = request.GET.get('myId', None)
+        senderId = request.user
         receiverId = request.GET.get('clickedId', None)
 
         if senderId and receiverId:
