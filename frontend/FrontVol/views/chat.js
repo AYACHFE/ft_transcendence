@@ -235,7 +235,7 @@ export default class Chat extends HTMLElement {
 				
 				<div class="messages">
 					<div class="triangle-1"></div>
-					<div class="messages-content"></div>
+					<div class="messages-content overflow-style"></div>
 				</div>
 				<div class="message-box">
 					<textarea type="text" class="message-input"></textarea>
