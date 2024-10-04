@@ -20,7 +20,6 @@ class UserSerializer(serializers.ModelSerializer):
         return instace
     
     def get_avatar_url(self, obj):
-    # Ensure the avatar exists, otherwise return None
         if obj.avatar:
             return obj.avatar.url
         return None

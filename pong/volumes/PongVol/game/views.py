@@ -9,6 +9,8 @@ from .models import Room
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
 from .models import GameResult
+from django.db.models import Q
+from users.models import User
 
 def save_game_result(request):
     winner_username = request.POST['winner_username']
@@ -61,3 +63,18 @@ def delete_room(request, room_id):
         return JsonResponse({'success': True})
     except Room.DoesNotExist:
         return JsonResponse({'error': 'Room not found'})
+
+        
+def get_last_score(request):
+    user = request.user
+    last_game = GameResult.objects.filter(Q(winner_user=user) | Q(loser_user=user)).last()
+    if last_game is None:
+        return JsonResponse({'message': 'No data'})
+
+
+    return JsonResponse({'last_game': {
+        'winner': last_game.winner_user.avatar.url,
+        'loser': last_game.loser_user.avatar.url,
+        'score_winner': last_game.winner_score,
+        'score_loser': last_game.loser_score,
+    }})

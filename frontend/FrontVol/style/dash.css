@@ -3,6 +3,8 @@ dash-page{
 }
 /* ----------CENTER CONSOLE-------------- */
 
+
+
 .center-console{
     flex: 13;
     width: 100%;
@@ -551,26 +553,34 @@ dash-page{
     align-items: center;
 }
 /* images of the best match */
-[class^="bmatch-player-"]{
-    width: 30%;
+/* [class^="bmatch-player-"]{
+    width: 20%;
+    border-radius: 50%;
     aspect-ratio: 1/1;
-    /* border: 1px solid white; */
-}
+} */
 [class^="bmatch-score-"]{
-    /* width: 30%;
-    aspect-ratio: 1/1; */
+
     font-size: 1.8vw;
     font-weight: 800;
 
     margin: 2%;
     color: #393A3C;
-    /* border: 1px solid white; */
 }
 .bmatch-score-vs{
     color: #A9A9A9;
 }
 
 
+dash-page #user_image, #aadow_image{
+    width: 20%;
+    border-radius: 50%;
+    aspect-ratio: 1/1;
+    /* position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; */
+}
 
 
 /* ------------BEST MATCH--------------- */
