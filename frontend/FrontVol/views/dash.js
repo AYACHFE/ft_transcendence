@@ -69,7 +69,7 @@ export default class Dash extends HTMLElement {
                 <button class="friends-accept-list">Requests</button>
             </div>
             <div class="search-result-board">
-                <div class="search-result-board-overflow">
+                <div class="search-result-board-overflow overflow-style">
                     <div class="search-result-user">
                         <div class="search-user-name">mehdiboulhoujjat1</div>
                         <button id="follow-btn" value="1"> Follow </button>
