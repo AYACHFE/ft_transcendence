@@ -106,6 +106,7 @@ export default class Chat extends HTMLElement {
   insertMessage() {
     var container = document.querySelector(".message-input");
 
+
     if (!container.value.trim()) return;
 
     let datasend = {
