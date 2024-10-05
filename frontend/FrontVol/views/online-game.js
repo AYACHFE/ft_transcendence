@@ -479,9 +479,9 @@ export default class Online_Game extends HTMLElement {
 				guest_img_element.src = guest.avatar;
 			}
 			if (data.type === 'player_disconnected') {
-				// if (this.gameSocket)
-				// 	this.gameSocket.close();
-				// this.deleteRoom(this.roomName);
+				if (this.gameSocket)
+					this.gameSocket.close();
+				console.log('Player disconnected!');
 				this.isMoving = false;
 				const gameOverMessage = document.querySelector('.game-over h2');
 				const middle_line = document.querySelector('.middle-line');
@@ -595,7 +595,10 @@ export default class Online_Game extends HTMLElement {
 		if (this.counterInterval) {
 			clearInterval(this.counterInterval)
 		}
-		if (this.gameSocket) {
+		if (this.gameSocket && this.gameSocket.readyState === WebSocket.OPEN) {
+			this.gameSocket.send(JSON.stringify({
+				'type': 'player_disconnected',
+			}));
 			this.gameSocket.close();
 			this.isMoving = false;
 		}
