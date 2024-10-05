@@ -16,7 +16,7 @@ class oauth42(APIView):
     def get (self, request):
         code = request.GET.get("code")
         api42_token_url = "https://api.intra.42.fr/oauth/token"
-        redirect_url = 'http://localhost:8080/api/42/callback/'
+        redirect_url = 'https://localhost/api/42/callback/'
 
         response_token = requests.post(
             api42_token_url, data={
