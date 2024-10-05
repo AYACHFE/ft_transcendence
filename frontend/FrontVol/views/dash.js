@@ -43,6 +43,8 @@ export default class Dash extends HTMLElement {
         let secondimg = document.getElementById('img_second');
         let thirdimg = document.getElementById('img_thred');
         let fourthimg = document.getElementById('img_for');
+        let rankyou = document.getElementById('rankyou');
+        
 
 
     this.users.sort((a, b) => b.user_wins - a.user_wins);
@@ -51,7 +53,13 @@ export default class Dash extends HTMLElement {
     let isInTopUsers = topUsers.some(user => user.id === this.mydata.id);
 
     if (!isInTopUsers) {
+        console.log("not in top users");
         topUsers[3] = this.mydata;
+        let myDataRank = this.users.findIndex(user => user.id === this.mydata.id);
+        // cahnge the rank of the user
+        myDataRank += 1;
+console.log(myDataRank);
+        rankyou.textContent = myDataRank;
     }
 
     if (topUsers[0]){
@@ -237,7 +245,7 @@ export default class Dash extends HTMLElement {
                         </div>
                     </div>
                     <div class="leader-board-users3">
-                        <p>4</p>
+                        <p id="rankyou">4</p>
                         <div class="leader-board-img iron-bg">
                             <div class="leader-img-div">
                                 <img id="img_for" class="leader-img-profile" src="./images/leader-bg/bakhsous.jpg" alt="">
