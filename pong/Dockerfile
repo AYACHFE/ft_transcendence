@@ -13,6 +13,3 @@ ENV DJANGO_SETTINGS_MODULE=pong.settings
 
 
 CMD python manage.py makemigrations &&  python manage.py migrate && daphne -e ssl:8443:privateKey=./ssl/private.key:certKey=./ssl/certificate.crt pong.asgi:application
-
-
-# CMD python manage.py runserver 0.0.0.0:8000

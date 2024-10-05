@@ -44,11 +44,21 @@ def send_friendship_request(request, target_id):
         receiver = User.objects.get(Q(id=target_id))
         if request.user == receiver:
             return Response({"error":"you can't send the request to yourself!"}, status=status.HTTP_400_BAD_REQUEST)
-        friendship_blocked = friends.objects.filter(Q(receiver=request.user) & Q(sender=receiver) & Q(blocked=True)).filter()
+        a = Q(sender=request.user)
+        b = Q(receiver=receiver)
+        c = Q(receiver=request.user)
+        d = Q(sender=receiver)
+        friendship_blocked = friends.objects.filter((a & b & Q(blocked=True)) | (c & d & Q(blocked=True))).filter()
         if friendship_blocked:
-            return Response({"error":"user blocked you"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error":"blocked"}, status=status.HTTP_400_BAD_REQUEST)
         
             # return Response({"error":"you can't send the request to yourself!"}, status=status.HTTP_400_BAD_REQUEST)
+        ff = friends.objects.filter(Q(sender = receiver) & Q(receiver = request.user)).first()
+        if ff and not ff.blocked and not ff.accepted:
+            ff.accepted = True
+            ff.save()
+            return Response({"error":"frendship accepted"}, status=status.HTTP_202_ACCEPTED)
+            
         friendship , created = friends.objects.get_or_create(sender = request.user, receiver=receiver)
         if created:
             serializer = friendsSerializer(friendship)

@@ -260,6 +260,7 @@ dashboard-page .side-user img {
     height: 100%;
     position: relative;
     border-radius:50%;
+    aspect-ratio: 1/1;
 }
 
 dashboard-page .user-status-side {
