@@ -87,36 +87,22 @@ class PingPongConsumer(AsyncWebsocketConsumer):
 
 
     async def disconnect(self, close_code):
+       
+
         await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name
         )
-
-        # Remove the player from the room's player list
         if self.channel_name in self.rooms[self.room_name]:
             self.rooms[self.room_name].remove(self.channel_name)
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': 'player_disconnected',
-                'channel_name': self.channel_name,
-            }
-        )
-        # # If the disconnecting player was the host, reassign the host role
-        # if self.role == 'host' and len(self.rooms[self.room_name]) > 0:
-        #     # Get the channel name of the new host
-        #     new_host_channel_name = self.rooms[self.room_name][0]
-        #     # Reassign the first remaining player as the new host
-        #     await self.channel_layer.group_send(
-        #         self.room_group_name,
-        #         {
-        #             'type': 'assign_role',
-        #             'role': 'host',
-        #             'channel_name': new_host_channel_name
-        #         }
-        #     )
+        # await self.channel_layer.group_send(
+        #     self.room_group_name,
+        #     {
+        #         'type': 'player_disconnected',
+        #         'channel_name': self.channel_name,
+        #     }
+        # )
 
-        # Clean up the room if no players are left
         if len(self.rooms[self.room_name]) == 0:
             del self.rooms[self.room_name]
 
@@ -128,6 +114,13 @@ class PingPongConsumer(AsyncWebsocketConsumer):
         role = data.get('role')
 
         # Broadcast the updated game state to all clients in the group
+        if (data.get('type') == 'player_disconnected'):
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'player_disconnected',
+                }
+            )
         await self.channel_layer.group_send(
             self.room_group_name,
             {
