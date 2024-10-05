@@ -44,7 +44,14 @@ export default class Chat extends HTMLElement {
       var data = JSON.parse(event.data);
       var messagesContent = document.querySelector(".messages-content");
       var newMessage = document.createElement("div");
-      newMessage.textContent = data.content;
+      if (data.content.length > 54) {
+          let chunks = [];
+          for (let i = 0; i < data.content.length; i += 54) {
+              chunks.push(data.content.substring(i, i + 54));
+          }
+          newMessage.textContent = chunks.join("\n");
+      }
+      // newMessage.textContent = data.content;
       if (data.sender == this.mydata.id) {
         newMessage.classList.add("message", "my-messages", "new");
       } else {
@@ -90,12 +97,12 @@ export default class Chat extends HTMLElement {
     var messagesContent = document.querySelector(".messages-content");
     
     data.forEach((message) => {
-      if (message.content.length > 40) {
+      if (message.content.length > 50) {
           let chunks = [];
-          for (let i = 0; i < message.content.length; i += 40) {
-              chunks.push(message.content.substring(i, i + 40));
+          for (let i = 0; i < message.content.length; i += 50) {
+              chunks.push(message.content.substring(i, i + 50));
           }
-          message.content = chunks.join('<br>');
+          message.content = chunks.join("<br>");
       }
       var newMessage = document.createElement("div");
       newMessage.innerHTML = message.content; // Changed this line
@@ -475,7 +482,7 @@ export default class Chat extends HTMLElement {
       var usernameDiv = document.createElement("div");
       usernameDiv.className = "username";
       var h1 = document.createElement("h1");
-      h1.textContent = user.username;
+      h1.textContent = user.username.substring(0, 15);
       usernameDiv.appendChild(h1);
     
 

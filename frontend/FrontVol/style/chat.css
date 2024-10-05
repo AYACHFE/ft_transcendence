@@ -238,7 +238,7 @@ chat-page  .your-messages .timestamp {
 }
 
 chat-page .messages .my-messages {
-    max-width: 70%;
+    max-width: 500px;
     float: right;
     color: #fff;
     background: #3DBDA7;
@@ -257,7 +257,7 @@ chat-page .messages .my-messages::before {
 }
 
 chat-page .messages .your-messages {
-    max-width: 70%;
+    max-width: 500px;
     float: left;
     background-color: #fff;
     color: #3DBDA7;
