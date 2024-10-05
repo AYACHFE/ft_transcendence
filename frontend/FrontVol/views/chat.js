@@ -7,7 +7,7 @@ export default class Chat extends HTMLElement {
     this.users = [];
     this.originalUsers = [];
     this.roomId = null;
-
+    this.lastmessagesocket = [];
     this.innerHTML = "<loading-page></loading-page>";
     this.blockusersfun = this.blockusersfun.bind(this);
   }
@@ -51,7 +51,8 @@ export default class Chat extends HTMLElement {
           }
           newMessage.textContent = chunks.join("\n");
       }
-      // newMessage.textContent = data.content;
+      else
+        newMessage.textContent = data.content;
       if (data.sender == this.mydata.id) {
         newMessage.classList.add("message", "my-messages", "new");
       } else {
@@ -240,6 +241,150 @@ export default class Chat extends HTMLElement {
       this.showprofileuser(user);
     };
   }
+
+  createUserComponent(user, myId, clickedId) {
+    var userDiv = document.createElement("div");
+    userDiv.className = "user";
+  
+    // Event Listener for Active User
+    userDiv.addEventListener("click", function () {
+      if (this.classList.contains("activeuser")) {
+        return;
+      }
+  
+      var messagesContent = document.querySelector(".messages-content");
+      while (messagesContent.firstChild) {
+        messagesContent.removeChild(messagesContent.firstChild);
+      }
+
+      var userslist = document.querySelectorAll(".user");
+      userslist.forEach(function (user) {
+        user.classList.remove("activeuser");
+        const dots_block = user.querySelector(".dots_block");
+        if (dots_block) {
+          dots_block.style.display = "none";
+        }
+        const button_div = user.querySelector(".button_div");
+        if (button_div) {
+          button_div.style.display = "none";
+        }
+      });
+  
+      this.classList.add("activeuser");
+      const dots_block = this.querySelector(".dots_block");
+        if (dots_block) {
+          dots_block.style.display = "block";
+        }
+    });
+  
+    var img = document.createElement("img");
+    img.src = user.avatar_url;
+    userDiv.appendChild(img);
+
+  
+    var p = document.createElement("p");
+    p.classList.add("lastmessage");
+
+  
+    // Handle WebSocket for last message
+    var lastsocket;
+    if (myId > clickedId)
+        lastsocket = new WebSocket(
+      `ws://localhost:8000/ws/lastmessage/${myId}/${clickedId}/`
+      );
+      else
+      lastsocket = new WebSocket(
+    `ws://localhost:8000/ws/lastmessage/${clickedId}/${myId}/`
+    );
+    this.lastmessagesocket.push(lastsocket);
+    
+    lastsocket.onopen = function (e) {
+      
+    };
+    lastsocket.onmessage = function (event) {
+      var data = JSON.parse(event.data);
+      
+      p.textContent = data.content.substring(0, 15);
+    };
+    
+    lastsocket.onerror = function (error) {
+      
+    };
+  
+    var usernameDiv = document.createElement("div");
+    usernameDiv.className = "username";
+    var h1 = document.createElement("h1");
+    h1.textContent = user.username.substring(0, 15);
+    usernameDiv.appendChild(h1);
+  
+
+    let dotsDiv, deleteButton;
+  
+    dotsDiv = document.createElement("div");
+    dotsDiv.className = "dots_block";
+    dotsDiv.style.cursor = "pointer";
+    dotsDiv.innerText = "...";
+    dotsDiv.style.display = "none";
+    dotsDiv.style.float = "right";
+  
+    // Create the delete button
+
+    let buttonDiv = document.createElement("div");
+    buttonDiv.className = "button_div";
+    buttonDiv.style.display = "none";
+
+    deleteButton = document.createElement("button");
+    deleteButton.className = "block_button";
+    deleteButton.innerText = "block";
+    deleteButton.style.display = "block";
+
+    let profileButton = document.createElement("button");
+    profileButton.className = "profile_button";
+    profileButton.innerText = "profile";
+    profileButton.style.display = "block";
+
+    buttonDiv.appendChild(deleteButton);
+    buttonDiv.appendChild(profileButton);
+    // deleteButton.style.display = "none"; 
+  
+    
+  
+    // Add an event listener to the dots div to toggle the delete button
+    dotsDiv.addEventListener("click", function (event) {
+  
+      if (userDiv.classList.contains("activeuser")) {
+        if (buttonDiv.style.display === "none") {
+          buttonDiv.style.display = "block";
+        } else {
+          buttonDiv.style.display = "none";
+        }
+      } else {
+        var userslist = document.querySelectorAll(".user");
+        userslist.forEach(function (user) {
+          user.classList.remove("activeuser");
+          const button_div = user.querySelector(".button_div");
+          if (button_div) {
+            button_div.style.display = "none";
+          }
+          const dots_block = user.querySelector(".dots_block");
+          if (dots_block) {
+            dots_block.style.display = "none";
+          }
+        });
+
+      }
+    });
+  
+    // Append the dots div and the delete button to the user component
+    userDiv.appendChild(dotsDiv);
+    userDiv.appendChild(buttonDiv);
+  
+    usernameDiv.appendChild(p);
+    userDiv.appendChild(usernameDiv);
+  
+    return userDiv;
+  }
+  
   async connectedCallback() {
 
  this.btnhighlightfun();
@@ -293,7 +438,7 @@ export default class Chat extends HTMLElement {
       this.userdata = null;
 
       this.users.forEach((user) => {
-        let userComponent = createUserComponent(user, this.mydata.id, user.id);
+        let userComponent = this.createUserComponent(user, this.mydata.id, user.id);
         this.block_profile_fun(user, userComponent);
         userComponent.addEventListener("click", async () => {
           if (this.userdata == user.id) 
@@ -314,7 +459,6 @@ export default class Chat extends HTMLElement {
         const res = await fetch("/api/relations/friends-list/");
         if (!res.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await res.json();
-        console.log(data);
         if (data.length == 0) {
           return
         }
@@ -325,7 +469,7 @@ export default class Chat extends HTMLElement {
         this.users = [...this.originalUsers];
 
         this.users.forEach((user) => {
-          let userComponent = createUserComponent(user,this.mydata.id,user.id);
+          let userComponent = this.createUserComponent(user,this.mydata.id,user.id);
           this.block_profile_fun(user, userComponent);
             if (user == this.users[0]) {
               userComponent.classList.add("activeuser");
@@ -412,146 +556,6 @@ export default class Chat extends HTMLElement {
         }
     });
 
-    function createUserComponent(user, myId, clickedId) {
-      var userDiv = document.createElement("div");
-      userDiv.className = "user";
-    
-      // Event Listener for Active User
-      userDiv.addEventListener("click", function () {
-        if (this.classList.contains("activeuser")) {
-          return;
-        }
-    
-        var messagesContent = document.querySelector(".messages-content");
-        while (messagesContent.firstChild) {
-          messagesContent.removeChild(messagesContent.firstChild);
-        }
-
-        var userslist = document.querySelectorAll(".user");
-        userslist.forEach(function (user) {
-          user.classList.remove("activeuser");
-          const dots_block = user.querySelector(".dots_block");
-          if (dots_block) {
-            dots_block.style.display = "none";
-          }
-          const button_div = user.querySelector(".button_div");
-          if (button_div) {
-            button_div.style.display = "none";
-          }
-        });
-    
-        this.classList.add("activeuser");
-        const dots_block = this.querySelector(".dots_block");
-          if (dots_block) {
-            dots_block.style.display = "block";
-          }
-      });
-    
-      var img = document.createElement("img");
-      img.src = user.avatar_url;
-      userDiv.appendChild(img);
-
-    
-      var p = document.createElement("p");
-
-    
-      // Handle WebSocket for last message
-      var lastsocket;
-      if (myId > clickedId)
-        lastsocket = new WebSocket(
-          `ws://localhost:8000/ws/lastmessage/${myId}/${clickedId}/`
-        );
-      else
-        lastsocket = new WebSocket(
-          `ws://localhost:8000/ws/lastmessage/${clickedId}/${myId}/`
-        );
-    
-      lastsocket.onopen = function (e) {
-      
-      };
-      lastsocket.onmessage = function (event) {
-        var data = JSON.parse(event.data);
-        
-        p.textContent = data.content.substring(0, 15);
-      };
-    
-      lastsocket.onerror = function (error) {
-        
-      };
-    
-      var usernameDiv = document.createElement("div");
-      usernameDiv.className = "username";
-      var h1 = document.createElement("h1");
-      h1.textContent = user.username.substring(0, 15);
-      usernameDiv.appendChild(h1);
-    
-
-      let dotsDiv, deleteButton;
-    
-      dotsDiv = document.createElement("div");
-      dotsDiv.className = "dots_block";
-      dotsDiv.style.cursor = "pointer";
-      dotsDiv.innerText = "...";
-      dotsDiv.style.display = "none";
-      dotsDiv.style.float = "right";
-    
-      // Create the delete button
-
-      let buttonDiv = document.createElement("div");
-      buttonDiv.className = "button_div";
-      buttonDiv.style.display = "none";
-
-      deleteButton = document.createElement("button");
-      deleteButton.className = "block_button";
-      deleteButton.innerText = "block";
-      deleteButton.style.display = "block";
-
-      let profileButton = document.createElement("button");
-      profileButton.className = "profile_button";
-      profileButton.innerText = "profile";
-      profileButton.style.display = "block";
-
-      buttonDiv.appendChild(deleteButton);
-      buttonDiv.appendChild(profileButton);
-      // deleteButton.style.display = "none"; 
-    
-      
-    
-      // Add an event listener to the dots div to toggle the delete button
-      dotsDiv.addEventListener("click", function (event) {
-    
-        if (userDiv.classList.contains("activeuser")) {
-          if (buttonDiv.style.display === "none") {
-            buttonDiv.style.display = "block";
-          } else {
-            buttonDiv.style.display = "none";
-          }
-        } else {
-          var userslist = document.querySelectorAll(".user");
-          userslist.forEach(function (user) {
-            user.classList.remove("activeuser");
-            const button_div = user.querySelector(".button_div");
-            if (button_div) {
-              button_div.style.display = "none";
-            }
-            const dots_block = user.querySelector(".dots_block");
-            if (dots_block) {
-              dots_block.style.display = "none";
-            }
-          });
-
-        }
-      });
-    
-      // Append the dots div and the delete button to the user component
-      userDiv.appendChild(dotsDiv);
-      userDiv.appendChild(buttonDiv);
-    
-      usernameDiv.appendChild(p);
-      userDiv.appendChild(usernameDiv);
-    
-      return userDiv;
-    }
     
     
     
@@ -562,7 +566,9 @@ export default class Chat extends HTMLElement {
       this.socket.close();
 
 
-    
+    this.lastmessagesocket.forEach((socket) => {
+      socket.close();
+    });
   }
 }
 
