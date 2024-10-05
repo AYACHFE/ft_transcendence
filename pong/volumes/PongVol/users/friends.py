@@ -94,7 +94,7 @@ from users.friends import friendsSerializer
 class RequestsOnWait(AuthRequired, generics.ListAPIView):
     serializer_class = friendsSerializer
     def get_queryset(self):
-        return friends.objects.filter(Q(receiver = self.request.user)& Q(blocked=False))
+        return friends.objects.filter(Q(receiver = self.request.user)& Q(blocked=False) & Q(accepted=False))
 
 class MyFriends(AuthRequired, generics.ListAPIView):
     serializer_class = UserSerializer

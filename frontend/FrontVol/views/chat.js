@@ -468,6 +468,7 @@ export default class Chat extends HTMLElement {
         );
         this.users = [...this.originalUsers];
 
+
         this.users.forEach((user) => {
           let userComponent = this.createUserComponent(user,this.mydata.id,user.id);
           this.block_profile_fun(user, userComponent);
@@ -597,8 +598,9 @@ class ProfilePage extends HTMLElement {
     // this.attachShadow({ mode: 'open' });
 
     this.user = JSON.parse(this.getAttribute("user")); 
-      let firstname = this.user.firstname;
-      let lastname = this.user.lastname;
+    console.log(this.user);
+      let firstname = this.user.first_name;
+      let lastname = this.user.last_name;
       let username = this.user.username;
       let img = this.user.avatar_url;
 

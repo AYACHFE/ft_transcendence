@@ -128,13 +128,17 @@ class Settings_security extends HTMLElement {
             };
             var jsonString = JSON.stringify(data);
 
-            fetch(`/api/settings/changepass`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: jsonString,
-            })
+            const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrf-token')).split('=')[1];
+
+                fetch(`/api/settings/changepass`, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    'X-CSRFToken':csrftoken, 
+
+                      },
+                      body: jsonString,
+                })
               .then((response) => response.json())
               .then((data) => {
                 console.log("Success:", data);

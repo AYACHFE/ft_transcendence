@@ -315,7 +315,7 @@ console.log(myDataRank);
                         fetch(`/api/relations/accept-friendship/${btn.value}`)
                         .then(response => response.json())
                         .then(data =>{
-                            
+                            friendsRequests.click();
                         })
                     })
                 });
@@ -325,7 +325,7 @@ console.log(myDataRank);
                         fetch(`/api/relations/reject-friendship/${btn.value}`)
                         .then(response => response.json())
                         .then(data =>{
-                            
+                            friendsRequests.click();
                         })
                     })
                 });

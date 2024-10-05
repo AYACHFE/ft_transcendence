@@ -95,13 +95,13 @@ class PingPongConsumer(AsyncWebsocketConsumer):
         )
         if self.channel_name in self.rooms[self.room_name]:
             self.rooms[self.room_name].remove(self.channel_name)
-        # await self.channel_layer.group_send(
-        #     self.room_group_name,
-        #     {
-        #         'type': 'player_disconnected',
-        #         'channel_name': self.channel_name,
-        #     }
-        # )
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'player_disconnected',
+                'channel_name': self.channel_name,
+            }
+        )
 
         if len(self.rooms[self.room_name]) == 0:
             del self.rooms[self.room_name]

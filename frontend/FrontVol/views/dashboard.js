@@ -115,7 +115,7 @@ export default class Dashboard extends HTMLElement {
                 <div class="side-user" style="background-color:#D9D9D9;">
                     <img src="${elem.avatar_url}" alt="">
                     <div class="user-status-side active "></div>
-                    <div class="user-ingame-side active"><p>in Game</p></div>
+                    
                 </div>
                 `
             })

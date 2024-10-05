@@ -16,35 +16,30 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
 from django.contrib.auth.hashers import check_password
+from users.mixins import AuthRequired
 
-class ChangepassViewSet(viewsets.ViewSet):
+
+class ChangepassViewSet(AuthRequired, viewsets.ViewSet):
     def create(self, request):
-        myid = request.data.get('myId', None)
 
-        if myid:
-            user = User.objects.filter(id=myid).first()
-            if user:
-                New_password = request.data.get('New_password', None)
-                Current_password = request.data.get('Current_password', None)
+        user = request.user
+        New_password = request.data.get('New_password', None)
+        Current_password = request.data.get('Current_password', None)
 
-                if not check_password(Current_password, user.password):
-                    return JsonResponse({"error": "passwords don't match"}, status=status.HTTP_200_OK)
-                if New_password and user.password != New_password:
-                    user.set_password(New_password)
-                    user.save()
-                    
+        if not check_password(Current_password, user.password):
+            return JsonResponse({"error": "passwords don't match"}, status=status.HTTP_200_OK)
+        if New_password and user.password != New_password:
+            user.set_password(New_password)
+            user.save()
+            
 
-                serializer = UserSerializer(user)
+        serializer = UserSerializer(user)
 
-                return JsonResponse({"Success": "change password success"}, status=status.HTTP_200_OK)
-            else:
-                return JsonResponse({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-        else:
-            return JsonResponse({"error": "Missing myid parameter"}, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({"Success": "change password success"}, status=status.HTTP_200_OK)
     
 from django.core.files.images import ImageFile 
 
-class SettingsViewSet(viewsets.ViewSet):
+class SettingsViewSet(AuthRequired,viewsets.ViewSet):
     def create(self, request):
         try:
             user = request.user
