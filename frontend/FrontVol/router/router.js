@@ -161,7 +161,7 @@ class Router {
     async isAuthenticated() {
         let mydata = null;
         try {
-            const response = await fetch('http://localhost:8000/main/data/', {
+            const response = await fetch('/api/main/data/', {
                 method: "get",
                 credentials: "include"
             });

@@ -21,7 +21,7 @@ export default class Dash extends HTMLElement {
     insertdatatoscores  = async () => {
         //get my data from fetch /main/data
         try {
-            const response = await fetch("http://localhost:8000/main/data/", {
+            const response = await fetch("/api/main/data/", {
               method: "get",
               credentials: "include",
             });

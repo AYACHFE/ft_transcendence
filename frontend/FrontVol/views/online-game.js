@@ -15,6 +15,7 @@ export default class Online_Game extends HTMLElement {
 		this.host_username = null;
 		this.guest_username = null;
 		this.username = null;
+		this.isMoving = null;
 	}
 	
 	startCounter() {
@@ -74,7 +75,7 @@ export default class Online_Game extends HTMLElement {
 		// document.querySelector('.time h2').innerHTML = 'RoomID :' + roomName;
 		console.log(`Room name is : ${roomName}`);
 		this.gameSocket = new WebSocket(
-			'ws://' + "localhost:8000" + '/ws/game/' + roomName + '/'
+			'wss://' + "localhost:8443" + '/ws/game/' + roomName + '/'
 		);
 		this.allSockets.push(this.gameSocket);
 		var startGameElements = document.querySelectorAll('.start-game h2');
@@ -99,15 +100,15 @@ export default class Online_Game extends HTMLElement {
 		// document.addEventListener('keypress', hideStartGameElements);
 		hideGameOver();
 		//---------------------------fetching-usernames-----------------------------------\\
-		fetch('http://localhost:8000/main/data/', 
-		{
-			method: "get",
-			credentials: "include"
-		})
-		.then(response => response.json())
-		.then(data => {
-			this.username = data.user_name;
-		})
+		// fetch('/api/main/data/', 
+		// {
+		// 	method: "get",
+		// 	credentials: "include"
+		// })
+		// .then(response => response.json())
+		// .then(data => {
+		// 	this.username = data.user_name;
+		// })
 		
 		
 
@@ -282,13 +283,8 @@ export default class Online_Game extends HTMLElement {
 		let speedX = 5; // Horizontal speed
 		let speedY = 5; // Vertical speed
 
-		let isMoving = false;
-		// document.addEventListener('keydown', function() {
-		// 	isMoving = true;
-		// });
-		// document.addEventListener('click', function() {
-		// 	isMoving = true;
-		// });
+		this.isMoving = false;
+
 
 		let scoreP1 = 0;
 		let scoreP2 = 0;
@@ -306,7 +302,7 @@ export default class Online_Game extends HTMLElement {
 		let newTime = false;
 
 		const moveBall = async () => {
-			if (!isMoving) {
+			if (!this.isMoving) {
 				requestAnimationFrame(moveBall);
 				return;
 			}
@@ -456,7 +452,7 @@ export default class Online_Game extends HTMLElement {
 				console.log('Your role is:', role);
 			}
 			if (data.type === 'start_game') {
-				isMoving = true;
+				this.isMoving = true;
 				this.startCounter();
 				hideStartGameElements();
 				this.host_username = data.host.username;
@@ -483,10 +479,10 @@ export default class Online_Game extends HTMLElement {
 				guest_img_element.src = guest.avatar;
 			}
 			if (data.type === 'player_disconnected') {
-				if (this.gameSocket)
-					this.gameSocket.close();
-				this.deleteRoom(this.roomName);
-				isMoving = false;
+				// if (this.gameSocket)
+				// 	this.gameSocket.close();
+				// this.deleteRoom(this.roomName);
+				this.isMoving = false;
 				const gameOverMessage = document.querySelector('.game-over h2');
 				const middle_line = document.querySelector('.middle-line');
 				const ball = document.querySelector('.ball');
@@ -599,8 +595,10 @@ export default class Online_Game extends HTMLElement {
 		if (this.counterInterval) {
 			clearInterval(this.counterInterval)
 		}
-		if (this.gameSocket)
+		if (this.gameSocket) {
 			this.gameSocket.close();
+			this.isMoving = false;
+		}
 		this.deleteRoom(this.roomName);
 	}
 }

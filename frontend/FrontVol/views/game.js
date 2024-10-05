@@ -2,6 +2,8 @@ export default class Game extends HTMLElement {
     constructor() {super()
         this.innerHTML = `<loading-page></loading-page>`
         this.counterInterval = null;
+		this.keydownHandler = null;
+		this.keyupHandler = null;
     }
     startCounter() {
         let counter = 0;
@@ -130,7 +132,8 @@ var moveDownRight = false;
 var moveUpLeft = false;
 var moveDownLeft = false;
 
-document.addEventListener('keydown', function(event) {
+// Define your handlers in a scope accessible to your disconnectCallback
+this.keydownHandler = function(event) {
     switch(event.key) {
         case 'ArrowUp':
             moveUpRight = true;
@@ -145,9 +148,9 @@ document.addEventListener('keydown', function(event) {
             moveDownLeft = true;
             break;
     }
-});
+};
 
-document.addEventListener('keyup', function(event) {
+this.keyupHandler = function(event) {
     switch(event.key) {
         case 'ArrowUp':
             moveUpRight = false;
@@ -162,7 +165,12 @@ document.addEventListener('keyup', function(event) {
             moveDownLeft = false;
             break;
     }
-});
+};
+
+// Add your event listeners
+document.addEventListener('keydown', this.keydownHandler);
+document.addEventListener('keyup', this.keyupHandler);
+
 
 
 var newTopRightUp;
@@ -316,11 +324,13 @@ moveBall();
 
 }
 
-  disconnectedCallback() {
+disconnectedCallback() {
     console.log("dis connected Callback");
     if (this.counterInterval)
         clearInterval(this.counterInterval)
     this.counterInterval = null;
+    document.removeEventListener('keydown', this.keydownHandler);
+    document.removeEventListener('keyup', this.keyupHandler);
   }
 }
 

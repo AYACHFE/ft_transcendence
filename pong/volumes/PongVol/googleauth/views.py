@@ -24,7 +24,7 @@ import jwt, requests
 def google_auth(request):
     code = request.GET.get('code')
     google_token_url = 'https://oauth2.googleapis.com/token'
-    redirect_uri = 'http://localhost:8080/accounts/google/login/callback/'
+    redirect_uri = 'https://localhost/accounts/google/login/callback/'
 
     # return JsonResponse({"test":code})
 
@@ -67,7 +67,7 @@ from django.db.models import Q
 def google_dauth(request):
     code = request.GET.get('code')
     google_token_url = 'https://oauth2.googleapis.com/token'
-    redirect_uri = 'http://localhost:8080/accounts/google/login/callback/'
+    redirect_uri = 'https://localhost/accounts/google/login/callback/'
 
     # Exchange code for tokens
     response = requests.post(google_token_url, data={

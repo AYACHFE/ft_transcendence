@@ -14,7 +14,7 @@ class User(AbstractUser):
     last_seen = models.DateTimeField(null=True, blank=True)
     twoFA = models.BooleanField(default=False)
 
-    avatar = models.ImageField(upload_to='static/images/profiles/', default=settings.DEFUALT_PROFILE_IMG)
+    avatar = models.ImageField(upload_to='staticfiles/images/profiles/', default=settings.DEFUALT_PROFILE_IMG)
     user_wins = models.IntegerField(default=0)
     
     

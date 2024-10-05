@@ -87,7 +87,7 @@ class Settings_security extends HTMLElement {
         `;
     var mydata;
 
-    fetch("http://localhost:8000/main/data/", {
+    fetch("/api/main/data/", {
       method: "get",
       credentials: "include",
     })
@@ -128,7 +128,7 @@ class Settings_security extends HTMLElement {
             };
             var jsonString = JSON.stringify(data);
 
-            fetch(`http://localhost:8000/settings/changepass`, {
+            fetch(`/api/settings/changepass`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -265,7 +265,7 @@ class Settings_default extends HTMLElement {
 
     // var jsonString = JSON.stringify(data);
     const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
-    fetch(`/settings/`, {
+    fetch(`/api/settings/`, {
       method: "POST",
       headers: {
         'X-CSRFToken': csrftoken 
@@ -405,7 +405,7 @@ class Settings_default extends HTMLElement {
             </form>
             
         `;
-    fetch("http://localhost:8000/main/data/", {
+    fetch("/api/main/data/", {
       method: "get",
       credentials: "include",
     })
