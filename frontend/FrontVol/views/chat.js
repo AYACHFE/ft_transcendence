@@ -11,7 +11,7 @@ export default class Chat extends HTMLElement {
   }
   async fetchData() {
     try {
-      const response = await fetch("http://localhost:8000/main/data/", {
+      const response = await fetch("/api/main/data/", {
         method: "get",
         credentials: "include",
       });
@@ -28,11 +28,11 @@ export default class Chat extends HTMLElement {
 
     if (this.mydata.id > this.userdata)
       this.socket = new WebSocket(
-        `ws://localhost:8000/ws/chat/${this.mydata.id}/${this.userdata}/`
+        `wss://localhost:8443/ws/chat/${this.mydata.id}/${this.userdata}/`
       );
     else
       this.socket = new WebSocket(
-        `ws://localhost:8000/ws/chat/${this.userdata}/${this.mydata.id}/`
+        `wss://localhost:8443/ws/chat/${this.userdata}/${this.mydata.id}/`
       );
     this.socket.onopen = function (e) {
       console.log("socket open");
@@ -82,7 +82,7 @@ export default class Chat extends HTMLElement {
   }
   async getChatData() {
     const res = await fetch(
-      `http://localhost:8000/chat/chat/?myId=${this.mydata.id}&clickedId=${this.userdata}`
+      `/api/chat/?myId=${this.mydata.id}&clickedId=${this.userdata}`
     );
     const data = await res.json();
     var messagesContent = document.querySelector(".messages-content");
@@ -242,7 +242,7 @@ export default class Chat extends HTMLElement {
 
     const getUsers = async () => {
       try {
-        const res = await fetch("http://localhost:8000/chat/users/");
+        const res = await fetch("/api/chat/users/");
         if (!res.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await res.json();
 
@@ -381,11 +381,11 @@ export default class Chat extends HTMLElement {
       var lastsocket;
       if (myId > clickedId)
         lastsocket = new WebSocket(
-          `ws://localhost:8000/ws/lastmessage/${myId}/${clickedId}/`
+          `wss://localhost:8443/ws/lastmessage/${myId}/${clickedId}/`
         );
       else
         lastsocket = new WebSocket(
-          `ws://localhost:8000/ws/lastmessage/${clickedId}/${myId}/`
+          `wss://localhost:8443/ws/lastmessage/${clickedId}/${myId}/`
         );
     
       lastsocket.onopen = function (e) {

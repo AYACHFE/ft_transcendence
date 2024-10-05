@@ -31,7 +31,7 @@ function logout_post()
 {
 
     var csrfToken = getCookie("csrf-token");
-    fetch("http://localhost:8000/api/logout/", {
+    fetch("/api/logout/", {
         method: 'post',
         credentials: 'include',
         headers:{
@@ -44,7 +44,7 @@ function logout_post()
     .catch(error => console.log("error", error));
 }
 
-fetch('http://localhost:8000/main/data/',{
+fetch('/api/main/data/',{
     method:"get",
     credentials:"include"
 })

@@ -39,7 +39,7 @@ export default class Login extends HTMLElement {
 					<div class="line"></div>
 				</div>
 				<div class="loginwith">
-						<a href="https://accounts.google.com/o/oauth2/auth?client_id=36859905646-l3ad3gji2poscl1u0r2osg2qmnehq405.apps.googleusercontent.com&redirect_uri=http://localhost:8080/accounts/google/login/callback/&response_type=code&scope=profile email" >
+						<a href="https://accounts.google.com/o/oauth2/auth?client_id=36859905646-l3ad3gji2poscl1u0r2osg2qmnehq405.apps.googleusercontent.com&redirect_uri=https://localhost/accounts/google/login/callback/&response_type=code&scope=profile email" >
 							<img src="../images/google.svg" >
 						</a>
 						<a href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-6f00f915a8502d3af9d46351766176e32619718d006f2088cc14307c7efbbb8e&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fapi%2F42%2Fcallback%2F&response_type=code">
@@ -59,8 +59,8 @@ export default class Login extends HTMLElement {
 					<div id="errorContainerSignUp"></div>
 					<input type="email" placeholder="Email" name="email" required />
 					<input type="text" placeholder="Username" name="username" required />
-					<input type="password" placeholder="Password" name="password" required />
-					<input type="password" placeholder="Confirme Password" name="password" required />
+					<input type="password" class="signup-password" placeholder="Password" name="password" required />
+					<input type="password" class="signup-password-confirm" placeholder="Confirme Password" name="password" required />
 	
 					<button type="submit" class="login-btn">Sign Up</button>
 					<div class="orline">
@@ -161,8 +161,8 @@ export default class Login extends HTMLElement {
 	  });
 
 	function check_password() {
-	  let pass1 = document.getElementById("register_pass_1");
-	  let pass2 = document.getElementById("register_pass_2");
+	  let pass1 = document.querySelector(".signup-password");
+	  let pass2 = document.querySelector(".signup-password-confirm");
 	  console.log(pass1.value, "-------", pass2.value);
 	  if (pass1.value === pass2.value) return 1;
 	  else return 0;

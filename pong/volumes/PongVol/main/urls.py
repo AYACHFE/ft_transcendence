@@ -6,5 +6,5 @@ urlpatterns = [
     path('login/', LoginView,name='login'),
     path('home/', HomeView, name='home'),
     path('game/', GameView),
-    path('main/data/', DataView)
+    path('data/', DataView)
 ]

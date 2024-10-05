@@ -74,7 +74,7 @@ export default class Online_Game extends HTMLElement {
 		// document.querySelector('.time h2').innerHTML = 'RoomID :' + roomName;
 		console.log(`Room name is : ${roomName}`);
 		this.gameSocket = new WebSocket(
-			'ws://' + "localhost:8000" + '/ws/game/' + roomName + '/'
+			'wss://' + "localhost:8443" + '/ws/game/' + roomName + '/'
 		);
 		this.allSockets.push(this.gameSocket);
 		var startGameElements = document.querySelectorAll('.start-game h2');
@@ -99,15 +99,15 @@ export default class Online_Game extends HTMLElement {
 		// document.addEventListener('keypress', hideStartGameElements);
 		hideGameOver();
 		//---------------------------fetching-usernames-----------------------------------\\
-		fetch('http://localhost:8000/main/data/', 
-		{
-			method: "get",
-			credentials: "include"
-		})
-		.then(response => response.json())
-		.then(data => {
-			this.username = data.user_name;
-		})
+		// fetch('/api/main/data/', 
+		// {
+		// 	method: "get",
+		// 	credentials: "include"
+		// })
+		// .then(response => response.json())
+		// .then(data => {
+		// 	this.username = data.user_name;
+		// })
 		
 		
 

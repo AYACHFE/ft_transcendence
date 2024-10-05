@@ -17,7 +17,7 @@ export default class Dashboard extends HTMLElement {
     logout_post()
     {
         const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
-        fetch("http://localhost:8000/api/logout/", {
+        fetch("/api/logout/", {
             method: 'post',
             credentials: 'include',
             headers:{
@@ -171,7 +171,7 @@ export default class Dashboard extends HTMLElement {
         }
         </script>
         `;
-        fetch('http://localhost:8000/main/data/',{
+        fetch('/api/main/data/',{
             method:"get",
             credentials:"include"
             }).then(response => response.json())

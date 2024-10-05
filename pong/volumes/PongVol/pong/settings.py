@@ -59,13 +59,15 @@ PASSWORD_RESET_TIMEOUT = 14400 # //TODO: CHECK IF THIS NECESSARY, its more likel
 # Email subject prefix (useful for identifying emails from your site)
 # EMAIL_SUBJECT_PREFIX = '[Your Website] '
 
-
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True  # Force HTTPS redirect in Django
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 
 INSTALLED_APPS = [
     'allauth',
     'daphne',
-    'channels',
     'chat',
 	'settings',
     'django.contrib.admin',
@@ -85,6 +87,7 @@ INSTALLED_APPS = [
     'django_otp',
     'django_otp.plugins.otp_totp',
     'qrcode',
+    'channels',
 
 
 ]
@@ -200,11 +203,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.User'
 
 CORS_ALLOW_CREDENTIALS= True
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080"
+CORS_ALLOWED_ORIGINS=[
+	"https://localhost:8443",
+    "https://127.0.0.1:8443",
+    "https://localhost",
+    "https://127.0.0.1",
 ]
+CSRF_TRUSTED_ORIGINS = ['localhost', '127.0.0.1']
 
-# CSRF_TRUSTED_ORIGINS = ['http://localhost:8090/'] //TODO CHECK IF NOT A PROBLEM TO REMOVE THIS
 
 
 AUTHENTICATION_BACKENDS = (
@@ -212,7 +218,7 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-DEFUALT_PROFILE_IMG = 'static/images/profiles/default.png'
+DEFUALT_PROFILE_IMG = 'staticfiles/images/profiles/default.png'
 DEFUALT_PROFILE_IMG_ROOT = '/'+DEFUALT_PROFILE_IMG
 
 
