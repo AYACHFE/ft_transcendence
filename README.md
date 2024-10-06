@@ -8,7 +8,6 @@
 5. [Game Play](#game-play)
 6. [WebSocket Implementation](#websocket-implementation)
 7. [Security](#security)
-8. [License](#license)
 
 ---
 
